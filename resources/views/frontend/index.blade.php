@@ -141,12 +141,12 @@
               <div class="card-overlay">
                 <div class="card-header-b">
                   <div class="card-category-b">
-                    <a href="#" class="category-b">{{$listing->proptype->description}}
+                     <a href="/property-single/{{$listing->id}}">{{$listing->proptype->description}}
                     </a>
                   </div>
                   <div class="card-title-b">
                     <h2 class="title-2">
-                      <a href="blog-single.html">{{$listing->name}}</a>
+                      <a href="/property-single/{{$listing->id}}">{{$listing->name}}</a>
                     </h2>
                   </div>
                   

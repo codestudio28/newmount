@@ -22,6 +22,7 @@ Route::get('/about', 'PagesController@about');
 Route::get('/services', 'PagesController@services');
 Route::get('/property', 'PagesController@property');
 Route::get('/property-single', 'PagesController@single');
+Route::get('/inquire', 'PagesController@inquiry');
 
 // Route::auth();
 // Route::get('/dashboard', 'DashboardController@index');

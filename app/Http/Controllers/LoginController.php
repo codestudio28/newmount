@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Admin;
+
 class LoginController extends Controller
 {
     /**
@@ -43,7 +44,7 @@ class LoginController extends Controller
          //    }else if($user[0]->usertype=="user"){
          //         return view('/user');
          //    }
-
+        
         
     }
 
@@ -59,6 +60,7 @@ class LoginController extends Controller
             ->where('password',md5($request->input('password')))->get();
             $request->session()->put('Data',$user);
           if(count($user)>0){
+
             if($user[0]->usertype=="superadmin"){
                  return redirect('dashboard');
             }else if($user[0]->usertype=="admin"){

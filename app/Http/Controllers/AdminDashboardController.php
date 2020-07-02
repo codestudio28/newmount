@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-
+use App\Message;
 class AdminDashboardController extends Controller
 {
     /**
@@ -18,6 +18,8 @@ class AdminDashboardController extends Controller
         if(strlen(session('Data'))<=0){
             return redirect('/');
         }else{
+            $message = Message::where('status','UNREAD')->get();
+            session()->put('message',$message);
             return view('dashboard.dashboard');
         }
        

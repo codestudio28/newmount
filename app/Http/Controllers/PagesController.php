@@ -45,6 +45,10 @@ class PagesController extends Controller
        
         return view('frontend.single');
     }
+     public function inquiry(){
+       
+        return view('frontend.inquire');
+    }
     public function services(){
         $data =array(
             'title'=>'Services',
