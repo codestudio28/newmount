@@ -74,11 +74,20 @@ class VoucherCustomController extends Controller
             $voucher = Voucher::find($id);
             $voucher->status="REMOVED";
             $voucher->save();
+
+             $vouchers = Voucher::where('status','PENDING')->get();
+            session()->put('vouchers',$vouchers);
             return redirect('/admin-voucher')->with('success','Successfully remove voucher from the list');
         }else if($request->input('status')=="APPROVED"){
+
             $voucher = Voucher::find($id);
             $voucher->status="APPROVED";
             $voucher->save();
+
+            $voucher = Voucher::where('status','PENDING');
+            $vouchers = Voucher::where('status','PENDING')->get();
+            session()->put('vouchers',$vouchers);
+
             return redirect('/admin-voucher')->with('success','Successfully approved voucher.');
         }
     }

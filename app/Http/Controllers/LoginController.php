@@ -68,6 +68,8 @@ class LoginController extends Controller
             }else if($user[0]->usertype=="user"){
                 return redirect('dashboard');
             }
+          }else{
+            return redirect('/login')->with('error','Wrong username or password.');
           } 
             
     }

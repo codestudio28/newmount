@@ -69,7 +69,7 @@
             <a class="collapse-item" href="/admin-collection">Collections</a>
             <a class="collapse-item" href="/admin-voucher">Account's Payable</a>
             <a class="collapse-item" href="/admin-inhouse">In-House Collections</a>
-            <a class="collapse-item" href="/admin-transfer">Transfer Property</a>
+            <!-- <a class="collapse-item" href="/admin-transfer">Transfer Property</a> -->
           </div>
         </div>
       </li>
@@ -163,6 +163,7 @@
             <a class="collapse-item" href="/report-scheme">Payment Type</a>
             <a class="collapse-item" href="/report-collection">Collections</a>
             <a class="collapse-item" href="/report-payable">Account's Payable</a>
+            <a class="collapse-item" href="/report-inhouse">Inhouse Collections</a>
              @if(session('Data')[0]->usertype=="superadmin")
             <a class="collapse-item" href="#">Logs</a>
             @endif
@@ -193,7 +194,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="/admin-banner">Banner</a>
             <a class="collapse-item" href="/admin-listings">Listings</a>
-            <a class="collapse-item" href="/admin-about">About</a>
+            <!-- <a class="collapse-item" href="/admin-about">About</a> -->
         </div>
       </li>
          <hr class="sidebar-divider">
@@ -204,8 +205,8 @@
         </a>
         <div id="collapseAccount" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="/admin-school-year">Update Information</a>
-            <a class="collapse-item" href="/admin-school-year">Change Password</a>
+            <a class="collapse-item" href="/admin-info">Update Information</a>
+            <a class="collapse-item" href="/admin-info">Change Password</a>
           </div>
         </div>
       </li>
@@ -288,54 +289,38 @@
             </li>
 
             <!-- Nav Item - Alerts -->
+          @if(session('Data')[0]->usertype=="superadmin")
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">3+</span>
+                <span class="badge badge-danger badge-counter">{{count(session('vouchers'))}}</span>
               </a>
               <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
-                  Alerts Center
+                  Voucher Approval
                 </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
+                @foreach(session('vouchers') as $key=>$voucher)
+                  <a class="dropdown-item d-flex align-items-center" href="/admin-voucher">
                   <div class="mr-3">
                     <div class="icon-circle bg-primary">
                       <i class="fas fa-file-alt text-white"></i>
                     </div>
                   </div>
                   <div>
-                    <div class="small text-gray-500">December 12, 2019</div>
-                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                    <div class="small text-gray-500">Amount of Php. {{number_format($voucher->amount,2)}}</div>
+                    <span class="font-weight-bold">C.V. # {{$voucher->cv}} is waiting for your approval</span>
                   </div>
                 </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                    <div class="icon-circle bg-success">
-                      <i class="fas fa-donate text-white"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 7, 2019</div>
-                    $290.29 has been deposited into your account!
-                  </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                    <div class="icon-circle bg-warning">
-                      <i class="fas fa-exclamation-triangle text-white"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 2, 2019</div>
-                    Spending Alert: We've noticed unusually high spending for your account.
-                  </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                @endforeach
+               
+              
+                
+                <a class="dropdown-item text-center small text-gray-500" href="/admin-voucher">Show All Pending Voucher</a>
               </div>
             </li>
-
+          @endif
             <!-- Nav Item - Messages -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -379,17 +364,14 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/admin-info">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
+                  Update Profile
                 </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
-                </a>
-                <a class="dropdown-item" href="#">
+              
+                <a class="dropdown-item" href="/admin-info">
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Activity Log
+                  Change Password
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ url('/logout') }}" >

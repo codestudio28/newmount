@@ -66,8 +66,8 @@ class ReportCollectionController extends Controller
         }
 
         $datefrom =session('datefrom');
-        $dateto =session('datefrom');
-        $filtered = session('dateto');
+        $dateto =session('dateto');
+        $filtered = session('filtered');
         $records = session('records');
         $search = session('search');
         $filters = array("ALL", "LAST NAME", "FIRST NAME", "BLOCK","LOT");

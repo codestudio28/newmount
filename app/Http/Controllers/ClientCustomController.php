@@ -80,6 +80,62 @@ class ClientCustomController extends Controller
             $user->status = $request->input('status');
             $user->save();
              return redirect('/admin-client-removed')->with('success','Client successfully retrieved to the active list ');
+        }else if($request->input('status')=="IMPORT"){
+                $upload = $request->file('import_file');
+
+                $filePath = $upload->getRealPath();
+                $file = fopen($filePath,'r');
+                $header = fgetcsv($file);
+                $escapeHeader=[];
+                foreach ($header as $key => $value) {
+                    $lheader=strtolower($value);
+                    $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
+                    // dd($escapedItem);
+                    array_push($escapeHeader,$escapedItem);
+                }
+              
+                while($columns=fgetcsv($file)){
+                    if($columns[0]==""){
+                        continue;
+                    }
+
+                    // foreach ($columns as $key => &$value) {
+                    //     $value = preg_replace('/\D/', '', $value);
+                    // }
+
+                    $data=array_combine($escapeHeader, $columns);
+
+                    $firstname= $data['firstname'];
+                    $middlename= $data['middlename'];
+                    $lastname= $data['lastname'];
+                    $contactnumber= $data['contactnumber'];
+                    $address1= $data['address'];
+                    $barangay= $data['barangay'];
+                    $city= $data['city'];
+                    $province= $data['province'];
+                    $status= $data['status'];
+
+                    $newclient=Client::where('firstname',$firstname)->where('middlename',$middlename)->where('lastname',$lastname)->get();
+
+                    if(count($newclient)<=0){
+                        $client = new Client;
+                        $client->firstname =$firstname;
+                        $client->middlename=$middlename;
+                        $client->lastname=$lastname;
+                        $client->contactnumber=$contactnumber;
+                        $client->address1=$address1;
+                        $client->barangay=$barangay;
+                        $client->city=$city;
+                        $client->province=$province;
+                        $client->status=$status;
+                        $client->save();
+
+                    }
+                  
+
+                }
+
+             return redirect('/admin-client')->with('success','Successfully import client information to the list. ');
         }
     }
 

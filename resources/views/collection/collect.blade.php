@@ -54,6 +54,10 @@
                           >
                            <i class="fa fa-retweet"></i>
                         </a>
+                         <a class="btn btn-success"  href="/admin-misc/{{$misc->id}}" 
+                          >
+                           <i class="fa fa-print"></i>
+                        </a>
                         @else
                            <button class="btn btn-primary" disabled
                           >

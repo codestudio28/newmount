@@ -80,6 +80,54 @@ class PropertyTypeCustomController extends Controller
             $user->status = $request->input('status');
             $user->save();
              return redirect('/admin-proptype-removed')->with('success','Property type successfully retrieved to the active list ');
+        }else if($request->input('status')=="IMPORT"){
+                $upload = $request->file('import_file');
+
+                $filePath = $upload->getRealPath();
+                $file = fopen($filePath,'r');
+                $header = fgetcsv($file);
+                $escapeHeader=[];
+                foreach ($header as $key => $value) {
+                    $lheader=strtolower($value);
+                    $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
+                    // dd($escapedItem);
+                    array_push($escapeHeader,$escapedItem);
+                }
+              
+                while($columns=fgetcsv($file)){
+                    if($columns[0]==""){
+                        continue;
+                    }
+
+                    // foreach ($columns as $key => &$value) {
+                    //     $value = preg_replace('/\D/', '', $value);
+                    // }
+
+                    $data=array_combine($escapeHeader, $columns);
+
+                    $typename = $data['typename'];
+                    $description = $data['description'];
+                    $equity = $data['equity'];
+                    $misc = $data['misc'];
+                    $status = $data['status'];
+
+                    $newproptype=PropertyType::where('typename',$typename)->where('description',$description)->get();
+
+                    if(count($newproptype)<=0){
+                        $proptype = new PropertyType;
+                        $proptype->typename =$typename;
+                        $proptype->description=$description;
+                        $proptype->equity=$equity;
+                        $proptype->misc=$misc;
+                        $proptype->status=$status;
+                        $proptype->save();
+
+                    }
+                  
+
+                }
+
+             return redirect('/admin-proptype')->with('success','Successfully import property type information to the list. ');
         }
     }
 

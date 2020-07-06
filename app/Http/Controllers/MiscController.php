@@ -10,8 +10,10 @@ use App\Property;
 use App\Buy;
 use App\Misc;
 use App\Pin;
+use Codedge\Fpdf\Fpdf\Fpdf;
 class MiscController extends Controller
 {
+    private $fpdf;
     /**
      * Display a listing of the resource.
      *
@@ -51,6 +53,86 @@ class MiscController extends Controller
      */
     public function show($id)
     {
+        date_default_timezone_set("Asia/Manila");
+        $year =date('Y');
+        $month=date('m');
+        $day=date('d');
+        $hour=date('G');
+        $min=date('i');
+        $sec=date('s');
+
+        $dates=$year."-".$month."-".$day;
+        $times=$hour.":".$min.":".$sec;
+
+        $today = $dates." ".$times;
+        $logo = url('logo/logo.png');
+
+        $misc = Misc::find($id);
+
+
+        $this->fpdf = new Fpdf;
+        $this->fpdf->AddPage('P');
+        $this->fpdf->SetFont('Arial','',12);
+        $this->fpdf->Image($logo,10,10,30);
+        $this->fpdf->Cell(30,5,"",0,0,'L');
+        $this->fpdf->Cell(100,5,"Mount Malarayat Property Development Corporation",0,0,'L');
+        $this->fpdf->Cell(0,5,'',0,1);
+        $this->fpdf->Cell(30,5,"",0,0,'L');
+        $this->fpdf->Cell(100,5,"Address",0,0,'L');
+        $this->fpdf->Cell(0,5,'',0,1);
+        $this->fpdf->Cell(30,5,"",0,0,'L');
+        $this->fpdf->Cell(100,5,"Contact Number:",0,0,'L');
+
+        $this->fpdf->Cell(0,10,'',0,1);
+        $this->fpdf->SetFont('Arial','',14);
+        $this->fpdf->Cell(162,7,"ACKNOWLEDGEMENT RECEIPT",0,0,'C');
+ 
+     
+
+        $this->fpdf->SetFont('Arial','',12);
+        
+        $this->fpdf->Cell(0,10,'',0,1);
+        $this->fpdf->Cell(60,7,'Received the amount of ',0,0,'L');
+      
+        $this->fpdf->Cell(102,7,'Php. '.number_format($misc->payment,2),0,0,'L');
+        $this->fpdf->Cell(0,10,'',0,1);
+          $this->fpdf->SetFont('Arial','',12);
+        $this->fpdf->Cell(60,7,'From  ',0,0,'L');
+      
+        $this->fpdf->Cell(102,7,$misc->client->firstname.' '.$misc->client->lastname,0,0,'L');
+        $this->fpdf->Cell(0,10,'',0,1);
+          $this->fpdf->SetFont('Arial','',12);
+        $this->fpdf->Cell(60,7,'As payment for  ',0,0,'L');
+       
+        $this->fpdf->Cell(102,7,'Block: '.$misc->property->block.' Lot: '.$misc->property->lot,0,0,'L');
+        $this->fpdf->Cell(0,10,'',0,1);
+
+        if($misc->payment_type=="Bank"){
+             $this->fpdf->Cell(162,7,'Payment type: BANK  ',0,0,'L');
+             $this->fpdf->Cell(0,10,'',0,1);
+             $this->fpdf->Cell(60,7,'Bank : '.$misc->bankname,0,0,'L');
+             $this->fpdf->Cell(0,7,'',0,1);
+             $this->fpdf->Cell(60,7,'Branch : '.$misc->branch,0,0,'L');
+             $this->fpdf->Cell(0,7,'',0,1);
+             $this->fpdf->Cell(60,7,'Cheque Number : '.$misc->checknumber,0,0,'L');
+        }else{
+             $this->fpdf->Cell(162,7,'Payment type: '.$misc->payment_type,0,0,'L');
+        }
+        $this->fpdf->Cell(0,10,'',0,1);
+        $this->fpdf->Cell(60,7,'__________________________',0,0,'L');
+        $this->fpdf->Cell(0,5,'',0,1);
+        $this->fpdf->Cell(60,7,'Signature  ',0,0,'L');
+        $this->fpdf->Cell(0,12,'',0,1);
+        $this->fpdf->Cell(162,7,'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ',0,0,'L');
+
+   
+
+       
+
+       
+            
+
+            $this->fpdf->Output();
         
     }
 

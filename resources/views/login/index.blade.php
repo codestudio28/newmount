@@ -39,8 +39,10 @@
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
+                      @include('inc.messages')
                     <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                   </div>
+
                  {{ Form::open(['action' => 'LoginController@store','method'=>'POST'])}}
                         {{ csrf_field() }}
 
