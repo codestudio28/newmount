@@ -30,7 +30,7 @@
                  <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('middlename_title', "Middle Name (Optional)")}}
-        {{Form::text('middlename',$client->middlename,['class'=>'form-control','placeholder'=>'Enter middle name','required'=>true])}}
+        {{Form::text('middlename',$client->middlename,['class'=>'form-control','placeholder'=>'Enter middle name'])}}
                   </div>
                </div>
                  <div class="col-md-12">
@@ -41,8 +41,20 @@
                </div>
                 <div class="col-md-12">
                   <div class="form-group">
+         {{Form::label('lastname_title', "Contract to Sell")}}
+        {{Form::text('cts',$client->cts,['class'=>'form-control','placeholder'=>'Enter contract to sell','required'=>true])}}
+                  </div>
+               </div>
+               <div class="col-md-12">
+                  <div class="form-group">
+         {{Form::label('lastname_title', "Sales Representative")}}
+        {{Form::text('sales_rep',$client->sales_rep,['class'=>'form-control','placeholder'=>'Enter sales representative','required'=>true])}}
+                  </div>
+               </div>
+                <div class="col-md-12">
+                  <div class="form-group">
          {{Form::label('lastname_title', "Contact Number (Optional)")}}
-        {{Form::text('contactnumber',$client->contactnumber,['class'=>'form-control','placeholder'=>'Enter contact number','required'=>true])}}
+        {{Form::text('contactnumber',$client->contactnumber,['class'=>'form-control','placeholder'=>'Enter contact number'])}}
                   </div>
                </div>
                 <div class="col-md-12">

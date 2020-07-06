@@ -20,10 +20,10 @@
                   <thead>
                     <tr>
                       <th style="width:10%;">#</th>
-                      <th style="width:25%;">Name</th>
-                      <th style="width:20%;">Property</th>
-                      <th style="width:20%;">Payment Scheme</th>
-                      <th style="width:25%;"><center>Action</center></th>
+                      <th style="width:20%;">Name</th>
+                      <th style="width:15%;">Property</th>
+                      <th style="width:15%;">Payment Scheme</th>
+                      <th style="width:40%;"><center>Action</center></th>
                     </tr>
                   </thead>
                 
@@ -37,12 +37,18 @@
                       <td>{{$buy->paymentscheme->paymentname}} / {{$buy->paymentscheme->years}} years</td>
                       <td><center>
                         <a class="btn btn-success" href="/admin-misc/{{$buy->id}}/edit" >
-                          Miscellaneous
+                          <i class="fa fa-tag"></i>
                         </a>
                         <a class="btn btn-primary" href="/admin-equity/{{$buy->id}}/edit" >
-                          Equity
+                          <i class="fa fa-filter"></i>
                         </a>
-                        
+                          <a class="btn btn-info" data-toggle="modal" data-target="#completeModal{{$buy->id}}" href="#"
+                        >
+                         <i class="fa fa-check"></i>
+                        </a>
+                         <a class="btn btn-secondary" href="/admin-collection/{{$buy->id}}" >
+                          <i class="fa fa-print"></i>
+                        </a>
                       </center></td>
                     </tr>
                
@@ -57,7 +63,55 @@
           </div>
 
         </div>
-
+ @foreach($buys as $index =>$buy)
+<div class="modal fade" id="completeModal{{$buy->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Payment Complete?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+          {{ Form::open(['action' => ['PropertyCustomController@update',$buy->id],'method'=>'POST'])}}
+         {{ Form::hidden('status', 'CHANGE')}}
+             {{Form::hidden('_method','PUT')}} 
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                     <p>This client is under {{$buy->paymentscheme->paymentname}} / {{$buy->paymentscheme->years}} years. Do you want to change client's payment scheme? </p>
+                </div>
+                 <div class="col-md-12">
+                     {{Form::label('firstname_title', "Choose YES/NO")}}
+                    <select class="form-control" name="transfer">
+                            <option value="NO">NO</option>
+                            <option value="YES">YES</option>
+                    </select>
+                </div>
+                 <div class="col-md-12"  style="margin-top:1em;">
+                     {{Form::label('firstname_title', "If Choose YES, choose payment scheme ")}}
+                    <select class="form-control" name="paymentscheme">
+                        @foreach($paymentscheme as $key =>$pay)
+                          <option value="{{$pay->id}}">{{$pay->paymentname}} / {{$pay->years}}</option>
+                        @endforeach
+                            
+                    </select>
+                </div>
+            </div>
+             
+              
+       </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          
+            
+          {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+ @endforeach 
  
  
 

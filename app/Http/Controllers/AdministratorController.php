@@ -18,9 +18,14 @@ class AdministratorController extends Controller
         if(strlen(session('Data'))<=0){
             return redirect('/');
         }else{
-            $admins = Admin::where('usertype','admin')->where('status','ACTIVE')->get();
+            if(session('Data')[0]->usertype=="superadmin"){
+                 $admins = Admin::where('usertype','admin')->where('status','ACTIVE')->get();
 
-        return view('administrator.index')->with('admins',$admins);
+                return view('administrator.index')->with('admins',$admins);
+            }else{
+                 return redirect('/dashboard');
+            }
+           
         }
        
     }
@@ -32,10 +37,17 @@ class AdministratorController extends Controller
      */
     public function create()
     {
+
         if(strlen(session('Data'))<=0){
             return redirect('/');
         }else{
-             return view('administrator.create');
+             if(session('Data')[0]->usertype=="superadmin"){
+              
+               return view('administrator.create');
+            }else{
+                 return redirect('/dashboard');
+            }
+             
         }
        
     }
@@ -106,11 +118,20 @@ class AdministratorController extends Controller
      */
     public function edit($id)
     {
+
+
+
          if(strlen(session('Data'))<=0){
             return redirect('/');
         }else{
-             $admin = Admin::find($id);
-         return view('administrator.edit')->with('admin',$admin);
+            if(session('Data')[0]->usertype=="superadmin"){
+              
+               $admin = Admin::find($id);
+                return view('administrator.edit')->with('admin',$admin);
+            }else{
+                 return redirect('/dashboard');
+            }
+            
         }
          
     }

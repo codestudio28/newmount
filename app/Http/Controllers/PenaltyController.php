@@ -25,7 +25,12 @@ class PenaltyController extends Controller
         }else{
              $penalty = $penalties[0];
         }
-         return view('admin_penalty.index')->with('penalty',$penalty);
+         if(session('Data')[0]->usertype=="superadmin"){
+               return view('admin_penalty.index')->with('penalty',$penalty);
+            }else{
+                 return redirect('/dashboard');
+        }
+         
         
     }
 

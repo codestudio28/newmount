@@ -18,6 +18,11 @@
   <!-- Custom styles for this template-->
   <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
   
+  <style type="text/css">
+    .button-class{
+      margin-top:2em;
+    }
+  </style>
 </head>
 
 <body id="page-top">
@@ -27,7 +32,7 @@
 
  
     <!-- Sidebar -->
-    @if(session('Data')[0]->usertype=="superadmin")
+   
     <ul  class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
@@ -62,7 +67,8 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="/admin-buy">Buy Property</a>
             <a class="collapse-item" href="/admin-collection">Collections</a>
-            <a class="collapse-item" href="/admin-payable">Account's Payable</a>
+            <a class="collapse-item" href="/admin-voucher">Account's Payable</a>
+            <a class="collapse-item" href="/admin-inhouse">In-House Collections</a>
             <a class="collapse-item" href="/admin-transfer">Transfer Property</a>
           </div>
         </div>
@@ -100,7 +106,7 @@
         </div>
       </li>
      
-
+       @if(session('Data')[0]->usertype=="superadmin")
         <!-- Divider -->
       <hr class="sidebar-divider">
 
@@ -117,7 +123,7 @@
           </div>
         </div>
       </li>
-    
+      @endif
         <!-- Divider -->
       <hr class="sidebar-divider">
 
@@ -135,12 +141,15 @@
              <h6 class="collapse-header">Payment Scheme:</h6>
             <a class="collapse-item" href="/admin-paymentscheme">List of Payment Scheme</a>
             <a class="collapse-item" href="/admin-paymentscheme-removed">Removed Payment Scheme</a>
+              @if(session('Data')[0]->usertype=="superadmin")
              <h6 class="collapse-header">Others:</h6>
             <a class="collapse-item" href="/admin-void">Void Password</a>
             <a class="collapse-item" href="/admin-penalty">Penalty</a>
+            @endif
           </div>
         </div>
       </li>
+         <hr class="sidebar-divider">
      <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSchoolYear" aria-expanded="true" aria-controls="collapsePages">
@@ -149,19 +158,31 @@
         </a>
         <div id="collapseSchoolYear" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="#">Property</a>
-            <a class="collapse-item" href="#">Client</a>
-            <a class="collapse-item" href="#">Payment Type</a>
-            <a class="collapse-item" href="#">Collections</a>
+            <a class="collapse-item" href="/report-property">Property</a>
+            <a class="collapse-item" href="/report-client">Client</a>
+            <a class="collapse-item" href="/report-scheme">Payment Type</a>
+            <a class="collapse-item" href="/report-collection">Collections</a>
+            <a class="collapse-item" href="/report-payable">Account's Payable</a>
+             @if(session('Data')[0]->usertype=="superadmin")
             <a class="collapse-item" href="#">Logs</a>
+            @endif
           </div>
         </div>
       </li>
+         <hr class="sidebar-divider">
       <li class="nav-item active">
         <a class="nav-link" href="/admin-inquiry">
           <i class="fas fa-fw fa-envelope"></i>
           <span>Inquiry</span></a>
       </li>
+         <hr class="sidebar-divider">
+
+        <li class="nav-item active">
+        <a class="nav-link" href="/admin-payee">
+          <i class="fas fa-fw fa-credit-card"></i>
+          <span>Payee</span></a>
+      </li>
+         <hr class="sidebar-divider">
 
        <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCMS" aria-expanded="true" aria-controls="collapsePages">
@@ -175,6 +196,7 @@
             <a class="collapse-item" href="/admin-about">About</a>
         </div>
       </li>
+         <hr class="sidebar-divider">
        <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAccount" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-user"></i>
@@ -212,7 +234,7 @@
       </div>
     </ul>
    
-@endif
+
   
     <!-- End of Sidebar -->
 

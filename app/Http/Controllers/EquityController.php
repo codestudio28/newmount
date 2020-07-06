@@ -81,7 +81,7 @@ class EquityController extends Controller
     {
         $process = $request->input('process');
         if($process=="VOID"){
-             $this->validate($request,[
+            $this->validate($request,[
             'pin'=>'required'
             ]);
             $pins = Pin::all();
@@ -90,73 +90,89 @@ class EquityController extends Controller
 
             $pin_password = $pin->pin;
             if($pin_password==$request->input('pin')){
+                $miscs = Equity::all();
+                $misc = Equity::find($id);
+            
+                $client_id = $misc->client_id;
+                $property_id = $misc->property_id;
+                $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                $buy_id=$buy[0]->id;
+                 $nummisc=Equity::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                $len_misc= count($nummisc);
+
+                $misc_penalty = (($buy[0]->misc_penalty)/100);
+                $lastpenalty =$nummisc[$len_misc-2]->penalty;
+               
+                $last_payment = $misc->payment;
+                $payment_penalty = $last_payment * $misc_penalty;
+                $total_penalty = $payment_penalty +  $lastpenalty;
+
+                $balance = $nummisc[$len_misc-1]->balance;
+
+                $newbalance = $balance+$last_payment;
+
+
+        
+                $misc_id = $nummisc[$len_misc-2]->id;
+                $miscpenalty = Equity::find($misc_id);
+                $miscpenalty->penalty= $total_penalty;
+                $miscpenalty->balance = $newbalance;
+                $miscpenalty->save();
+
+                $misc_void =  Equity::find($id);
+                $misc_void->status="VOID";
+                $misc_void->save();
+                
+                $newbal_id = $nummisc[$len_misc-1]->id;
+                $newbal = Equity::find($newbal_id);
+                $newbal->balance = $newbalance;
+                $newbal->save();
+                $path = "admin-equity/".$buy_id."/edit";
+                return redirect($path)->with('success','Successfully set payment to void.');
+
+
+
+
+            }else{
             $misc = Equity::find($id);
             $miscs = Equity::all();
-            $len_misc=count($miscs);
             $client_id = $misc->client_id;
             $property_id = $misc->property_id;
             $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
             $buy_id=$buy[0]->id;
 
-            $misc_penalty = (($buy[0]->equity_penalty)/100);
-            $lastpenalty =$miscs[$len_misc-2]->penalty;
-            
-            $last_payment = $misc->payment;
-            $payment_penalty = $last_payment * $misc_penalty;
-            $total_penalty = $payment_penalty +  $lastpenalty;
-
-            $balance = $miscs[$len_misc-1]->balance;
-
-            $newbalance = $balance+$last_payment;
-
-            $misc_id = $miscs[$len_misc-2]->id;
-            $miscpenalty = Equity::find($misc_id);
-            $miscpenalty->penalty= $total_penalty;
-            $miscpenalty->balance = $newbalance;
-            $miscpenalty->status = "VOID";
-            $miscpenalty->save();
-           
-            $newbal_id = $miscs[$len_misc-1]->id;
-            $newbal = Equity::find($newbal_id);
-            $newbal->balance = $newbalance;
-            $newbal->save();
-            $path = "admin-equity/".$buy_id."/edit";
-            return redirect($path)->with('success','Successfully set payment to void.'); 
-            }else{
-                 $misc = Equity::find($id);
-            $miscs = Equity::all();
-            $len_misc=count($miscs);
-            $client_id = $misc->client_id;
-            $property_id = $misc->property_id;
-            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-            $buy_id=$buy[0]->id;
-                    $path = "admin-equity/".$buy_id."/edit";
+                $path = "admin-equity/".$buy_id."/edit";
             return redirect($path)->with('error','Wrong pin password.');
             }
+
+           
         }else if($process=="UNPAID"){
             $miscs = Equity::all();
             $misc = Equity::find($id);
+                
             $client_id = $misc->client_id;
-
             $property_id = $misc->property_id;
-
+                
             $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
             $buy_id=$buy[0]->id;
-            $misc_penalty = (($buy[0]->equity_penalty)/100);
-            $len_misc=count($miscs);
-            $balance = $misc->balance;
+            $misc_penalty = (($buy[0]->misc_penalty)/100);
+            $nummisc=Equity::where('client_id',$client_id)->where('property_id',$property_id)->get();
+            $len_misc= count($nummisc);
+            $balance = $nummisc[$len_misc-1]->balance;
             $misc_fee = $misc->equity_fee;
+            $payment = $request->input('payment');
+
             $olddate = $misc->date;
             if($len_misc<=1){
                 $penalty = $misc_fee*$misc_penalty;
             }else{
-                $bal = $miscs[$len_misc-2]->penalty;
-                $bal_penalty = $bal + ($bal*$misc_penalty);
-               
+                $bal = $nummisc[$len_misc-2]->penalty;
+                $bal_penalty =$bal + ($bal*$misc_penalty);
                 $m_penalty = $misc_fee*$misc_penalty;
                 $penalty = $m_penalty + $bal_penalty;
             }
-             date_default_timezone_set("Asia/Manila");
+
+            date_default_timezone_set("Asia/Manila");
             $year =date('Y');
             $month=date('m');
             $day=date('d');
@@ -183,8 +199,7 @@ class EquityController extends Controller
             $newmisc->status="PENDING";
             $newmisc->save();
                $path = "admin-equity/".$buy_id."/edit";
-            return redirect($path)->with('success','Successfully set payment to unpaid.'); 
-
+            return redirect($path)->with('success','Successfully set payment to unpaid.');  
 
 
 
@@ -217,46 +232,48 @@ class EquityController extends Controller
             return redirect($path)->with('error','AR/OR number is already in the system.'); 
         }else{
              if($paymenttype=="Bank"){
-            $miscs = Equity::all();
-            $misc = Equity::find($id);
-            $client_id = $misc->client_id;
-            $property_id = $misc->property_id;
+                 $miscs = Equity::all();
+                $misc = Equity::find($id);
+                
+                $client_id = $misc->client_id;
+                $property_id = $misc->property_id;
+                
+                $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                 $buy_id=$buy[0]->id;
+                $misc_penalty = (($buy[0]->misc_penalty)/100);
+                $nummisc=Equity::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                $len_misc= count($nummisc);
+                $balance = $nummisc[$len_misc-1]->balance;
+                $misc_fee = $misc->equity_fee;
+                $payment = $request->input('payment');
 
-            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-            $buy_id=$buy[0]->id;
-            $misc_penalty = (($buy[0]->equity_penalty)/100);
-            $len_misc=count($miscs);
-            $balance = $misc->balance;
-            $misc_fee = $misc->equity_fee;
-            $payment = $request->input('payment');
-            $olddate = $misc->date;
-            if($misc_fee>$payment){
-                if($len_misc<=1){
-                    $bal = $misc_fee - $payment;
-                    $penalty = $bal *  $misc_penalty;
-                }else{
-                    $oldbal = $miscs[$len_misc-2]->penalty;
-                    $oldbal = $oldbal + ($oldbal*$misc_penalty);
-                    $bal = $misc_fee - $payment;
-                    $bal = $bal*$misc_penalty;
-                    $totalbal = $bal+$oldbal;
-                    $penalty = $totalbal;
-                }
-               
-            }else if($misc_fee==$payment){
-                if($len_misc<=1){
-                    $penalty = 0;
-                }else{
-                    $bal = $miscs[$len_misc-2]->penalty;
-                    $penalty = $bal + ($bal  *  $misc_penalty);
-                }
-               
-            } else if($misc_fee<$payment){
+                $olddate = $misc->date;
+
+                if($misc_fee>$payment){
+                    if($len_misc<=1){
+                        $bal = $misc_fee - $payment;
+                        $penalty = $bal *  $misc_penalty;
+                    }else{
+                        $oldbal = $nummisc[$len_misc-2]->penalty;
+                        $oldbal = $oldbal + ($oldbal*$misc_penalty);
+                        $bal = $misc_fee - $payment;
+                        $bal = $bal*$misc_penalty;
+                        $totalbal = $bal+$oldbal;
+                        $penalty = $totalbal;
+                    }
+                }else if($misc_fee==$payment){
+                    if($len_misc<=1){
+                        $penalty = 0;
+                    }else{
+                        $bal = $nummisc[$len_misc-2]->penalty;
+                        $penalty = $bal + ($bal  *  $misc_penalty);
+                    }
+                }else if($misc_fee<$payment){
                 if($len_misc<=1){
                     $penalty = 0;
                 }else{
                     $balpay = $payment-$misc_fee;
-                    $bal = $miscs[$len_misc-2]->penalty;
+                    $bal = $nummisc[$len_misc-2]->penalty;
                     if($bal<=0){
                         $penalty=0;
                     }else{
@@ -269,77 +286,88 @@ class EquityController extends Controller
                             $penalty=0;
                         }
                     }
+                    }
                 }
-            } 
-            $newbalance = $balance - $payment;
-            $misc->balance = $newbalance;
-            $misc->penalty = $penalty;
-            $misc->payment = $payment;
-            $misc->payment_type = $paymenttype;
-            $misc->aror = $request->input('orar');
-            $misc->checknumber = $request->input('cheque');
-            $misc->bankname = $request->input('bank');
-            $misc->branch = $request->input('branch');
-            $misc->datepaid = $today;
-            $misc->status = "PAID";
-            $misc->save();
 
-            $dt = strtotime($olddate);
-            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-            
-            $newmisc = new Equity;
-            $newmisc->client_id = $client_id;
-            $newmisc->property_id = $property_id;
-            $newmisc->date = $nextdate;
-            $newmisc->balance=$newbalance;
-            $newmisc->equity_fee=$misc_fee;
-            $newmisc->status="PENDING";
-            $newmisc->save();
+                // Saving
+                    $newbalance = $balance - $payment;
+                    $misc->balance = $newbalance;
+                    $misc->penalty = $penalty;
+                    $misc->payment = $payment;
+                    $misc->payment_type = $paymenttype;
+                    $misc->checknumber = $request->input('cheque');
+                    $misc->bankname = $request->input('bank');
+                    $misc->branch = $request->input('branch');
+                    $misc->datepaid = $today;
+                    $misc->aror = $or;
+                    $misc->status = "PAID";
+                    $misc->save();
 
-            $path = "admin-equity/".$buy_id."/edit";
-            return redirect($path)->with('success','Successfully add payment.');
+                    if($newbalance<=0){
+
+                    }else{
+                        $dt = strtotime($olddate);
+                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                        
+                        $newmisc = new Equity;
+                        $newmisc->client_id = $client_id;
+                        $newmisc->property_id = $property_id;
+                        $newmisc->date = $nextdate;
+                        $newmisc->balance=$newbalance;
+                        $newmisc->equity_fee=$misc_fee;
+                        $newmisc->status="PENDING";
+                        $newmisc->save();
+                    }
+
+                   
+
+                // End saving
+                   $path = "admin-equity/".$buy_id."/edit";
+            return redirect($path)->with('success','Successfully add payment.'); 
            
             }else{
-                 $miscs = Equity::all();
-            $misc = Equity::find($id);
-            $client_id = $misc->client_id;
-            $property_id = $misc->property_id;
+                $miscs = Equity::all();
+                $misc = Equity::find($id);
+                
+                $client_id = $misc->client_id;
+                $property_id = $misc->property_id;
+                
+                $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                 $buy_id=$buy[0]->id;
+                $misc_penalty = (($buy[0]->misc_penalty)/100);
+                $nummisc=Equity::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                $len_misc= count($nummisc);
+                $balance = $nummisc[$len_misc-1]->balance;
+                $misc_fee = $misc->equity_fee;
+                $payment = $request->input('payment');
 
-            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-            $buy_id=$buy[0]->id;
-            $misc_penalty = (($buy[0]->equity_penalty)/100);
-            $len_misc=count($miscs);
-            $balance = $misc->balance;
-            $misc_fee = $misc->equity_fee;
-            $payment = $request->input('payment');
-            $olddate = $misc->date;
-            if($misc_fee>$payment){
-                if($len_misc<=1){
-                    $bal = $misc_fee - $payment;
-                    $penalty = $bal *  $misc_penalty;
-                }else{
-                    $oldbal = $miscs[$len_misc-2]->penalty;
-                    $oldbal = $oldbal + ($oldbal*$misc_penalty);
-                    $bal = $misc_fee - $payment;
-                    $bal = $bal*$misc_penalty;
-                    $totalbal = $bal+$oldbal;
-                    $penalty = $totalbal;
-                }
-               
-            }else if($misc_fee==$payment){
-                if($len_misc<=1){
-                    $penalty = 0;
-                }else{
-                    $bal = $miscs[$len_misc-2]->penalty;
-                    $penalty = $bal + ($bal  *  $misc_penalty);
-                }
-               
-            } else if($misc_fee<$payment){
+                $olddate = $misc->date;
+
+                if($misc_fee>$payment){
+                    if($len_misc<=1){
+                        $bal = $misc_fee - $payment;
+                        $penalty = $bal *  $misc_penalty;
+                    }else{
+                        $oldbal = $nummisc[$len_misc-2]->penalty;
+                        $oldbal = $oldbal + ($oldbal*$misc_penalty);
+                        $bal = $misc_fee - $payment;
+                        $bal = $bal*$misc_penalty;
+                        $totalbal = $bal+$oldbal;
+                        $penalty = $totalbal;
+                    }
+                }else if($misc_fee==$payment){
+                    if($len_misc<=1){
+                        $penalty = 0;
+                    }else{
+                        $bal = $nummisc[$len_misc-2]->penalty;
+                        $penalty = $bal + ($bal  *  $misc_penalty);
+                    }
+                }else if($misc_fee<$payment){
                 if($len_misc<=1){
                     $penalty = 0;
                 }else{
                     $balpay = $payment-$misc_fee;
-                    $bal = $miscs[$len_misc-2]->penalty;
+                    $bal = $nummisc[$len_misc-2]->penalty;
                     if($bal<=0){
                         $penalty=0;
                     }else{
@@ -354,29 +382,39 @@ class EquityController extends Controller
                     }
                     }
                 }
-            $newbalance = $balance - $payment;
-            $misc->balance = $newbalance;
-            $misc->penalty = $penalty;
-            $misc->payment = $payment;
-            $misc->payment_type = $paymenttype;
-            $misc->datepaid = $today;
-            $misc->status = "PAID";
-            $misc->save();
 
-            $dt = strtotime($olddate);
-            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-            
-            $newmisc = new Equity;
-            $newmisc->client_id = $client_id;
-            $newmisc->property_id = $property_id;
-            $newmisc->date = $nextdate;
-            $newmisc->balance=$newbalance;
-            $newmisc->equity_fee=$misc_fee;
-            $newmisc->status="PENDING";
-            $newmisc->save();
+                // Saving
+                    $newbalance = $balance - $payment;
+                    $misc->balance = $newbalance;
+                    $misc->penalty = $penalty;
+                    $misc->payment = $payment;
+                    $misc->payment_type = $paymenttype;
+                    $misc->datepaid = $today;
+                    $misc->status = "PAID";
+                    $misc->aror = $or;
+                    $misc->save();
 
-            $path = "admin-equity/".$buy_id."/edit";
+                    if($newbalance<=0){
+
+                    }else{
+                        $dt = strtotime($olddate);
+                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                        
+                        $newmisc = new Equity;
+                        $newmisc->client_id = $client_id;
+                        $newmisc->property_id = $property_id;
+                        $newmisc->date = $nextdate;
+                        $newmisc->balance=$newbalance;
+                        $newmisc->equity_fee=$misc_fee;
+                        $newmisc->status="PENDING";
+                        $newmisc->save();
+                    }
+                 
+
+                // End saving
+                   $path = "admin-equity/".$buy_id."/edit";
             return redirect($path)->with('success','Successfully add payment.'); 
+            
             }
         }
         }

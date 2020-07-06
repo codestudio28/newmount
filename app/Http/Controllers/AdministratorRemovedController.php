@@ -15,11 +15,17 @@ class AdministratorRemovedController extends Controller
      */
     public function index()
     {
+
          if(strlen(session('Data'))<=0){
             return redirect('/');
         }else{
+            if(session('Data')[0]->usertype=="superadmin"){
                 $admins = Admin::where('usertype','admin')->where('status','REMOVED')->get();
         return view('administrator_removed.index')->with('admins',$admins);
+            }else{
+                 return redirect('/dashboard');
+            }
+               
         }
       
     }

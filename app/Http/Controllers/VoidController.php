@@ -25,7 +25,12 @@ class VoidController extends Controller
         }else{
              $pin = $pins[0];
         }
-         return view('admin_pin.index')->with('pin',$pin);
+        if(session('Data')[0]->usertype=="superadmin"){
+                return view('admin_pin.index')->with('pin',$pin);
+            }else{
+                 return redirect('/dashboard');
+        }
+         
     }
 
     /**

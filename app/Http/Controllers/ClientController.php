@@ -54,6 +54,8 @@ class ClientController extends Controller
             'barangay'=>'required',
             'city'=>'required',
             'province'=>'required',
+            'cts'=>'required',
+            'sales_rep'=>'required',
         ]);
 
        
@@ -77,6 +79,8 @@ class ClientController extends Controller
         $client->barangay = $request->input('barangay');
         $client->city = $request->input('city');
         $client->province = $request->input('province');
+        $client->cts = $request->input('cts');
+        $client->sales_rep = $request->input('sales_rep');
         $client->status = $status;
         $client->save();
         return redirect('/admin-client')->with('success','New client successfully added');
@@ -126,6 +130,8 @@ class ClientController extends Controller
             'barangay'=>'required',
             'city'=>'required',
             'province'=>'required',
+             'cts'=>'required',
+            'sales_rep'=>'required',
         ]);
 
        
@@ -154,6 +160,8 @@ class ClientController extends Controller
         $client->barangay = $request->input('barangay');
         $client->city = $request->input('city');
         $client->province = $request->input('province');
+        $client->cts = $request->input('cts');
+        $client->sales_rep = $request->input('sales_rep');
         $client->save();
         return redirect('/admin-client')->with('success','Client information successfully updated');
     }

@@ -5,7 +5,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-          <h5 class="h5 mb-2 text-gray-800"><a href="/admin">Client</a> / Add New Client</h5>
+          <h5 class="h5 mb-2 text-gray-800"><a href="/admin-client">Client</a> / Add New Client</h5>
        
         
         </div>
@@ -30,7 +30,7 @@
                  <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('middlename_title', "Middle Name (Optional)")}}
-        {{Form::text('middlename','',['class'=>'form-control','placeholder'=>'Enter middle name','required'=>true])}}
+        {{Form::text('middlename','',['class'=>'form-control','placeholder'=>'Enter middle name'])}}
                   </div>
                </div>
                  <div class="col-md-12">
@@ -39,10 +39,22 @@
         {{Form::text('lastname','',['class'=>'form-control','placeholder'=>'Enter last name','required'=>true])}}
                   </div>
                </div>
+               <div class="col-md-12">
+                  <div class="form-group">
+         {{Form::label('lastname_title', "Contract to Sell")}}
+        {{Form::text('cts','',['class'=>'form-control','placeholder'=>'Enter contract to sell','required'=>true])}}
+                  </div>
+               </div>
+               <div class="col-md-12">
+                  <div class="form-group">
+         {{Form::label('lastname_title', "Sales Representative")}}
+        {{Form::text('sales_rep','',['class'=>'form-control','placeholder'=>'Enter sales representative','required'=>true])}}
+                  </div>
+               </div>
                 <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('lastname_title', "Contact Number (Optional)")}}
-        {{Form::text('contactnumber','',['class'=>'form-control','placeholder'=>'Enter contact number','required'=>true])}}
+        {{Form::text('contactnumber','',['class'=>'form-control','placeholder'=>'Enter contact number'])}}
                   </div>
                </div>
                 <div class="col-md-12">

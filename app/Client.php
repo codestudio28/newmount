@@ -9,4 +9,13 @@ class Client extends Model
      public function buy(){
     	return $this->hasMany('App\Buy');
     }
+     public function misc(){
+    	return $this->hasMany('App\Misc');
+    }
+    public function equity(){
+    	return $this->hasMany('App\Equity');
+    }
+    public function inhouse(){
+    	return $this->hasMany('App\Inhouse');
+    }
 }

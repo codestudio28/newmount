@@ -31,7 +31,7 @@
                  <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('middlename_title', "Percentage")}}
-        {{Form::number('percentage','',['class'=>'form-control','placeholder'=>'Enter percentage','required'=>true,'step'=>'0.00000001'])}}
+        {{Form::text('percentage','',['class'=>'form-control','placeholder'=>'Enter percentage','required'=>true])}}
                   </div>
                </div>
                  <div class="col-md-12">
