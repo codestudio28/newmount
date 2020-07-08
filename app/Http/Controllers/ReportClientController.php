@@ -39,15 +39,17 @@ class ReportClientController extends Controller
           
         }
        
+
+
         $filtered = session('filtered');
         $records = session('records');
         $search = session('search');
         $filters = array("ALL", "LAST NAME", "FIRST NAME", "CLIENT TYPE");
         $display = array("1", "5", "10", "50", "100", "500");
-
-
-        $buys = Buy::orderBy('id','desc')->get();
+         $buys = Buy::orderBy('id','desc')->get();
         $count= count($buys);
+
+
     
         $client=array();
         $property=array();
@@ -59,18 +61,28 @@ class ReportClientController extends Controller
         $misc_pen=array();
         $m=0;
         $e=0;
+
         foreach ($buys as $key => $buy) {
             $misc_count = count($buy->property->misc);
             $equity_count = count($buy->property->equity);
-          
+           
             array_push($client,$buy->client->firstname." ".$buy->client->lastname);
             array_push($property,"Block: ".$buy->property->block." Lot: ".$buy->property->lot);
-            array_push($tcp,"Php. ".number_format($buy->tcp,2));
-            array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
-            array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-             array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-            array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
-            foreach ($buy->property->misc as $key => $misc) {
+             array_push($tcp,"Php. ".number_format($buy->tcp,2));
+              array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
+               array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
+             if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }   
+              foreach ($buy->property->misc as $key => $misc) {
                 if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                     $m=1;
                 }
@@ -87,10 +99,10 @@ class ReportClientController extends Controller
             }
 
 
+            
         }
-      
-        $buys = Buy::orderBy('id','desc')->paginate($records);
-        
+           $buys = Buy::orderBy('id','desc')->paginate($records);
+   
          return view('report.client')
          ->with('buys',$buys)
          ->with('client',$client)
@@ -163,8 +175,17 @@ class ReportClientController extends Controller
                 array_push($tcp,"Php. ".number_format($buy->tcp,2));
                 array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                 array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
+                 if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
                  array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             } 
                 foreach ($buy->property->misc as $key => $misc) {
                     if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                         $m=1;
@@ -206,8 +227,21 @@ class ReportClientController extends Controller
                     array_push($tcp,"Php. ".number_format($buy->tcp,2));
                     array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                     array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                     array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                    array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                   if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }       
+
+
+
+
                     foreach ($buy->property->misc as $key => $misc) {
                         if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                             $m=1;
@@ -251,8 +285,18 @@ class ReportClientController extends Controller
                     array_push($tcp,"Php. ".number_format($buy->tcp,2));
                     array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                     array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                     array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                    array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                     if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
+                    
                     foreach ($buy->property->misc as $key => $misc) {
                         if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                             $m=1;
@@ -308,8 +352,17 @@ class ReportClientController extends Controller
                             array_push($tcp,"Php. ".number_format($buy->tcp,2));
                             array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                             array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                             array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                            array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                          if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
                     
                         }
                        
@@ -321,8 +374,17 @@ class ReportClientController extends Controller
                             array_push($tcp,"Php. ".number_format($buy->tcp,2));
                             array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                             array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                             array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                            array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                            if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
                     
                         }
                     }
@@ -387,13 +449,22 @@ class ReportClientController extends Controller
                 array_push($tcp,"Php. ".number_format($buy->tcp,2));
                 array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                 array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+                     }else{
+                         array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                     }
+                       
+                     if($equity_count<=1){
+                         array_push($equity_pen,"Php. ".number_format('0',2));
+                     }else{
+                         array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+                    }  
                 $total_tcp=$total_tcp+$buy->tcp;
                 $total_equity_bal=$total_equity_bal+$buy->property->equity[$equity_count-1]->balance;
                 $total_misc_bal=$total_misc_bal+$buy->property->misc[$misc_count-1]->balance;
-                $total_equity_pen=$total_equity_pen+$buy->property->equity[$equity_count-2]->penalty;
-                $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
+                $total_equity_pen=$total_equity_pen+0;
+                $total_misc_pen=$total_misc_pen+0;
                 foreach ($buy->property->misc as $key => $misc) {
                     if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                         $m=1;
@@ -440,8 +511,17 @@ class ReportClientController extends Controller
                     array_push($tcp,"Php. ".number_format($buy->tcp,2));
                     array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                     array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                     array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                    array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                     if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
                     foreach ($buy->property->misc as $key => $misc) {
                         if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                             $m=1;
@@ -490,8 +570,17 @@ class ReportClientController extends Controller
                     array_push($tcp,"Php. ".number_format($buy->tcp,2));
                     array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                     array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                     array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                    array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                    if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
                     foreach ($buy->property->misc as $key => $misc) {
                         if(($misc->status=="VOID")||($misc->status=="UNPAID")){
                             $m=1;
@@ -552,8 +641,17 @@ class ReportClientController extends Controller
                             array_push($tcp,"Php. ".number_format($buy->tcp,2));
                             array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                             array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                             array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                            array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                             if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
                     
                         }
                        
@@ -570,8 +668,17 @@ class ReportClientController extends Controller
                             array_push($tcp,"Php. ".number_format($buy->tcp,2));
                             array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                             array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                             array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                            array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                            if($misc_count<=1){
+                  array_push($misc_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+             }
+               
+             if($equity_count<=1){
+                 array_push($equity_pen,"Php. ".number_format('0',2));
+             }else{
+                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+             }  
                     
                         }
                     }

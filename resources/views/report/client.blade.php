@@ -89,39 +89,19 @@
                       $c=0;
                       $cpush=array();
                     @endphp
-                    @if($filtered=="ALL")
-                       @foreach($client as $key=>$cl)
+                   @foreach($client as $key=>$cl)
                         <tr>
                           <td>{{$key+1}}</td>
                           <td>{{$client[$key]}}</td>
-                          <td>{{$property[$key]}}</td>
-                          <td>{{$tcp[$key]}}</td>
-                          <td>{{$equity_bal[$key]}}</td>
-                          <td>{{$misc_bal[$key]}}</td>
-                          <td>{{$equity_pen[$key]}}</td>
+                           <td>{{$property[$key]}}</td>
+                            <td>{{$tcp[$key]}}</td>
+                             <td>{{$equity_bal[$key]}}</td>
+                             <td>{{$misc_bal[$key]}}</td>
+                              <td>{{$equity_pen[$key]}}</td>
                           <td>{{$misc_pen[$key]}}</td>
                           <td>{{$status[$key]}}</td>
-                          
                         </tr>
                       @endforeach
-                    @else
-                  
-                        @foreach($client as $key=>$cl)
-                       
-                           <tr>
-                            <td>{{$key+1}}</td>
-                            <td>{{$client[$key]}}</td>
-                            <td>{{$property[$key]}}</td>
-                            <td>{{$tcp[$key]}}</td>
-                            <td>{{$equity_bal[$key]}}</td>
-                            <td>{{$misc_bal[$key]}}</td>
-                            <td>{{$equity_pen[$key]}}</td>
-                            <td>{{$misc_pen[$key]}}</td>
-                            <td>{{$status[$key]}}</td>
-                          </tr>
-                        
-                      @endforeach
-                    @endif
                    
                     
                    

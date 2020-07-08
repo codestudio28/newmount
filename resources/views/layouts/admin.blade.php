@@ -69,7 +69,7 @@
             <a class="collapse-item" href="/admin-collection">Collections</a>
             <a class="collapse-item" href="/admin-voucher">Account's Payable</a>
             <a class="collapse-item" href="/admin-inhouse">In-House Collections</a>
-            <!-- <a class="collapse-item" href="/admin-transfer">Transfer Property</a> -->
+            <a class="collapse-item" href="/admin-transfer">Transfer Property</a>
           </div>
         </div>
       </li>
