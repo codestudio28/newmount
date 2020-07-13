@@ -85,7 +85,8 @@ class MiscController extends Controller
 
         $this->fpdf->Cell(0,10,'',0,1);
         $this->fpdf->SetFont('Arial','',14);
-        $this->fpdf->Cell(162,7,"ACKNOWLEDGEMENT RECEIPT",0,0,'C');
+        $this->fpdf->Cell(142,7,"ACKNOWLEDGEMENT RECEIPT",0,0,'C');
+         $this->fpdf->Cell(50,7,'#'.$misc->aror,0,0,'R');
  
      
 
