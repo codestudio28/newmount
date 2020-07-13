@@ -381,8 +381,8 @@ class MiscController extends Controller
                     $misc->checknumber = $request->input('cheque');
                     $misc->bankname = $request->input('bank');
                     $misc->branch = $request->input('branch');
-                    $misc->datepaid = $today;
-                    $misc->aror = $or;
+                    $misc->datepaid = $request->input('paymentdate');
+                    $misc->aror =$request->input('orar');
                     $misc->status = "PAID";
                     $misc->save();
 
@@ -471,8 +471,8 @@ class MiscController extends Controller
                     $misc->penalty = $penalty;
                     $misc->payment = $payment;
                     $misc->payment_type = $paymenttype;
-                    $misc->datepaid = $today;
-                    $misc->aror = $or;
+                    $misc->datepaid = $request->input('paymentdate');
+                    $misc->aror =$request->input('orar');
                     $misc->status = "PAID";
                     $misc->save();
 

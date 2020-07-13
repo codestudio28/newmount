@@ -298,7 +298,7 @@ class EquityController extends Controller
                     $misc->checknumber = $request->input('cheque');
                     $misc->bankname = $request->input('bank');
                     $misc->branch = $request->input('branch');
-                    $misc->datepaid = $today;
+                     $misc->datepaid = $request->input('paymentdate');
                     $misc->aror = $or;
                     $misc->status = "PAID";
                     $misc->save();
@@ -389,7 +389,7 @@ class EquityController extends Controller
                     $misc->penalty = $penalty;
                     $misc->payment = $payment;
                     $misc->payment_type = $paymenttype;
-                    $misc->datepaid = $today;
+                    $misc->datepaid = $request->input('paymentdate');
                     $misc->status = "PAID";
                     $misc->aror = $or;
                     $misc->save();

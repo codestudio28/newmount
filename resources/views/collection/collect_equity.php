@@ -149,6 +149,12 @@
     
             </div>
               </div>
+                 <div class="col-md-12">
+                <div class="form-group">
+         {{Form::label('firstname_title', "Payment Date")}}
+        {{Form::date('paymentdate','',['class'=>'form-control','placeholder'=>'Enter payment date','required'=>true])}}
+                  </div>
+               </div>
                <div class="col-md-12">
                 <div class="form-group">
          {{Form::label('firstname_title', "Payment")}}
