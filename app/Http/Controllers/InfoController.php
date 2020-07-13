@@ -104,8 +104,8 @@ class InfoController extends Controller
 
         $admin = Admin::find($id);
         $admin->firstname=$request->input('firstname');
-        $admin->middlename==$request->input('middlename');
-        $admin->lastname==$request->input('lastname');
+        $admin->middlename=$request->input('middlename');
+        $admin->lastname=$request->input('lastname');
         if($request->hasFile('personal_photo')){
             $admin->profile=$fileNameToStore;
         }
