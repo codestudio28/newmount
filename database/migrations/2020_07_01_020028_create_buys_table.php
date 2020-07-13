@@ -16,7 +16,7 @@ class CreateBuysTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('client_id');
             $table->bigInteger('property_id');
-            $table->bigInteger('paymentscheme_id');
+            $table->bigInteger('    paymentscheme_id');
             $table->string('tcp',100);
             $table->string('loanable',100);
             $table->string('totalequity',100);
