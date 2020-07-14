@@ -162,12 +162,19 @@
     
             </div>
               </div>
+              <div class="col-md-12">
+                <div class="form-group">
+         {{Form::label('firstname_title', "Payment Date")}}
+        {{Form::date('paymentdate','',['class'=>'form-control','placeholder'=>'Enter payment date','required'=>true])}}
+                  </div>
+               </div>
                <div class="col-md-12">
                 <div class="form-group">
          {{Form::label('firstname_title', "Payment")}}
         {{Form::number('payment','',['class'=>'form-control','placeholder'=>'Enter payment','required'=>true,'step'=>'0.00001'])}}
                   </div>
                </div>
+
                 <div class="col-md-12">
                 <div class="form-group">
          {{Form::label('firstname_title', "O.R. / A.R")}}
