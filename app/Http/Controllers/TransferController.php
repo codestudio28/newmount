@@ -65,11 +65,11 @@ class TransferController extends Controller
          if(count($buy)<=0){
 
             $transfers = Transfer::where('property_id',$property_id)->orderBy('id')->get();
-            return $transfers;
+
             if(count($transfers)<=0){
 
                 $transferscts = Transfer::where('cts',$cts)->get();
-                return $transferscts;
+                return $transferscts.'/'.$property_id;
                 if(count($transferscts)<=0){
                     $buys = Buy::where('property_id',$property_id)->first();
                     $buysid=$buys->id;
