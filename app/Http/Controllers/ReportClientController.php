@@ -458,13 +458,13 @@ class ReportClientController extends Controller
                          array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                            $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
                      }
-                       return $equity_count;
+                      
                      if($equity_count<=1){
                          array_push($equity_pen,0);
                           $total_equity_pen=$total_equity_pen+0;
                      }else{
                          array_push($equity_pen,$buy->property->equity[$equity_count-1]->penalty);
-                         return $buy->property->equity[$equity_count-1]->penalty;
+                         echo  $buy->property->equity[$equity_count-1]->penalty.' / ';
                           $total_equity_pen=$total_equity_pen+$buy->property->equity[$equity_count-1]->penalty;
                     }  
                 $total_tcp=$total_tcp+$buy->tcp;
@@ -490,6 +490,7 @@ class ReportClientController extends Controller
 
 
             }
+            return "0";
         }else if($filtered=="LAST NAME"){
             $buys = Buy::orderBy('id','desc')->get();
             $count= count($buys);  
