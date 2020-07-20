@@ -66,10 +66,10 @@ class TransferController extends Controller
 
             $transfers = Transfer::where('property_id',$property_id)->orderBy('id')->get();
 
-            if(count($transfers)<=0){
+            if(count($transfers)>0){
 
                 $transferscts = Transfer::where('cts',$cts)->get();
-                return $transferscts.'/'.$property_id;
+               
                 if(count($transferscts)<=0){
                     $buys = Buy::where('property_id',$property_id)->first();
                     $buysid=$buys->id;
@@ -117,7 +117,48 @@ class TransferController extends Controller
 
                  return redirect('admin-transfer')->with('success','Successfully transfer property.');
             }else{
-                return redirect('admin-transfer')->with('error','CTS already in used.');
+                $buysid=$buys->id;
+                    $buy = Buy::find($buysid);
+                    $oldclient_id = $buy->client_id;
+                   
+                    $buy->client_id=$client_id;
+                    $buy->cts=$cts;
+                    $buy->save();
+
+                    $miscs = Misc::where('property_id',$property_id)->get();
+                    $equities = Equity::where('property_id',$property_id)->get();
+                    
+                    foreach ($miscs as $key => $misc) {
+                        $newmisc = Misc::find($misc->id);
+                        $newmisc->client_id=$client_id;
+                        $newmisc->save();
+                    }
+                    foreach ($equities as $key => $equity) {
+                        $newmisc = Equity::find($equity->id);
+                        $newmisc->client_id=$client_id;
+                        $newmisc->save();
+                    }
+
+                    $inhouses = Inhouse::where('property_id',$property_id)->get();
+
+                    if(count($inhouses)>0){
+                        foreach ($inhouses as $key => $inhouse) {
+                            $newinhouse = Inhouse::find($inhouse->id);
+                            $newinhouse->client_id=$client_id;
+                            $newinhouse->cts=$cts;
+                            $newinhouse->save();
+                            
+                        }
+                    }
+
+                    $newtransfer = new Transfer;
+                    $newtransfer->property_id=$property_id;
+                    $newtransfer->oldclient_id =$oldclient_id;
+                    $newtransfer->newclient_id = $client_id;
+                    $newtransfer->cts = $cts;
+                    $newtransfer->status = "TRANSFER";
+                    $newtransfer->save();
+                    }
             }
 
 
