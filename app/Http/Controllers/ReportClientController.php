@@ -517,8 +517,8 @@ class ReportClientController extends Controller
                     array_push($tcp,"Php. ".number_format($buy->tcp,2));
                     array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                     array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
-                     if($misc_count<=1){
-                  ar if($misc_count<=1){
+                   
+                  if($misc_count<=1){
                   array_push($misc_pen,'0');
                     $total_misc_pen=$total_misc_pen+0;
                      }else{
