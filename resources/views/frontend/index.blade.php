@@ -54,8 +54,9 @@
         </div>
         <div id="property-carousel" class="owl-carousel owl-theme">
           <!-- Start -->
-
+          {{count($listings)}}
           @foreach($listings as $key=>$listing)
+
           @if($listing->status=="LATEST")
           <div class="carousel-item-b">
             <div class="card-box-a card-shadow">

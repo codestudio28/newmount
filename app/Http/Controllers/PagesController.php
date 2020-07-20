@@ -28,7 +28,6 @@ class PagesController extends Controller
         
         $banners = Banner::where('status','PUBLISHED')->get();
         $listings = Listings::orWhere('status','PUBLISHED')->orWhere('status','LATEST')->get();
-        return $listings;
     // return view('pages.index',compact('title'));
     return view('frontend.index')->with('banners',$banners)->with('listings',$listings);
         
