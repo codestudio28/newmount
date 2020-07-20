@@ -170,7 +170,7 @@ class PropertyCustomController extends Controller
           if(count($miscs)<=0){
             $totalmisc =$to_misc;
           }else{
-            $totalmisc =$mics[0]->balance;
+            $totalmisc =$miscs[0]->balance;
           }
           
       
