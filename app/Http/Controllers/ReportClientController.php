@@ -72,17 +72,17 @@ class ReportClientController extends Controller
               array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
                array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
              if($misc_count<=1){
-                  array_push($misc_pen,"Php. ".number_format(0,2));
+                  array_push($misc_pen,'0');
              }else{
-                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                 array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
              }
               
              if($equity_count<=1){
-                 array_push($equity_pen,"Php. ".number_format(0,2));
+                 array_push($equity_pen,'0');
              }else{
                 // return $buy->property->equity[$equity_count-2]->penalty;
-                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-                
+                 array_push($equity_pen,$buy->property->equity[$equity_count-2]->penalty);
+
              }   
               foreach ($buy->property->misc as $key => $misc) {
                 if(($misc->status=="VOID")||($misc->status=="UNPAID")){
