@@ -59,6 +59,7 @@ class TransferController extends Controller
          $property_id = $request->input('property');
          $cts = $request->input('cts');
 
+         return $cts;
 
          $buy = Buy::where('cts',$cts)->get();
          if(count($buy)<=0){
