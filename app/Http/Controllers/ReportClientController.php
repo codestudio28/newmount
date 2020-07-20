@@ -455,7 +455,7 @@ class ReportClientController extends Controller
                   array_push($misc_pen,'0');
                     $total_misc_pen=$total_misc_pen+0;
                      }else{
-                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty));
+                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                            $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
                      }
                        
@@ -522,7 +522,7 @@ class ReportClientController extends Controller
                   array_push($misc_pen,'0');
                     $total_misc_pen=$total_misc_pen+0;
                      }else{
-                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty));
+                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                            $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
                      }
                        
@@ -584,7 +584,7 @@ class ReportClientController extends Controller
                   array_push($misc_pen,'0');
                     $total_misc_pen=$total_misc_pen+0;
                      }else{
-                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty));
+                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                            $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
                      }
                        
@@ -658,7 +658,7 @@ class ReportClientController extends Controller
                   array_push($misc_pen,'0');
                     $total_misc_pen=$total_misc_pen+0;
                      }else{
-                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty));
+                         array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                            $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
                      }
                        
@@ -688,7 +688,7 @@ class ReportClientController extends Controller
                   array_push($misc_pen,'0');
                   $total_misc_pen=$total_misc_pen+0;
              }else{
-                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
+                 array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                  $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
              }
                
@@ -696,7 +696,7 @@ class ReportClientController extends Controller
                  array_push($equity_pen,'0');
                   $total_equity_pen=$total_equity_pen+0;
              }else{
-                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+                 array_push($equity_pen,$buy->property->equity[$equity_count-2]->penalty);
                   $total_equity_pen=$total_equity_pen+$buy->property->equity[$equity_count-2]->penalty;
              }  
                     
