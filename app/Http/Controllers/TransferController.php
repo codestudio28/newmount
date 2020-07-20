@@ -117,7 +117,8 @@ class TransferController extends Controller
 
                  return redirect('admin-transfer')->with('success','Successfully transfer property.');
             }else{
-                $buysid=$buys->id;
+                $buys = Buy::where('property_id',$property_id)->first();
+                    $buysid=$buys->id;
                     $buy = Buy::find($buysid);
                     $oldclient_id = $buy->client_id;
                    
@@ -158,7 +159,6 @@ class TransferController extends Controller
                     $newtransfer->cts = $cts;
                     $newtransfer->status = "TRANSFER";
                     $newtransfer->save();
-                    }
             }
 
 
