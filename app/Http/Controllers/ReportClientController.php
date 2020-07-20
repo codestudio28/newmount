@@ -458,7 +458,7 @@ class ReportClientController extends Controller
                          array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
                            $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
                      }
-                       
+                       return $equity_count;
                      if($equity_count<=1){
                          array_push($equity_pen,0);
                           $total_equity_pen=$total_equity_pen+0;
