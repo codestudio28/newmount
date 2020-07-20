@@ -56,7 +56,7 @@
           <!-- Start -->
           {{count($listings)}}
           @foreach($listings as $key=>$listing)
-
+          {{$listing->status}}
           @if($listing->status=="LATEST")
           <div class="carousel-item-b">
             <div class="card-box-a card-shadow">
