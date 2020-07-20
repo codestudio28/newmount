@@ -453,23 +453,21 @@ class ReportClientController extends Controller
                 array_push($misc_bal,"Php. ".number_format($buy->property->misc[$misc_count-1]->balance,2));
                 if($misc_count<=1){
                   array_push($misc_pen,0);
-                    $total_misc_pen=$total_misc_pen+0;
+                   
                      }else{
                          array_push($misc_pen,$buy->property->misc[$misc_count-2]->penalty);
-                           $total_misc_pen=$total_misc_pen+$buy->property->misc[$misc_count-2]->penalty;
+                          
                      }
                       
                      if($equity_count<=1){
                          array_push($equity_pen,0);
-                          $total_equity_pen=$total_equity_pen+0;
+                         
                      }else{
-                         array_push($equity_pen,$buy->property->equity[$equity_count-1]->penalty);
-                         echo  $buy->property->equity[$equity_count-1]->penalty.' / ';
-                          $total_equity_pen=$total_equity_pen+$buy->property->equity[$equity_count-1]->penalty;
+                         array_push($equity_pen,$buy->property->equity[$equity_count-2]->penalty);
+                        
+                          
                     }  
-                $total_tcp=$total_tcp+$buy->tcp;
-                $total_equity_bal=$total_equity_bal+$buy->property->equity[$equity_count-1]->balance;
-                $total_misc_bal=$total_misc_bal+$buy->property->misc[$misc_count-1]->balance;
+             
                
               
                 foreach ($buy->property->misc as $key => $misc) {
