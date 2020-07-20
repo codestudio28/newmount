@@ -165,7 +165,7 @@ class PropertyCustomController extends Controller
 
          
           $miscs = Misc::where('client_id',$client_id)->where('property_id',$property_id)
-          ->where('status','PAID')->orderBy('id','desc')->first();
+          ->where('status','PAID')->orderBy('id','desc')->get();
 
           if(count($miscs)<=0){
             $totalmisc =$to_misc;
