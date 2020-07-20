@@ -238,7 +238,12 @@ class ReportPayableController extends Controller
             $this->fpdf->Cell(0,7,'',0,1);
             $this->fpdf->Cell(11.16,7,$key+1,1,0,'C');
             $this->fpdf->Cell(20,7,$voucher->dates,1,0,'C');
-            $this->fpdf->Cell(30.8,7,$voucher->payee->payee_name,1,0,'C');
+            if(strlen($voucher->payee->payee_name)>=20){
+                 $this->fpdf->Cell(30.8,7,substr($voucher->payee->payee_name,0,20).'...',1,0,'C');
+            }else{
+                 $this->fpdf->Cell(30.8,7,$voucher->payee->payee_name,1,0,'C');
+            }
+           
             $this->fpdf->Cell(32.9,7,$voucher->cv,1,0,'C');
             $this->fpdf->Cell(33.48,7,$voucher->bank,1,0,'C');
             $this->fpdf->Cell(33.48,7,$voucher->terms,1,0,'C');

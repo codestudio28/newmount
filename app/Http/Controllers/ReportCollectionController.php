@@ -197,9 +197,10 @@ class ReportCollectionController extends Controller
         $filters = array("ALL", "LAST NAME", "FIRST NAME", "BLOCK","LOT");
         $display = array("1", "5", "10", "50", "100", "500");
          if($filtered=="ALL"){
-                $miscs = Misc::where("status",'PAID')->orderBy('id','desc')->take($records)->get();
+
+               $miscs = Misc::where("status",'PAID')->orderBy('id','desc')->get();
                 $count= count($miscs);
-                $equities = Equity::where("status",'PAID')->orderBy('id','desc')->take($records)->get();
+                $equities = Equity::where("status",'PAID')->orderBy('id','desc')->get();
                 $count1= count($equities);
                 $client_misc=array();
                 $client_equity=array();
@@ -221,42 +222,48 @@ class ReportCollectionController extends Controller
                 $equity_payment=array();
                 $equity_pen=array();
                 $misc_pen=array();
-
                 $misc_pay=array();
                 $equity_pay=array();
                 $m=0;
                 $e=0;
-                    $misc_counter=1;
+                $misc_counter=1;
                 $equity_counter=1;
                 foreach ($miscs as $key => $mic) {
                     if(($dateto>=$mic->date)&&($datefrom<=$mic->date)){
-                         if($misc_counter<=$records){
-                    array_push($client_misc,$mic->client->firstname." ".$mic->client->lastname);
-                    array_push($prop_misc,$mic->property->id);
-                    array_push($misc_block,$mic->property->block);
-                    array_push($misc_due,$mic->date);
-                    array_push($misc_lot,$mic->property->lot);
-                    array_push($misc_date,$mic->datepaid);
-                    array_push($misc_payment,"Php. ".number_format($mic->payment,2));
-                    array_push($misc_pay,$mic->payment);
-                     $misc_counter=$misc_counter+1;
-                    }
+                    // if(strtoupper($search)==strtoupper($mic->client->lastname)){
+                        if($misc_counter<=$records){
+                            array_push($client_misc,$mic->client->firstname." ".$mic->client->lastname);
+                            array_push($prop_misc,$mic->property->id);
+                            array_push($misc_block,$mic->property->block);
+                            array_push($misc_due,$mic->date);
+                            array_push($misc_lot,$mic->property->lot);
+                            array_push($misc_date,$mic->datepaid);
+                            array_push($misc_payment,"Php. ".number_format($mic->payment,2));
+                             array_push($misc_pay,$mic->payment);
+                            $misc_counter=$misc_counter+1;
+                        }
+                       
+                    // }
                  }
+                  
                 }
                 foreach ($equities as $key => $equity) {
                     if(($dateto>=$equity->date)&&($datefrom<=$equity->date)){
-                         if($equity_counter<=$records){
-                        array_push($client_equity,$equity->client->firstname." ".$equity->client->lastname);
-                         array_push($prop_equity,$equity->property->id);
-                         array_push($equity_due,$equity->date);
-                        array_push($equity_block,$equity->property->block);
-                        array_push($equity_lot,$equity->property->lot);
-                        array_push($equity_date,$equity->datepaid);
-                        array_push($equity_payment,"Php. ".number_format($equity->payment,2));
-                         array_push($equity_pay,$equity->payment);
-                          $equity_counter=$equity_counter+1;
-                     }
-                  }
+                     // if(strtoupper($search)==strtoupper($equity->client->lastname)){
+                        if($equity_counter<=$records){
+                             array_push($client_equity,$equity->client->firstname." ".$equity->client->lastname);
+                            array_push($prop_equity,$equity->property->id);
+                            array_push($equity_due,$equity->date);
+                            array_push($equity_block,$equity->property->block);
+                            array_push($equity_lot,$equity->property->lot);
+                            array_push($equity_date,$equity->datepaid);
+                            array_push($equity_payment,"Php. ".number_format($equity->payment,2));
+                            array_push($equity_pay,$equity->payment);
+                            $equity_counter=$equity_counter+1;
+                        }
+                       
+                    // }
+                }
                 }
          }else if($filtered=="LAST NAME"){
 
@@ -596,9 +603,9 @@ class ReportCollectionController extends Controller
         $filters = array("ALL", "LAST NAME", "FIRST NAME", "BLOCK","LOT");
         $display = array("1", "5", "10", "50", "100", "500");
          if($filtered=="ALL"){
-                $miscs = Misc::where("status",'PAID')->orderBy('id','desc')->take($records)->get();
+                 $miscs = Misc::where("status",'PAID')->orderBy('id','desc')->get();
                 $count= count($miscs);
-                $equities = Equity::where("status",'PAID')->orderBy('id','desc')->take($records)->get();
+                $equities = Equity::where("status",'PAID')->orderBy('id','desc')->get();
                 $count1= count($equities);
                 $client_misc=array();
                 $client_equity=array();
@@ -620,42 +627,48 @@ class ReportCollectionController extends Controller
                 $equity_payment=array();
                 $equity_pen=array();
                 $misc_pen=array();
-
                 $misc_pay=array();
                 $equity_pay=array();
                 $m=0;
                 $e=0;
-                    $misc_counter=1;
+                $misc_counter=1;
                 $equity_counter=1;
                 foreach ($miscs as $key => $mic) {
                     if(($dateto>=$mic->date)&&($datefrom<=$mic->date)){
-                         if($misc_counter<=$records){
-                    array_push($client_misc,$mic->client->firstname." ".$mic->client->lastname);
-                    array_push($prop_misc,$mic->property->id);
-                    array_push($misc_block,$mic->property->block);
-                    array_push($misc_due,$mic->date);
-                    array_push($misc_lot,$mic->property->lot);
-                    array_push($misc_date,$mic->datepaid);
-                    array_push($misc_payment,"Php. ".number_format($mic->payment,2));
-                    array_push($misc_pay,$mic->payment);
-                     $misc_counter=$misc_counter+1;
-                    }
+                    // if(strtoupper($search)==strtoupper($mic->client->lastname)){
+                        if($misc_counter<=$records){
+                            array_push($client_misc,$mic->client->firstname." ".$mic->client->lastname);
+                            array_push($prop_misc,$mic->property->id);
+                            array_push($misc_block,$mic->property->block);
+                            array_push($misc_due,$mic->date);
+                            array_push($misc_lot,$mic->property->lot);
+                            array_push($misc_date,$mic->datepaid);
+                            array_push($misc_payment,"Php. ".number_format($mic->payment,2));
+                             array_push($misc_pay,$mic->payment);
+                            $misc_counter=$misc_counter+1;
+                        }
+                       
+                    // }
                  }
+                  
                 }
                 foreach ($equities as $key => $equity) {
                     if(($dateto>=$equity->date)&&($datefrom<=$equity->date)){
-                         if($equity_counter<=$records){
-                        array_push($client_equity,$equity->client->firstname." ".$equity->client->lastname);
-                         array_push($prop_equity,$equity->property->id);
-                         array_push($equity_due,$equity->date);
-                        array_push($equity_block,$equity->property->block);
-                        array_push($equity_lot,$equity->property->lot);
-                        array_push($equity_date,$equity->datepaid);
-                        array_push($equity_payment,"Php. ".number_format($equity->payment,2));
-                         array_push($equity_pay,$equity->payment);
-                          $equity_counter=$equity_counter+1;
-                     }
-                  }
+                     // if(strtoupper($search)==strtoupper($equity->client->lastname)){
+                        if($equity_counter<=$records){
+                             array_push($client_equity,$equity->client->firstname." ".$equity->client->lastname);
+                            array_push($prop_equity,$equity->property->id);
+                            array_push($equity_due,$equity->date);
+                            array_push($equity_block,$equity->property->block);
+                            array_push($equity_lot,$equity->property->lot);
+                            array_push($equity_date,$equity->datepaid);
+                            array_push($equity_payment,"Php. ".number_format($equity->payment,2));
+                            array_push($equity_pay,$equity->payment);
+                            $equity_counter=$equity_counter+1;
+                        }
+                       
+                    // }
+                }
                 }
          }else if($filtered=="LAST NAME"){
 

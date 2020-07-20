@@ -70,7 +70,7 @@ class ReportInhouseController extends Controller
 
         $inhouses = Inhouse::where("status",'PAID')->whereBetween('date_due',[$datefrom, $dateto])->orderBy('id','desc')->take($records)->get();
 
-
+        // return $inhouses;
           return view('report.inhouse')
           ->with('inhouses',$inhouses)
          ->with('filtered',$filtered)

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Client;
+use App\Log;
 class ClientCustomController extends Controller
 {
     /**
@@ -74,11 +75,29 @@ class ClientCustomController extends Controller
              $user = Client::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+                $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Client";
+        $log->description="Remove client";
+        $log->save();
+
              return redirect('/admin-client')->with('success','Client successfully removed from the active list ');
         }else if($request->input('status')=="ACTIVE"){
              $user = Client::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+                $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Client";
+        $log->description="Retrieve client";
+        $log->save();
+
              return redirect('/admin-client-removed')->with('success','Client successfully retrieved to the active list ');
         }else if($request->input('status')=="IMPORT"){
                 $upload = $request->file('import_file');
@@ -113,6 +132,7 @@ class ClientCustomController extends Controller
                     $barangay= $data['barangay'];
                     $city= $data['city'];
                     $province= $data['province'];
+                    $sales_rep= $data['salesrep'];
                     $status= $data['status'];
 
                     $newclient=Client::where('firstname',$firstname)->where('middlename',$middlename)->where('lastname',$lastname)->get();
@@ -127,6 +147,7 @@ class ClientCustomController extends Controller
                         $client->barangay=$barangay;
                         $client->city=$city;
                         $client->province=$province;
+                         $client->sales_rep=$sales_rep;
                         $client->status=$status;
                         $client->save();
 
@@ -134,7 +155,13 @@ class ClientCustomController extends Controller
                   
 
                 }
+                    $admin_id=session('Data')[0]->id;
 
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Client";
+        $log->description="Import client";
+        $log->save();
              return redirect('/admin-client')->with('success','Successfully import client information to the list. ');
         }
     }

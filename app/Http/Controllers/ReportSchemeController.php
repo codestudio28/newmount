@@ -251,45 +251,6 @@ class ReportSchemeController extends Controller
 
 
             }
-        }else if($filtered=="PAYMENT SCHEME"){
-            $buys = Buy::orderBy('id','desc')->get();
-            $count= count($buys);  
-            $client=array();
-            $property=array();
-            $tcp=array();
-          
-            $status=array();
-            $equity_bal=array();
-            $misc_bal=array();
-            $equity_pen=array();
-            $misc_pen=array();
-         
-            foreach ($buys as $key => $buy) {
-                $misc_count = count($buy->property->misc);
-                $equity_count = count($buy->property->equity);
-                if(strtoupper($search)==strtoupper($buy->paymentscheme->paymentname)){
-                    array_push($status,$buy->paymentscheme->paymentname);
-                    array_push($client,$buy->client->firstname." ".$buy->client->lastname);
-                    array_push($property,"Block: ".$buy->property->block." Lot: ".$buy->property->lot);
-                    array_push($tcp,"Php. ".number_format($buy->tcp,2));
-                    array_push($equity_bal,"Php. ".number_format($buy->property->equity[$equity_count-1]->balance,2));
-                  if($misc_count<=1){
-                  array_push($misc_pen,"Php. ".number_format('0',2));
-             }else{
-                 array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
-             }
-               
-             if($equity_count<=1){
-                 array_push($equity_pen,"Php. ".number_format('0',2));
-             }else{
-                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
-             } 
-                }
-              
-               
-
-
-            }
         }
          $buys = Buy::orderBy('id','desc')->paginate($records);
          return view('report.scheme')

@@ -18,4 +18,10 @@ class Client extends Model
     public function inhouse(){
     	return $this->hasMany('App\Inhouse');
     }
+    public function transfer(){
+        return $this->hasMany('App\Inhouse');
+    }
+    public function transfered(){
+        return $this->hasMany('App\Transfer');
+    }
 }

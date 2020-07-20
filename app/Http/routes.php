@@ -72,4 +72,6 @@ Route::resource('report-inhouse','ReportInhouseController');
 Route::resource('report-ccollection','ReportCollectionCustomController');
 Route::resource('admin-inhouse','InHouseCollectionController');
 Route::resource('report-payable','ReportPayableController');
+Route::resource('report-logs','ReportLogController');
+Route::resource('admin-transfer','TransferController');
 Route::resource('admin-info','InfoController');

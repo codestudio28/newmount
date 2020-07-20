@@ -86,6 +86,7 @@ class VoucherPDFController extends Controller
         $this->fpdf->Cell(0,10,'',0,1);
         $this->fpdf->Cell(35,5,"Payee: ",0,0,'L');
         $this->fpdf->Cell(60,5,$voucher->payee->payee_name,0,0,'L');
+         $this->fpdf->Cell(0,7,'',0,1);
         $this->fpdf->Cell(35,5,"Date: ",0,0,'L');
         $this->fpdf->Cell(60,5,$voucher->dates,0,0,'L');
         $this->fpdf->Cell(0,7,'',0,1);
@@ -103,7 +104,7 @@ class VoucherPDFController extends Controller
         $this->fpdf->Cell(60,5,$voucher->terms,0,0,'L');
         $this->fpdf->Cell(0,10,'',0,1);
         $this->fpdf->Cell(35,5,"Amount in Words: ",0,0,'L');
-        $this->fpdf->Cell(155,5,'*** '.$amount_word.' ONLY ***',0,0,'C');
+        $this->fpdf->MultiCell(155,5,'*** '.$amount_word.' ONLY ***');
         $this->fpdf->Cell(0,10,'',0,1);
         $this->fpdf->Cell(35,5,"Explanation: ",0,0,'L');
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PropertyType;
+use App\Log;
 class PropertyTypeCustomController extends Controller
 {
     /**
@@ -74,11 +75,28 @@ class PropertyTypeCustomController extends Controller
              $user = PropertyType::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+               $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Property Type";
+        $log->description="Remove property type";
+        $log->save();
              return redirect('/admin-proptype')->with('success','Property type successfully removed from the active list ');
         }else if($request->input('status')=="ACTIVE"){
              $user = PropertyType::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+
+               $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Property Type";
+        $log->description="Retrieve property type";
+        $log->save();
              return redirect('/admin-proptype-removed')->with('success','Property type successfully retrieved to the active list ');
         }else if($request->input('status')=="IMPORT"){
                 $upload = $request->file('import_file');
@@ -126,7 +144,13 @@ class PropertyTypeCustomController extends Controller
                   
 
                 }
+                   $admin_id=session('Data')[0]->id;
 
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Property Type";
+        $log->description="Import property type";
+        $log->save();
              return redirect('/admin-proptype')->with('success','Successfully import property type information to the list. ');
         }
     }

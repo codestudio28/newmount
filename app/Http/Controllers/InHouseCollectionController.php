@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Inhouse;
 use App\Penalty;
+use App\Transfer;
+use App\Client;
 use Codedge\Fpdf\Fpdf\Fpdf;
 class InHouseCollectionController extends Controller
 {
@@ -96,10 +98,26 @@ class InHouseCollectionController extends Controller
         $this->fpdf->Cell(250,7,'Client Name: '.$inhouses[0]->client->lastname.', '.$inhouses[0]->client->firstname,0,0,'L');
         $this->fpdf->Cell(28,7,'',0,0,'R');
 
-         $this->fpdf->Cell(0,7,'',0,1);
+        $this->fpdf->Cell(0,7,'',0,1);
         $this->fpdf->SetFont('Arial','',12);
         $this->fpdf->Cell(250,7,'Property: Block: '.$inhouses[0]->property->block.', Lot: '.$inhouses[0]->property->lot,0,0,'L');
         $this->fpdf->Cell(28,7,'',0,0,'R');
+
+        $transfer = Transfer::where('property_id',$id)->orderBy('id','desc')->get();
+
+        if(count($transfer)>0){
+            $oldclient = $transfer[0]->oldclient_id;
+            $client = Client::find($oldclient);
+             
+            $this->fpdf->Cell(0,7,'',0,1);
+            $this->fpdf->SetFont('Arial','',12);
+            $this->fpdf->Cell(250,7,'Transfer from: '.$client->firstname.' '.$client->lastname,0,0,'L');
+            $this->fpdf->Cell(28,7,'',0,0,'R');
+        }
+      
+
+
+
 
         $this->fpdf->SetFont('Arial','',10);
         $this->fpdf->Cell(0,10,'',0,1);
@@ -160,30 +178,33 @@ class InHouseCollectionController extends Controller
         $process = $request->input('process');
 
         if($process=="PAID"){
-            $penalty = Penalty::all();
-            $penal = ($penalty[0]->penalty)/100;
+          
             
-
-
             $payment = $request->input('payment');
             $or = $request->input('or');
             $inhouseor=Inhouse::where('or',$or)->get();
 
             if(count($inhouseor)<=0){
-                  $inhouse = Inhouse::find($id);
+            $inhouse = Inhouse::find($id);
+            $penal = ($inhouse->percentage)/100;
             $client_id=$inhouse->client_id;
             $property_id=$inhouse->property_id;
             $buy_id=$inhouse->buy_id;
             $paymentscheme_id=$inhouse->paymentscheme_id;
             $loanable=$inhouse->loanable;
             $today = $inhouse->date_due;
-            $monthly_amort = $inhouse->monthly_amort;
+            $monthly_amort = round($inhouse->monthly_amort,2);
             $old_balance = $inhouse->balance;
+            $cts = $inhouse->cts;
+            $penalty = $inhouse->percentage;
 
-                $newbalance = $old_balance-$payment;
-                if($newbalance<=0){
-                    $newbalance=0;
-                }
+
+            if($payment<=$old_balance){
+                if($payment==$old_balance){
+                    $newbalance = $old_balance-$payment;
+                        if($newbalance<=0){
+                            $newbalance=0;
+                    }
                     $inhouse->payment=$payment;
                     $inhouse->balance=$newbalance;
                     $inhouse->status="PAID";
@@ -202,7 +223,6 @@ class InHouseCollectionController extends Controller
                     $inhouse->loanable=$loanable;
                     $inhouse->date_due=$date_due;
                     $inhouse->amount_due=$monthly_amort;
-
                     $inhouse->unpaid_due=$newbalance;
 
                     $newpenalty = $newbalance*$penal;
@@ -211,9 +231,116 @@ class InHouseCollectionController extends Controller
                     $inhouse->payment=0;
                     $inhouse->balance=$newbalance+$newpenalty+$monthly_amort;
                     $inhouse->status="PENDING";
+                    $inhouse->cts=$cts;
+                    $inhouse->percentage=$penalty;
                     $inhouse->save();
                     $path="/admin-inhouse/".$property_id."/edit";
-                return redirect($path)->with('success','Successfully set payment to unpaid.');
+                return redirect($path)->with('success','Successfully set payment to paid.');
+                }else{
+
+                    $newbalance = $old_balance-$payment;
+                        if($newbalance<=0){
+                            $newbalance=0;
+                    }
+
+                    $inhouse->payment=$payment;
+                    $inhouse->balance=$newbalance;
+                    $inhouse->status="PAID";
+                    $inhouse->or=$or;
+                    $inhouse->save();
+                    $dt = strtotime($today);
+
+                    $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                    $date_due=$nextdate;
+                    $inhouse = new Inhouse;
+                    $inhouse->client_id=$client_id;
+                    $inhouse->property_id=$property_id;
+                    $inhouse->buy_id = $buy_id;
+                    $inhouse->paymentscheme_id=$paymentscheme_id;
+                    $inhouse->monthly_amort=$monthly_amort;
+                    $inhouse->loanable=$loanable;
+                    $inhouse->date_due=$date_due;
+                    $inhouse->amount_due=$monthly_amort;
+                    $inhouse->unpaid_due=$newbalance;
+                    
+                    $newpenalty = $newbalance*$penal;
+                    $inhouse->penalty=$newpenalty;
+                    $inhouse->total_due=$newbalance+$newpenalty+$monthly_amort;
+                    $inhouse->payment=0;
+                    $inhouse->balance=$newbalance+$newpenalty+$monthly_amort;
+                    $inhouse->status="PENDING";
+                    $inhouse->cts=$cts;
+                     $inhouse->percentage=$penalty;
+                    $inhouse->save();
+                    $path="/admin-inhouse/".$property_id."/edit";
+                 return redirect($path)->with('success','Successfully set payment to paid.');
+                }
+            }else{
+                $i=0;
+                $change = $payment;
+                while(true){
+                       
+                    
+
+                   // print_r($change.' '.$old_balance.'\n');
+                    if(round($change,2)>=$old_balance){
+                        $change=$change-$old_balance;
+                            $newbalance = 0;
+                        $inhouse->payment=$old_balance;
+                        $inhouse->balance=$newbalance;
+                        $inhouse->status="PAID";
+                        $inhouse->or=$or;
+                        $inhouse->save();
+                        $dt = strtotime($today);
+
+                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                        $date_due=$nextdate;
+                        $inhouse = new Inhouse;
+                        $inhouse->client_id=$client_id;
+                        $inhouse->property_id=$property_id;
+                        $inhouse->buy_id = $buy_id;
+                        $inhouse->paymentscheme_id=$paymentscheme_id;
+                        $inhouse->monthly_amort=$monthly_amort;
+                        $inhouse->loanable=$loanable;
+                        $inhouse->date_due=$date_due;
+                        $inhouse->amount_due=$monthly_amort;
+
+                        $inhouse->unpaid_due=$newbalance;
+                        $newpenalty = $newbalance*$penal;
+                        $inhouse->penalty=$newpenalty;
+                        $inhouse->total_due=$newbalance+$newpenalty+$monthly_amort;
+                        $inhouse->payment=0;
+                        $inhouse->balance=$newbalance+$newpenalty+$monthly_amort;
+                        $inhouse->cts=$cts;
+                         $inhouse->percentage=$penalty;
+                        $inhouse->status="PENDING";
+                        $inhouse->save();   
+
+
+                        $inhouse = Inhouse::where('client_id',$client_id)->where('property_id',$property_id)->orderBy('id', 'desc')->first();
+                        $client_id=$inhouse->client_id;
+                        $property_id=$inhouse->property_id;
+                        $buy_id=$inhouse->buy_id;
+                        $paymentscheme_id=$inhouse->paymentscheme_id;
+                        $loanable=$inhouse->loanable;
+                        $today = $inhouse->date_due;
+                        $monthly_amort = round($inhouse->monthly_amort,2);
+                        $old_balance = $inhouse->balance;
+                        $cts = $inhouse->cts;
+
+                        
+                    }else{
+                        break;
+                    }
+
+                }
+                  
+                $path="/admin-inhouse/".$property_id."/edit";
+                return redirect($path)->with('success','Successfully add payment');
+                
+            }//end
+
+           
             }else{
                  $inhouse = Inhouse::find($id);
             $client_id=$inhouse->client_id;
@@ -226,24 +353,24 @@ class InHouseCollectionController extends Controller
 
                 
         }else if($process=="UNPAID"){
-            $penalty = Penalty::all();
-            $penal = ($penalty[0]->penalty)/100;
+          
           
             $inhouse_id = Inhouse::where('id',$id)->get();
             if(count($inhouse_id)<=1){
                 $inhouse = Inhouse::find($id);
+                 $penal = ($inhouse->percentage)/100;
                 $client_id=$inhouse->client_id;
                 $property_id=$inhouse->property_id;
                 $buy_id=$inhouse->buy_id;
                 $paymentscheme_id=$inhouse->paymentscheme_id;
                 $loanable=$inhouse->loanable;
                 $today = $inhouse->date_due;
-
+                $cts = $inhouse->cts;
                 $monthly_amort = $inhouse->monthly_amort;
                 $balance=$inhouse->balance;
                 $unpaid_due = $inhouse->unpaid_due;
                 $penalties = $unpaid_due*$penal;
-                
+                $penalty = $inhouse->percentage;
                 $total_due=$monthly_amort+$unpaid_due+$penalties;
                 $payments=0;
                
@@ -277,18 +404,21 @@ class InHouseCollectionController extends Controller
                     $inhouse->payment=0;
                     $inhouse->balance=$balance+$newpenalty+$monthly_amort;;
                     $inhouse->status="PENDING";
+                     $inhouse->cts=$cts;
+                      $inhouse->percentage=$penalty;
                     $inhouse->save();
                     $path="/admin-inhouse/".$property_id."/edit";
                 return redirect($path)->with('success','Successfully set payment to unpaid.');
             }else{
                 $inhouse = Inhouse::find($id);
                 $client_id=$inhouse->client_id;
+                 $penal = ($inhouse->percentage)/100;
                 $property_id=$inhouse->property_id;
                 $buy_id=$inhouse->buy_id;
                 $paymentscheme_id=$inhouse->paymentscheme_id;
                 $loanable=$inhouse->loanable;
                 $today = $inhouse->date_due;
-
+                $cts = $inhouse->cts;
                 $monthly_amort = $inhouse->monthly_amort;
                 $balance=$inhouse->balance;
                 $unpaid_due = $inhouse->unpaid_due;
@@ -327,6 +457,8 @@ class InHouseCollectionController extends Controller
                     $inhouse->payment=0;
                     $inhouse->balance=$balance+$newpenalty+$monthly_amort;;
                     $inhouse->status="PENDING";
+                     $inhouse->cts=$cts;
+                      $inhouse->percentage=$penalty;
                     $inhouse->save();
                     $path="/admin-inhouse/".$property_id."/edit";
                 return redirect($path)->with('success','Successfully set payment to unpaid.');

@@ -11,6 +11,7 @@ use App\Property;
 use App\PaymentScheme;
 use App\Misc;
 use App\Equity;
+use App\Penalty;
 class BuyController extends Controller
 {
     /**
@@ -54,7 +55,16 @@ class BuyController extends Controller
             'months'=>'required',
             'loanable'=>'required',
             'paymentscheme'=>'required',
+            'cts'=>'required',
         ]);
+         $contract=$request->input('cts');
+         $cts = Buy::where('cts',$contract)->get();
+
+         if(count($cts)>0){
+             return redirect('admin-buy')->with('error','CTS already in used.');
+         }
+
+
          $paymentscheme =PaymentScheme::find($request->input('paymentscheme'));
 
          $property = Property::find($request->input('property'));
@@ -80,6 +90,7 @@ class BuyController extends Controller
          ->with('monthly_equity',$monthly_equity)
          ->with('loanable',$loanable)
          ->with('reservationfee',$reservationfee)
+          ->with('cts',$contract)
          ->with('months',$months);
 
     }
@@ -99,9 +110,16 @@ class BuyController extends Controller
             'monthlye'=>'required',
             'monthsnumber'=>'required',
             'reservation'=>'required',
+            'ctsid'=>'required',
             'dates'=>'required',
         ]);
-            $penalty="5";
+            $penalties = Penalty::all();
+            $penalty = $penalties[0]->penalty;
+
+          
+
+
+
             $buy = new Buy;
             $buy->client_id = $request->input('clientid');
             $buy->property_id = $request->input('propertyid');
@@ -116,6 +134,7 @@ class BuyController extends Controller
             $buy->equity = $request->input('monthlye');
             $buy->months = $request->input('monthsnumber');
             $buy->reservationfee = $request->input('reservation');
+            $buy->cts = $request->input('ctsid');
             $buy->status = "ACTIVE";
             $buy->save();
 

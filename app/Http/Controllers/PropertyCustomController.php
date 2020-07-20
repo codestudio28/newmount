@@ -9,6 +9,10 @@ use App\Property;
 use App\Buy;
 use App\PaymentScheme;
 use App\Inhouse;
+use App\Misc;
+use App\Equity;
+use App\Penalty;
+use App\Log;
 class PropertyCustomController extends Controller
 {
     /**
@@ -77,134 +81,178 @@ class PropertyCustomController extends Controller
              $user = Property::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+               $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Property";
+        $log->description="Remove property";
+        $log->save();
+
              return redirect('/admin-property')->with('success','Property successfully removed from the active list ');
         }else if($request->input('status')=="ACTIVE"){
              $user = Property::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+
+               $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Property";
+        $log->description="Retrieve property";
+        $log->save();
+
              return redirect('/admin-proptype-removed')->with('success','Property type successfully retrieve to the active list');
         } else if($request->input('status')=="CHANGE"){
-           $yesorno = $request->input('transfer');
-           $pay_id = $request->input('paymentscheme');
-           if($yesorno=="YES"){
-                $payments = PaymentScheme::find($pay_id);
-                $paymentname = strtoupper($payments->paymentname);
-                if($paymentname=="PAGIBIG"){
-                     $buy_id = $id;
-                   $buys = Buy::find($buy_id);
-                   $buys->paymentscheme_id=$pay_id;
-                   $buys->status="PAID";
-                   $buys->save();
-                }else{
-                       $buy_id = $id;
-                   $buy = Buy::find($buy_id);
-                   $client_id = $buy->client_id;
-                   $property_id = $buy->property_id;
-                   $paymentscheme_id=$pay_id;
-                   $loanable = $buy->loanable;
-                   $years = $buy->paymentscheme->years;
-                   $factor = $buy->paymentscheme->percentage;
-                   $amort = $loanable*$factor;
-
-                    date_default_timezone_set("Asia/Manila");
-                    $year =date('Y');
-                    $month=date('m');
-                    $day=date('d');
-                    $today = $year."-".$month."-".$day;
-
-                    $dt = strtotime($today);
-                    $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-
-                    $date_due=$nextdate;
-
-                    $inhouse = new Inhouse;
-                    $inhouse->client_id=$client_id;
-                    $inhouse->property_id=$property_id;
-                    $inhouse->buy_id = $buy_id;
-                    $inhouse->paymentscheme_id=$paymentscheme_id;
-                    $inhouse->monthly_amort=$amort;
-                    $inhouse->loanable=$loanable;
-                    $inhouse->date_due=$date_due;
-                    $inhouse->amount_due=$amort;
-                    $inhouse->unpaid_due=0;
-                    $inhouse->penalty=0;
-                    $inhouse->total_due=0;
-                    $inhouse->payment=0;
-                    $inhouse->balance=0;
-                    $inhouse->status="PENDING";
-                    $inhouse->save();
+          $pay_id = $request->input('paymentscheme');
+          $payments = PaymentScheme::find($pay_id);
+          $paymentname = strtoupper($payments->paymentname);
+          $buy_id = $id;
+          $buys = Buy::find($buy_id);
+          $buys->paymentscheme_id=$pay_id;
+          $buys->save();
 
 
-                   $buys = Buy::find($buy_id);
-                   $buys->paymentscheme_id=$pay_id;
-                   $buys->status="PAID";
-                   $buys->save();
-                }
-               
-            
+             $admin_id=session('Data')[0]->id;
 
-                return redirect('/admin-collection')->with('success','Successfully complete payment.'); 
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Change Payment Scheme";
+        $log->description="Change payment scheme of a client";
+        $log->save();
 
-           }else{
-                $payments = PaymentScheme::find($pay_id);
-                $paymentname = strtoupper($payments->paymentname);
-                if($paymentname=="PAGIBIG"){
-                     $buy_id = $id;
-                   $buys = Buy::find($buy_id);
-                   $buys->paymentscheme_id=$pay_id;
-                   $buys->status="PAID";
-                   $buys->save();
-                }else{
-                       $buy_id = $id;
-                   $buy = Buy::find($buy_id);
-                   $client_id = $buy->client_id;
-                   $property_id = $buy->property_id;
-                   $paymentscheme_id=$pay_id;
-                   $loanable = $buy->loanable;
-                   $years = $buy->paymentscheme->years;
-                   $factor = $buy->paymentscheme->percentage;
-                   $amort = $loanable*$factor;
+          return redirect('/admin-collection')->with('success','Successfully change payment scheme.'); 
+        
+        } else if($request->input('status')=="COMPLETE"){
+          $buy_id = $id;
+          $buys = Buy::find($buy_id);
+          $property_id = $buys['property_id'];
+          $client_id = $buys['client_id'];
+          $loanable = $buys->loanable;
+          $years = $buys->paymentscheme->years;
+          $factor = $buys->paymentscheme->percentage;
+          $amort = $loanable*$factor;
+          $cts = $buys->cts;
 
-                    date_default_timezone_set("Asia/Manila");
-                    $year =date('Y');
-                    $month=date('m');
-                    $day=date('d');
-                    $today = $year."-".$month."-".$day;
+        date_default_timezone_set("Asia/Manila");
+        $year =date('Y');
+        $month=date('m');
+        $day=date('d');
+        $today = $year."-".$month."-".$day;
+        $dt = strtotime($today);
+        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
 
-                    $dt = strtotime($today);
-                    $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+        $date_due=$nextdate;
 
-                    $date_due=$nextdate;
+          $totalequity=0;
+          $totalmisc=0;
+          $equities = Equity::where('client_id',$client_id)->where('property_id',$property_id)
+          ->where('status','PAID')->orderBy('id','desc')->first();
+          $totalequity =$equities->balance;
+          // foreach ($equities as $key => $equity) {
+          //     $totalequity = $totalequity+$equity->payment;
+          // }
 
-                    $inhouse = new Inhouse;
-                    $inhouse->client_id=$client_id;
-                    $inhouse->property_id=$property_id;
-                    $inhouse->buy_id = $buy_id;
-                    $inhouse->paymentscheme_id=$paymentscheme_id;
-                    $inhouse->monthly_amort=$amort;
-                    $inhouse->loanable=$loanable;
-                    $inhouse->date_due=$date_due;
-                    $inhouse->amount_due=$amort;
-                    $inhouse->unpaid_due=0;
-                    $inhouse->penalty=0;
-                    $inhouse->total_due=0;
-                    $inhouse->payment=0;
-                    $inhouse->balance=0;
-                    $inhouse->status="PENDING";
-                    $inhouse->save();
+         
+          $miscs = Misc::where('client_id',$client_id)->where('property_id',$property_id)
+          ->where('status','PAID')->orderBy('id','desc')->first();
 
-
-                   $buys = Buy::find($buy_id);
-                   $buys->paymentscheme_id=$pay_id;
-                   $buys->status="PAID";
-                   $buys->save();
-                }
-               
-            
-
-                return redirect('/admin-collection')->with('success','Successfully complete payment.');
-           }
           
+          $totalmisc = $miscs->balance;
+
+          // foreach ($miscs as $key => $misc) {
+          //     $totalmisc = $totalmisc+$misc->payment;
+          // }
+          
+          $paymentname = strtoupper($buys->paymentscheme->paymentname);
+          if($paymentname=="INHOUSE"){
+             if($totalmisc<=0){
+
+               $penalties = Penalty::first();
+
+               $penalty = $penalties->penalty;
+
+               
+              
+                $buys = Buy::find($buy_id);
+                $property_id = $buys['property_id'];
+                $client_id = $buys['client_id'];
+                $loanable = $buys->loanable;
+                $years = $buys->paymentscheme->years;
+                $newloan = $loanable + $totalequity;
+                $paymentscheme_id = $buys->paymentscheme_id;
+                $factor = $buys->paymentscheme->percentage;
+                $amort = $newloan*$factor;
+                $cts = $buys->cts;
+
+
+                $inhouse = new Inhouse;
+                $inhouse->client_id=$client_id;
+                $inhouse->property_id=$property_id;
+                $inhouse->buy_id = $buy_id;
+                $inhouse->paymentscheme_id=$paymentscheme_id;
+                $inhouse->monthly_amort=$amort;
+                $inhouse->loanable=$newloan;
+                $inhouse->date_due=$date_due;
+                $inhouse->amount_due=$amort;
+                $inhouse->cts=$cts;
+                $inhouse->unpaid_due=0;
+                $inhouse->penalty=0;
+                $inhouse->total_due=$amort;
+                $inhouse->payment=0;
+                $inhouse->balance=$amort;
+                $inhouse->percentage=$penalty;
+                $inhouse->status="PENDING";
+                $inhouse->save();
+
+
+                $buys = Buy::find($buy_id);
+                $buys->status="PAID";
+                $buys->save();
+
+
+                   $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Client Paid";
+        $log->description="Set client to complete";
+        $log->save();
+
+                  return redirect('/admin-collection')->with('success','Client transfer to In-house module.');
+             }else{
+                $change = $buys->totalmisc - $totalmisc;
+                return redirect('/admin-collection')->with('error','The client still have Php.'.number_format($totalmisc,2). ' miscellaneous balance');
+             }
+          }else{
+            if(($totalequity<=0)&&($totalmisc<=0)){
+                  $buys = Buy::find($buy_id);
+                $buys->status="PAID";
+                $buys->save();
+
+
+                   $admin_id=session('Data')[0]->id;
+
+       $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Client Paid";
+        $log->description="Set client paid";
+        $log->save();
+
+        return redirect('/admin-collection')->with('success','Client already paid');
+
+
+
+            }else{
+               return redirect('/admin-collection')->with('error','The client still have Php.'.number_format($totalmisc,2). ' miscellaneous balance and Php.'.number_format($totalequity,2).' equity balance');
+            }
+          }
+          
+
+        
         } 
     }
 

@@ -160,12 +160,12 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="/report-property">Property</a>
             <a class="collapse-item" href="/report-client">Client</a>
-            <a class="collapse-item" href="/report-scheme">Payment Type</a>
+            <!-- <a class="collapse-item" href="/report-scheme">Payment Type</a> -->
             <a class="collapse-item" href="/report-collection">Collections</a>
             <a class="collapse-item" href="/report-payable">Account's Payable</a>
             <a class="collapse-item" href="/report-inhouse">Inhouse Collections</a>
              @if(session('Data')[0]->usertype=="superadmin")
-            <a class="collapse-item" href="#">Logs</a>
+            <a class="collapse-item" href="/report-logs">Logs</a>
             @endif
           </div>
         </div>
@@ -194,7 +194,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="/admin-banner">Banner</a>
             <a class="collapse-item" href="/admin-listings">Listings</a>
-            <!-- <a class="collapse-item" href="/admin-about">About</a> -->
+            <a class="collapse-item" href="/admin-about">About</a>
         </div>
       </li>
          <hr class="sidebar-divider">

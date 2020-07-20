@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col-md-12 col-lg-8">
             <div class="title-single-box">
-              <h1 class="title-single">We Do Great Design For Creative Folks</h1>
+              <h1 class="title-single">About Us</h1>
             </div>
           </div>
           <div class="col-md-12 col-lg-4">
@@ -31,7 +31,7 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="about-img-box">
-              <img src="assets/img/slide-about-1.jpg" alt="" class="img-fluid">
+              <img src="{{asset('about_photo/')}}/{{$about[0]->headbanner}}" alt="" class="img-fluid">
             </div>
             <div class="sinse-box">
               <h3 class="sinse-title">Mount Malarayat
@@ -43,7 +43,12 @@
           <div class="col-md-12 section-t8">
             <div class="row">
               <div class="col-md-6 col-lg-5">
-                <img src="assets/img/about-2.jpg" alt="" class="img-fluid">
+                  @if(count($about)<=0)
+                      <img style="width:100%;height:500px;" src="{{asset('img/noimage.png')}}" alt="" class="img-fluid">
+                  @else
+                      <img style="width:100%;height:500px;" src="{{asset('about_photo/')}}/{{$about[0]->banner}}" alt="" class="img-fluid">
+                  @endif
+              
               </div>
               <div class="col-lg-2  d-none d-lg-block">
                 
@@ -55,7 +60,12 @@
                   
                 </div>
                 <p class="color-text-a">
-                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                  @if(count($about)<=0)
+
+                  @else
+                     {{$about[0]->content}}
+                  @endif
+               
                 </p>
               </div>
             </div>

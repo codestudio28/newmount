@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Client;
+use App\Log;
 class ClientController extends Controller
 {
     /**
@@ -54,8 +55,7 @@ class ClientController extends Controller
             'barangay'=>'required',
             'city'=>'required',
             'province'=>'required',
-            'cts'=>'required',
-            'sales_rep'=>'required',
+            'sales_rep'=>'required'
         ]);
 
        
@@ -68,6 +68,8 @@ class ClientController extends Controller
              }
          
 
+
+
       
         $status="ACTIVE";
         $client = new Client;
@@ -79,10 +81,20 @@ class ClientController extends Controller
         $client->barangay = $request->input('barangay');
         $client->city = $request->input('city');
         $client->province = $request->input('province');
-        $client->cts = $request->input('cts');
         $client->sales_rep = $request->input('sales_rep');
         $client->status = $status;
         $client->save();
+
+
+          $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Client";
+        $log->description="Add client";
+        $log->save();
+
+
         return redirect('/admin-client')->with('success','New client successfully added');
     }
 
@@ -130,8 +142,7 @@ class ClientController extends Controller
             'barangay'=>'required',
             'city'=>'required',
             'province'=>'required',
-             'cts'=>'required',
-            'sales_rep'=>'required',
+            'sales_rep'=>'required'
         ]);
 
        
@@ -160,9 +171,18 @@ class ClientController extends Controller
         $client->barangay = $request->input('barangay');
         $client->city = $request->input('city');
         $client->province = $request->input('province');
-        $client->cts = $request->input('cts');
         $client->sales_rep = $request->input('sales_rep');
         $client->save();
+
+
+            $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Client";
+        $log->description="Update client";
+        $log->save();
+
         return redirect('/admin-client')->with('success','Client information successfully updated');
     }
 

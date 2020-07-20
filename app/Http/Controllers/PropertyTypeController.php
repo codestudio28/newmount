@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PropertyType;
+use App\Log;
 class PropertyTypeController extends Controller
 {
     /**
@@ -68,6 +69,17 @@ class PropertyTypeController extends Controller
         $proptype->misc = $request->input('misc');
         $proptype->status = $status;
         $proptype->save();
+
+
+        $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Property Type";
+        $log->description="Add property type";
+        $log->save();
+
+
         return redirect('/admin-proptype')->with('success','New property type successfully added');
     }
 
@@ -135,6 +147,14 @@ class PropertyTypeController extends Controller
         $proptype->equity = $request->input('equity');
         $proptype->misc = $request->input('misc');
         $proptype->save();
+
+           $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Property Type";
+        $log->description="Update property type";
+        $log->save();
         return redirect('/admin-proptype')->with('success','Property type successfully updated');
     }
 

@@ -14,7 +14,7 @@ class CreateMiscsTable extends Migration
     {
         Schema::create('miscs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger(' client_id');
+            $table->bigInteger('client_id');
             $table->bigInteger('property_id');
             $table->string('date',100);
             $table->string('balance',100);

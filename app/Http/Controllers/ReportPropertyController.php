@@ -124,6 +124,7 @@ class ReportPropertyController extends Controller
         $search = session('search');
         if($filtered=="ALL"){
              $properties = Property::orderBy('id','desc')->get();
+            
         }else{
              if(strlen($search)<=0){
             $properties = Property::orderBy('id','desc')->get();

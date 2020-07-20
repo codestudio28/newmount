@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Banner;
 use App\Listings;
 use App\Admin;
+use App\About;
 class PagesController extends Controller
 {
     public function index(){
@@ -33,8 +34,17 @@ class PagesController extends Controller
         
     }
     public function about(){
-        $title = 'About Us';
-        return view('frontend.about');
+
+        $about = About::all();
+            if(count($about)>0){
+             
+                return view('frontend.about')->with('about',$about);
+            }else{
+                return view('frontend.about')->with('about',$about);    
+            }
+       
+
+       
     }
     public function property(){
         $banners = Banner::where('status','PUBLISHED')->get();

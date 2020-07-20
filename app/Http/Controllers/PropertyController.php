@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Property;
 use App\PropertyType;
-
+use App\Log;
 class PropertyController extends Controller
 {
     /**
@@ -76,6 +76,16 @@ class PropertyController extends Controller
         $property->price = $request->input('price');
         $property->status = $status;
         $property->save();
+
+          $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Property";
+        $log->description="Add property";
+        $log->save();
+
+
         return redirect('/admin-property')->with('success','New property successfully added');
     }
 
@@ -148,6 +158,15 @@ class PropertyController extends Controller
         $property->display_price = 'Php.'.$display_price;
         $property->price = $request->input('price');
         $property->save();
+
+           $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Property";
+        $log->description="Update property";
+        $log->save();
+
         return redirect('/admin-property')->with('success','Property successfully updated.');
     }
 

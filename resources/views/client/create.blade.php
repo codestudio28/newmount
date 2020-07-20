@@ -39,12 +39,7 @@
         {{Form::text('lastname','',['class'=>'form-control','placeholder'=>'Enter last name','required'=>true])}}
                   </div>
                </div>
-               <div class="col-md-12">
-                  <div class="form-group">
-         {{Form::label('lastname_title', "Contract to Sell")}}
-        {{Form::text('cts','',['class'=>'form-control','placeholder'=>'Enter contract to sell','required'=>true])}}
-                  </div>
-               </div>
+              
                <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('lastname_title', "Sales Representative")}}

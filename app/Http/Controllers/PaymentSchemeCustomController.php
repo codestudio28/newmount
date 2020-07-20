@@ -74,11 +74,30 @@ class PaymentSchemeCustomController extends Controller
              $user = PaymentScheme::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+              $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Payment Scheme";
+        $log->description="Remove payment scheme";
+        $log->save();
+
              return redirect('/admin-paymentscheme')->with('success','Payment scheme successfully removed from the active list ');
         }else if($request->input('status')=="ACTIVE"){
              $user = PaymentScheme::find($id);
             $user->status = $request->input('status');
             $user->save();
+
+
+              $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Payment Scheme";
+        $log->description="Retrieve payment scheme";
+        $log->save();
+
              return redirect('/admin-paymentscheme-removed')->with('success','Payment scheme successfully retrieved to the active list ');
         }else if($request->input('status')=="IMPORT"){
                 $upload = $request->file('import_file');
@@ -125,7 +144,13 @@ class PaymentSchemeCustomController extends Controller
                   
 
                 }
+                  $admin_id=session('Data')[0]->id;
 
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Payment Scheme";
+        $log->description="Import payment scheme";
+        $log->save();
              return redirect('/admin-paymentscheme')->with('success','Successfully import payment scheme information to the list. ');
         }
     }

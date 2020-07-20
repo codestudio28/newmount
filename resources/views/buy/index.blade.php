@@ -18,6 +18,13 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                   <div class="col-md-12">
+                           <div class="form-group">
+                              {{Form::label('course_title', "Contract To Sell")}}
+                    {{Form::text('cts','',['class'=>'form-control','placeholder'=>'Enter cts'])}}
+        
+                          </div>
+                    </div>
                     <div class="col-md-12">
                            <div class="form-group">
                              {{Form::label('typename', 'Choose Client')}}

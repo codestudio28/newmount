@@ -44,8 +44,14 @@
                         </a>
                           <a class="btn btn-info" data-toggle="modal" data-target="#completeModal{{$buy->id}}" href="#"
                         >
+                         <i class="fa fa-retweet"></i>
+                        </a>
+
+                         <a class="btn btn-warning" data-toggle="modal" data-target="#okModal{{$buy->id}}" href="#"
+                        >
                          <i class="fa fa-check"></i>
                         </a>
+
                          <a class="btn btn-secondary" href="/admin-collection/{{$buy->id}}" >
                           <i class="fa fa-print"></i>
                         </a>
@@ -68,7 +74,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Payment Complete?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Payment Scheme Change?</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
@@ -81,15 +87,9 @@
                 <div class="col-md-12">
                      <p>This client is under {{$buy->paymentscheme->paymentname}} / {{$buy->paymentscheme->years}} years. Do you want to change client's payment scheme? </p>
                 </div>
-                 <div class="col-md-12">
-                     {{Form::label('firstname_title', "Choose YES/NO")}}
-                    <select class="form-control" name="transfer">
-                            <option value="NO">NO</option>
-                            <option value="YES">YES</option>
-                    </select>
-                </div>
+               
                  <div class="col-md-12"  style="margin-top:1em;">
-                     {{Form::label('firstname_title', "If Choose YES, choose payment scheme ")}}
+                     {{Form::label('firstname_title', "Choose Payment Scheme")}}
                     <select class="form-control" name="paymentscheme">
                         @foreach($paymentscheme as $key =>$pay)
                           <option value="{{$pay->id}}">{{$pay->paymentname}} / {{$pay->years}}</option>
@@ -105,7 +105,7 @@
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
           
             
-          {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+          {{Form::submit('Change', ['class'=>'btn btn-primary'])}}
             {{ Form::close() }}
         </div>
       </div>
@@ -113,7 +113,41 @@
   </div>
  @endforeach 
  
- 
+ @foreach($buys as $index =>$buy)
+<div class="modal fade" id="okModal{{$buy->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Complete Payment?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        {{ Form::open(['action' => ['PropertyCustomController@update',$buy->id],'method'=>'POST'])}}
+         {{ Form::hidden('status', 'COMPLETE')}}
+             {{Form::hidden('_method','PUT')}} 
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    Do you want to complete client's payment ? </p>
+                </div>
+               
+                 
+            </div>
+             
+              
+       </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          
+            
+          {{Form::submit('Complete', ['class'=>'btn btn-primary'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+ @endforeach 
 
 
         <!-- /.container-fluid -->

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Payee;
+use App\Log;
 class PayeeCustomController extends Controller
 {
     /**
@@ -80,6 +81,62 @@ class PayeeCustomController extends Controller
             $payee->status="ACTIVE";
             $payee->save();
             return redirect('/admin-payee')->with('success','Successfully retrieve payee to active list');
+        }else if($request->input('status')=="IMPORT"){
+                $upload = $request->file('import_file');
+
+                $filePath = $upload->getRealPath();
+                $file = fopen($filePath,'r');
+                $header = fgetcsv($file);
+                $escapeHeader=[];
+                foreach ($header as $key => $value) {
+                    $lheader=strtolower($value);
+                    $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
+                    // dd($escapedItem);
+                    array_push($escapeHeader,$escapedItem);
+                }
+              
+                while($columns=fgetcsv($file)){
+                    if($columns[0]==""){
+                        continue;
+                    }
+
+                    // foreach ($columns as $key => &$value) {
+                    //     $value = preg_replace('/\D/', '', $value);
+                    // }
+
+                    $data=array_combine($escapeHeader, $columns);
+
+                    $payee_name= $data['payeename'];
+                    $address= $data['address'];
+                    $contactnumber= $data['contactnumber'];
+                    $tin= $data['tin'];
+                    $remarks= $data['remarks'];
+                    $status= $data['status'];
+
+                    $newpayee=Payee::where('payee_name',$payee_name)->get();
+
+                    if(count($newpayee)<=0){
+                        $client = new Payee;
+                        $client->payee_name =$payee_name;
+                        $client->address=$address;
+                        $client->contactnumber=$contactnumber;
+                        $client->tin=$tin;
+                        $client->remarks=$remarks;
+                        $client->status=$status;
+                        $client->save();
+
+                    }
+                  
+
+                }
+                    $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+         $log->admin_id=$admin_id;
+        $log->module="Payee";
+        $log->description="Import payee";
+        $log->save();
+             return redirect('/admin-payee')->with('success','Successfully import payee information to the list. ');
         }
     }
 

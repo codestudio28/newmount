@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PaymentScheme;
+use App\Log;
 class PaymentSchemeController extends Controller
 {
     /**
@@ -66,6 +67,15 @@ class PaymentSchemeController extends Controller
         $paymentname->years = $request->input('years');
         $paymentname->status = $status;
         $paymentname->save();
+
+        $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Payment Scheme";
+        $log->description="Add payment scheme";
+        $log->save();
+
         return redirect('/admin-paymentscheme')->with('success','New payment scheme successfully added');
     }
 
@@ -131,6 +141,16 @@ class PaymentSchemeController extends Controller
         $paymentname->percentage = $request->input('percentage');
         $paymentname->years = $request->input('years');
         $paymentname->save();
+
+          $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Payment Scheme";
+        $log->description="Update payment scheme";
+        $log->save();
+
+
         return redirect('/admin-paymentscheme')->with('success','Payment scheme successfully updated');
     }
 
