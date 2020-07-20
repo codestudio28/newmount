@@ -80,7 +80,7 @@ class ReportClientController extends Controller
              if($equity_count<=1){
                  array_push($equity_pen,"Php. ".number_format('0',2));
              }else{
-                 array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
+                 // array_push($equity_pen,"Php. ".number_format($buy->property->equity[$equity_count-2]->penalty,2));
              }   
               foreach ($buy->property->misc as $key => $misc) {
                 if(($misc->status=="VOID")||($misc->status=="UNPAID")){
