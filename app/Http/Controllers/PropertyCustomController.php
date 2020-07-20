@@ -186,8 +186,6 @@ class PropertyCustomController extends Controller
                $penalties = Penalty::first();
 
                $penalty = $penalties->penalty;
-
-               
               
                 $buys = Buy::find($buy_id);
                 $property_id = $buys['property_id'];
@@ -199,7 +197,6 @@ class PropertyCustomController extends Controller
                 $factor = $buys->paymentscheme->percentage;
                 $amort = $newloan*$factor;
                 $cts = $buys->cts;
-
 
                 $inhouse = new Inhouse;
                 $inhouse->client_id=$client_id;
