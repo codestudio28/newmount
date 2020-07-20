@@ -108,11 +108,11 @@ class VoucherPDFController extends Controller
         $this->fpdf->Cell(0,10,'',0,1);
         $this->fpdf->Cell(35,5,"Explanation: ",0,0,'L');
 
-        foreach($voucher->explain as $key=>$expl){
+       
         $this->fpdf->Cell(0,7,'',0,1);
         $this->fpdf->Cell(35,5,"",0,0,'L');
-        $this->fpdf->Cell(60,5,$expl->explain,0,0,'L');
-        }
+        $this->fpdf->Cell(60,5,$voucher->summary,0,0,'L');
+        
        
         $this->fpdf->Cell(0,15,'',0,1);
         $this->fpdf->Cell(70,5,"GL Account ",0,0,'C');

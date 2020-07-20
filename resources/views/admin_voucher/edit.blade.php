@@ -66,6 +66,12 @@
         {{Form::text('terms',$voucher->terms,['class'=>'form-control','placeholder'=>'Enter terms','required'=>true])}}
                   </div>
         </div>
+           <div class="col-md-12">
+                  <div class="form-group">
+         {{Form::label('lastname_title', "Explanation")}}
+        {{Form::text('summary',$voucher->summary,['class'=>'form-control','placeholder'=>'Enter explanations','required'=>true])}}
+                  </div>
+        </div>
          <div class="col-md-12">
                     <div class="form-group">
                        <table class="table table-bordered">
@@ -85,9 +91,9 @@
                             @foreach($voucher->explain as $key=>$expl)
                               <tr>
                                
-                                 <td><input type="text" class="form-control" placeholder="Enter explanation" value="{{$expl->explain}}" name="explanation[]" required="true">
+                                 <td><input type="text" class="form-control" placeholder="Enter gl account" value="{{$expl->explain}}" name="explanation[]" required="true">
                                 </td>
-                                 <td><input type="text" class="form-control" placeholder="enter amount" value="{{$expl->amount}}" name="amount_each[]" required="true">
+                                 <td><input type="number" class="form-control" placeholder="enter amount" value="{{$expl->amount}}" name="amount_each[]" required="true">
                                 </td>
                                 
                                  <td style="text-align:center;">

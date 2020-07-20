@@ -51,6 +51,7 @@ class VoucherController extends Controller
             'bankname'=>'required',
             'cheque'=>'required',
             'terms'=>'required',
+            'summary'=>'required',
             'notedby'=>'required'
         ]);
          $voucher = Voucher::where('cv',$request->input('cv'))->get();
@@ -66,43 +67,63 @@ class VoucherController extends Controller
          $approve = Admin::where('usertype','superadmin')->get();
          $approve_id =$approve[0]->id; 
 
-         $voucher = new Voucher;
-         $voucher->payee_id=$request->input('payeename');
-         $voucher->amount=$request->input('amount');
-         $voucher->cv=$request->input('cv');
-         $voucher->bank=$request->input('bankname');
-         $voucher->cheque=$request->input('cheque');
-         $voucher->terms=$request->input('terms');
-         $voucher->dates=$today;
-         $voucher->prepared_admin_id= $user_id;
-         $voucher->noted_admin_id=$request->input('notedby');
-         $voucher->approved_admin_id=$approve_id;
-         $voucher->status="PENDING";
-         $voucher->save();
-
-        $vouchers = new Voucher;
-        $vouchers = Voucher::select('id')
-        ->where('cv',$request->input('cv'))->get();
-        $vid = $vouchers[0]->id;
-
-
+         $totalamount=0;
         $explanation = $request->input('explanation');
         $amount_each = $request->input('amount_each');
          if(strlen($explanation[0])>0){
                  foreach ($explanation as $key => $ex)
                      {
-                        $explain = new Explanation;
-                        $explain->voucher_id = $vid;
-                        $explain->explain=$explanation[$key];
-                        $explain->amount=$amount_each[$key];
-                        $explain->save();
+                        $totalamount=$totalamount+$amount_each[$key];
                        
                      }
-            }else{
+        }else{
                   
+        }
+
+        if($totalamount==$request->input('amount')){
+             $voucher = new Voucher;
+             $voucher->payee_id=$request->input('payeename');
+             $voucher->amount=$request->input('amount');
+             $voucher->cv=$request->input('cv');
+             $voucher->bank=$request->input('bankname');
+             $voucher->cheque=$request->input('cheque');
+             $voucher->terms=$request->input('terms');
+             $voucher->summary=$request->input('summary');
+             $voucher->dates=$today;
+             $voucher->prepared_admin_id= $user_id;
+             $voucher->noted_admin_id=$request->input('notedby');
+             $voucher->approved_admin_id=$approve_id;
+             $voucher->status="PENDING";
+             $voucher->save();
+
+            $vouchers = new Voucher;
+            $vouchers = Voucher::select('id')
+            ->where('cv',$request->input('cv'))->get();
+            $vid = $vouchers[0]->id;
+
+
+            $explanation = $request->input('explanation');
+            $amount_each = $request->input('amount_each');
+             if(strlen($explanation[0])>0){
+                     foreach ($explanation as $key => $ex)
+                         {
+                            $explain = new Explanation;
+                            $explain->voucher_id = $vid;
+                            $explain->explain=$explanation[$key];
+                            $explain->amount=$amount_each[$key];
+                            $explain->save();
+                           
+                         }
+            }else{
+                      
             }
 
-         return redirect('/admin-voucher')->with('success','Voucher successfully created.');
+            return redirect('/admin-voucher')->with('success','Voucher successfully created.');
+        }else{
+             return redirect('/admin-voucher/create')->with('error','The sum of all GL accounts are not the equal with total amount.');
+        }
+        
+        
 
     }
 
@@ -170,38 +191,56 @@ class VoucherController extends Controller
          $approve = Admin::where('usertype','superadmin')->get();
          $approve_id =$approve[0]->id; 
 
-         $voucher = Voucher::find($id);
-         $voucher->payee_id=$request->input('payeename');
-         $voucher->amount=$request->input('amount');
-         $voucher->cv=$request->input('cv');
-         $voucher->bank=$request->input('bankname');
-         $voucher->cheque=$request->input('cheque');
-         $voucher->terms=$request->input('terms');
-         $voucher->dates=$today;
-         $voucher->prepared_admin_id= $user_id;
-         $voucher->noted_admin_id=$request->input('notedby');
-         $voucher->approved_admin_id=$approve_id;
-         $voucher->save();
-
-        Explanation::where('voucher_id',$id)->delete();
-
+         $totalamount=0;
         $explanation = $request->input('explanation');
         $amount_each = $request->input('amount_each');
          if(strlen($explanation[0])>0){
                  foreach ($explanation as $key => $ex)
                      {
-                        $explain = new Explanation;
-                        $explain->voucher_id = $id;
-                        $explain->explain=$explanation[$key];
-                        $explain->amount=$amount_each[$key];
-                        $explain->save();
+                        $totalamount=$totalamount+$amount_each[$key];
                        
                      }
-            }else{
+        }else{
                   
-            }
+        }
+         if($totalamount==$request->input('amount')){
+              $voucher = Voucher::find($id);
+             $voucher->payee_id=$request->input('payeename');
+             $voucher->amount=$request->input('amount');
+             $voucher->cv=$request->input('cv');
+             $voucher->bank=$request->input('bankname');
+             $voucher->cheque=$request->input('cheque');
+             $voucher->terms=$request->input('terms');
+             $voucher->dates=$today;
+             $voucher->prepared_admin_id= $user_id;
+             $voucher->noted_admin_id=$request->input('notedby');
+             $voucher->approved_admin_id=$approve_id;
+             $voucher->save();
 
-         return redirect('/admin-voucher')->with('success','Voucher successfully updated.');
+            Explanation::where('voucher_id',$id)->delete();
+
+            $explanation = $request->input('explanation');
+            $amount_each = $request->input('amount_each');
+             if(strlen($explanation[0])>0){
+                     foreach ($explanation as $key => $ex)
+                         {
+                            $explain = new Explanation;
+                            $explain->voucher_id = $id;
+                            $explain->explain=$explanation[$key];
+                            $explain->amount=$amount_each[$key];
+                            $explain->save();
+                           
+                         }
+                }else{
+                      
+                }
+
+             return redirect('/admin-voucher')->with('success','Voucher successfully updated.');
+         }else{
+               $path="/admin-voucher/".$id."/edit";
+             return redirect($path)->with('error','The sum of all GL accounts are not the equal with total amount.');
+         }
+       
     }
 
     /**

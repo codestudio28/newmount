@@ -45,7 +45,7 @@
                 <h2 class="title-a">Latest Properties</h2>
               </div>
               <div class="title-link">
-                <a href="property-grid.html">  All Property
+                <a href="/property">  All Property
                   <span class="ion-ios-arrow-forward"></span>
                 </a>
               </div>
@@ -54,9 +54,9 @@
         </div>
         <div id="property-carousel" class="owl-carousel owl-theme">
           <!-- Start -->
-          {{count($listings)}}
+          
           @foreach($listings as $key=>$listing)
-          {{$listing->status}}
+       
           @if($listing->status=="LATEST")
           <div class="carousel-item-b">
             <div class="card-box-a card-shadow">
@@ -123,7 +123,7 @@
                 <h2 class="title-a">Listings</h2>
               </div>
               <div class="title-link">
-                <a href="blog-grid.html">All News
+                <a href="/property">All Listings
                   <span class="ion-ios-arrow-forward"></span>
                 </a>
               </div>

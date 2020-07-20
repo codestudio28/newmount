@@ -35,7 +35,7 @@
           <div class="col-md-4">
             <div class="card-box-a card-shadow">
               <div class="img-box-a">
-                <img src="assets/img/property-1.jpg" alt="" class="img-a img-fluid">
+                <img style="width:100%;height:500px;" src="{{asset('listings_photo')}}/{{$listing->listings_photo}}" alt="" class="img-a img-fluid">
               </div>
               <div class="card-overlay">
                 <div class="card-overlay-a-content">

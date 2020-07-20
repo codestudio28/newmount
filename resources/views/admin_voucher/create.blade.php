@@ -55,10 +55,17 @@
         {{Form::text('cheque','',['class'=>'form-control','placeholder'=>'Enter cheque number','required'=>true])}}
                   </div>
                </div>
+
           <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('lastname_title', "Terms")}}
         {{Form::text('terms','',['class'=>'form-control','placeholder'=>'Enter terms','required'=>true])}}
+                  </div>
+        </div>
+          <div class="col-md-12">
+                  <div class="form-group">
+         {{Form::label('lastname_title', "Explanation")}}
+        {{Form::text('summary','',['class'=>'form-control','placeholder'=>'Enter explanations','required'=>true])}}
                   </div>
         </div>
          <div class="col-md-12">
@@ -67,7 +74,7 @@
                           <thead>
                              <tr>
                               
-                               <th style="width:50%;">Explanation</th>
+                               <th style="width:50%;">GL Account</th>
                                <th style="width:30%;">Amount</th>
                              
                                <th style="width:20%;text-align:center;"><button type="button" class="btn btn-info addRow">
@@ -79,9 +86,9 @@
                           <tbody>
                               <tr>
                                
-                                 <td><input type="text" class="form-control" placeholder="Enter explanation" name="explanation[]" required="true">
+                                 <td><input type="text" class="form-control" placeholder="Enter gl account" name="explanation[]" required="true">
                                 </td>
-                                 <td><input type="text" class="form-control" placeholder="enter amount" name="amount_each[]" required="true">
+                                 <td><input type="number" class="form-control" placeholder="enter amount" name="amount_each[]" required="true">
                                 </td>
                                 
                                  <td style="text-align:center;">
