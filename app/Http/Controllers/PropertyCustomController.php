@@ -136,6 +136,8 @@ class PropertyCustomController extends Controller
           $factor = $buys->paymentscheme->percentage;
           $amort = $loanable*$factor;
           $cts = $buys->cts;
+          $to_equity=$buys->totalequity;
+          $to_misc=$buys->totalmisc;
 
         date_default_timezone_set("Asia/Manila");
         $year =date('Y');
@@ -150,8 +152,13 @@ class PropertyCustomController extends Controller
           $totalequity=0;
           $totalmisc=0;
           $equities = Equity::where('client_id',$client_id)->where('property_id',$property_id)
-          ->where('status','PAID')->orderBy('id','desc')->first();
-          $totalequity =$equities->balance;
+          ->where('status','PAID')->orderBy('id','desc')->get();
+          if(count($equities)<=0){
+            $totalequity =$to_equity;
+          }else{
+            $totalequity =$equities[0]->balance;
+          }
+          
           // foreach ($equities as $key => $equity) {
           //     $totalequity = $totalequity+$equity->payment;
           // }
@@ -160,8 +167,13 @@ class PropertyCustomController extends Controller
           $miscs = Misc::where('client_id',$client_id)->where('property_id',$property_id)
           ->where('status','PAID')->orderBy('id','desc')->first();
 
+          if(count($equities)<=0){
+            $totalmisc =$to_misc;
+          }else{
+            $totalmisc =$mics[0]->balance;
+          }
           
-          $totalmisc = $miscs->balance;
+      
 
           // foreach ($miscs as $key => $misc) {
           //     $totalmisc = $totalmisc+$misc->payment;
