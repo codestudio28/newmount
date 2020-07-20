@@ -31,7 +31,12 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="about-img-box">
-              <img src="{{asset('about_photo/')}}/{{$about[0]->headbanner}}" alt="" class="img-fluid">
+                @if(count($about)<=0)
+                      <img src="{{asset('img/noimage.png')}}" alt="" class="img-fluid">
+                  @else
+                        <img src="{{asset('about_photo/')}}/{{$about[0]->headbanner}}" alt="" class="img-fluid">
+                  @endif
+            
             </div>
             <div class="sinse-box">
               <h3 class="sinse-title">Mount Malarayat
