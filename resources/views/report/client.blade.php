@@ -97,7 +97,7 @@
                             <td>{{$tcp[$key]}}</td>
                              <td>{{$equity_bal[$key]}}</td>
                              <td>{{$misc_bal[$key]}}</td>
-                              <td>Php. {{number_format($equity_pen[$key],2)}}</td>
+                              <td>Php. {{round($equity_pen[$key])}}</td>
                           <td>{{$misc_pen[$key]}}</td>
                           <td>{{$status[$key]}}</td>
                         </tr>
