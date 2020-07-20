@@ -76,7 +76,7 @@ class ReportClientController extends Controller
              }else{
                  array_push($misc_pen,"Php. ".number_format($buy->property->misc[$misc_count-2]->penalty,2));
              }
-               
+               return $equity_count;
              if($equity_count<=1){
                  array_push($equity_pen,"Php. ".number_format('0',2));
              }else{
