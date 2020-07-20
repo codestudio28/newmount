@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PaymentScheme;
+use App\Log;
 class PaymentSchemeCustomController extends Controller
 {
     /**
