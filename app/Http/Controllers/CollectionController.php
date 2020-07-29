@@ -159,7 +159,7 @@ class CollectionController extends Controller
                 $this->fpdf->Cell(34,7,$misc->status,1,0,'C');
             }
                 $this->fpdf->Cell(0,7,'',0,1);
-                $this->fpdf->Cell(100.54,7,'Total: ',0,0,'R');
+                $this->fpdf->Cell(137.02,7,'Total: ',0,0,'R');
                 $this->fpdf->Cell(34.9,7,'Php. '.number_format($totalmisc,2),0,0,'C');
               
         }
@@ -241,7 +241,7 @@ class CollectionController extends Controller
             $this->fpdf->Cell(34,7,$misc->status,1,0,'C');
         }
                     $this->fpdf->Cell(0,7,'',0,1);
-                $this->fpdf->Cell(100.54,7,'Total: ',0,0,'R');
+                $this->fpdf->Cell(137.02,7,'Total: ',0,0,'R');
                 $this->fpdf->Cell(34.9,7,'Php. '.number_format($totalequity,2),0,0,'C');
         }
        
