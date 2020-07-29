@@ -138,6 +138,7 @@ class CollectionController extends Controller
         $this->fpdf->Cell(40,7,"OR/AR",1,0,'C');
         $this->fpdf->Cell(34,7,"Status",1,0,'C');
 
+        $totalmisc=0;
        
              $this->fpdf->SetFont('Arial','',8);
             foreach ($miscs as $key => $misc) {
@@ -149,6 +150,7 @@ class CollectionController extends Controller
             }else{
                   $this->fpdf->Cell(36.48,7,$misc->balance,1,0,'C');
             }
+            $totalmisc = $totalmisc+$misc->payment;
                 $this->fpdf->Cell(36.48,7,$misc->misc_fee,1,0,'C');
                 $this->fpdf->Cell(35.9,7,$misc->penalty,1,0,'C');
                 $this->fpdf->Cell(33.8,7,$misc->payment,1,0,'C');
@@ -156,6 +158,10 @@ class CollectionController extends Controller
                 $this->fpdf->Cell(40,7,$misc->aror,1,0,'C');
                 $this->fpdf->Cell(34,7,$misc->status,1,0,'C');
             }
+                $this->fpdf->Cell(0,7,'',0,1);
+                $this->fpdf->Cell(100.54,7,'Total: ',0,0,'R');
+                $this->fpdf->Cell(34.9,7,'Php. '.number_format($totalmisc,2),0,0,'C');
+              
         }
        
 
@@ -216,7 +222,7 @@ class CollectionController extends Controller
 
         $this->fpdf->SetFont('Arial','',8);
 
-       
+          $totalequity=0;
              foreach ($equities as $key => $misc) {
             $this->fpdf->Cell(0,7,'',0,1);
             $this->fpdf->Cell(11.16,7,$key+1,1,0,'C');
@@ -226,7 +232,7 @@ class CollectionController extends Controller
             }else{
                   $this->fpdf->Cell(36.48,7,$misc->balance,1,0,'C');
             }
-          
+          $totalequity=$totalequity+$misc->payment;
             $this->fpdf->Cell(36.48,7,$misc->equity_fee,1,0,'C');
             $this->fpdf->Cell(35.9,7,$misc->penalty,1,0,'C');
             $this->fpdf->Cell(33.8,7,$misc->payment,1,0,'C');
@@ -234,6 +240,9 @@ class CollectionController extends Controller
             $this->fpdf->Cell(40,7,$misc->aror,1,0,'C');
             $this->fpdf->Cell(34,7,$misc->status,1,0,'C');
         }
+                    $this->fpdf->Cell(0,7,'',0,1);
+                $this->fpdf->Cell(100.54,7,'Total: ',0,0,'R');
+                $this->fpdf->Cell(34.9,7,'Php. '.number_format($totalequity,2),0,0,'C');
         }
        
      
