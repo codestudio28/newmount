@@ -473,6 +473,50 @@ class EquityController extends Controller
                                         }
                                     }
                                     if($counts<=0){
+
+                                         if($penalty<=0){
+                                            if($balpay<$misc_fee){
+                                               
+                                                if($paymenttype=="Bank"){
+                                                    $newbalance = $balance - $payment;
+                                                    $misc->balance = $newbalance;
+                                                    $misc->penalty = $penalty;
+                                                    $misc->payment = $payment;
+                                                    $misc->payment_type = $paymenttype;
+                                                    $misc->checknumber = $request->input('cheque');
+                                                    $misc->bankname = $request->input('bank');
+                                                    $misc->branch = $request->input('branch');
+                                                    $misc->datepaid = $request->input('paymentdate');
+                                                    $misc->aror =$request->input('orar');
+                                                    $misc->status = "PAID";
+                                                    $misc->save();
+                                                }else{
+                                                     $newbalance = $balance - $payment;
+                                                    $misc->balance = $newbalance;
+                                                    $misc->penalty = $penalty;
+                                                    $misc->payment = $payment;
+                                                    $misc->payment_type = $paymenttype;
+                                                    $misc->datepaid = $request->input('paymentdate');
+                                                    $misc->aror =$request->input('orar');
+                                                    $misc->status = "PAID";
+                                                    $misc->save();
+                                                }
+                                                $dt = strtotime($olddate);
+                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                            
+                                            $newmisc = new Equity;
+                                            $newmisc->client_id = $client_id;
+                                            $newmisc->property_id = $property_id;
+                                            $newmisc->date = $nextdate;
+                                            $newmisc->balance=$newbalance;
+                                            $newmisc->equity_fee=$misc_fee;
+                                            $newmisc->status="PENDING";
+                                            $newmisc->save();
+                                            break;
+                                            } 
+                                        }
+
+
                                         if($paymenttype=="Bank"){
                                             $newbalance = $balance - $misc_fee;
                                             $misc->balance = $newbalance;
@@ -499,6 +543,49 @@ class EquityController extends Controller
                                         }
                                    
                                     }else{
+
+                                        if($penalty<=0){
+                                            if($balpay<$misc_fee){
+                                               
+                                                if($paymenttype=="Bank"){
+                                                    $newbalance = $balance - $payment;
+                                                    $misc->balance = $newbalance;
+                                                    $misc->penalty = $penalty;
+                                                    $misc->payment = $payment;
+                                                    $misc->payment_type = $paymenttype;
+                                                    $misc->checknumber = $request->input('cheque');
+                                                    $misc->bankname = $request->input('bank');
+                                                    $misc->branch = $request->input('branch');
+                                                    $misc->datepaid = $request->input('paymentdate');
+                                                    $misc->aror =$request->input('orar');
+                                                    $misc->status = "PAID";
+                                                    $misc->save();
+                                                }else{
+                                                     $newbalance = $balance - $payment;
+                                                    $misc->balance = $newbalance;
+                                                    $misc->penalty = $penalty;
+                                                    $misc->payment = $payment;
+                                                    $misc->payment_type = $paymenttype;
+                                                    $misc->datepaid = $request->input('paymentdate');
+                                                    $misc->aror =$request->input('orar');
+                                                    $misc->status = "PAID";
+                                                    $misc->save();
+                                                }
+                                                $dt = strtotime($olddate);
+                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                            
+                                            $newmisc = new Equity;
+                                            $newmisc->client_id = $client_id;
+                                            $newmisc->property_id = $property_id;
+                                            $newmisc->date = $nextdate;
+                                            $newmisc->balance=$newbalance;
+                                            $newmisc->equity_fee=$misc_fee;
+                                            $newmisc->status="PENDING";
+                                            $newmisc->save();
+                                            break;
+                                            } 
+                                        }
+
                                          if($paymenttype=="Bank"){
                                             $newbalance = $balance - $misc_fee;
                                             $misc->balance = $newbalance;
@@ -577,6 +664,49 @@ class EquityController extends Controller
                                         }
                                     }
                                     if($counts<=0){
+                                        if($penalty<=0){
+                                            if($balpay<$misc_fee){
+                                               
+                                                if($paymenttype=="Bank"){
+                                                    $newbalance = $balance - $payment;
+                                                    $misc->balance = $newbalance;
+                                                    $misc->penalty = $penalty;
+                                                    $misc->payment = $payment;
+                                                    $misc->payment_type = $paymenttype;
+                                                    $misc->checknumber = $request->input('cheque');
+                                                    $misc->bankname = $request->input('bank');
+                                                    $misc->branch = $request->input('branch');
+                                                    $misc->datepaid = $request->input('paymentdate');
+                                                    $misc->aror =$request->input('orar');
+                                                    $misc->status = "PAID";
+                                                    $misc->save();
+                                                }else{
+                                                     $newbalance = $balance - $payment;
+                                                    $misc->balance = $newbalance;
+                                                    $misc->penalty = $penalty;
+                                                    $misc->payment = $payment;
+                                                    $misc->payment_type = $paymenttype;
+                                                    $misc->datepaid = $request->input('paymentdate');
+                                                    $misc->aror =$request->input('orar');
+                                                    $misc->status = "PAID";
+                                                    $misc->save();
+                                                }
+                                                $dt = strtotime($olddate);
+                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                            
+                                            $newmisc = new Equity;
+                                            $newmisc->client_id = $client_id;
+                                            $newmisc->property_id = $property_id;
+                                            $newmisc->date = $nextdate;
+                                            $newmisc->balance=$newbalance;
+                                            $newmisc->equity_fee=$misc_fee;
+                                            $newmisc->status="PENDING";
+                                            $newmisc->save();
+                                            break;
+                                            } 
+                                        }
+
+
                                         if($paymenttype=="Bank"){
                                             $newbalance = $balance - $misc_fee;
                                             $misc->balance = $newbalance;
