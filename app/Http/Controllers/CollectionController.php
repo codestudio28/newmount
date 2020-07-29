@@ -142,9 +142,13 @@ class CollectionController extends Controller
              $this->fpdf->SetFont('Arial','',8);
             foreach ($miscs as $key => $misc) {
                 $this->fpdf->Cell(0,7,'',0,1);
-                $this->fpdf->Cell(11.16,7,$key,1,0,'C');
+                $this->fpdf->Cell(11.16,7,$key+1,1,0,'C');
                 $this->fpdf->Cell(17,7,$misc->date,1,0,'C');
-                $this->fpdf->Cell(36.48,7,$misc->balance,1,0,'C');
+              if($misc->balance<=0){
+                  $this->fpdf->Cell(36.48,7,"0.00",1,0,'C');
+            }else{
+                  $this->fpdf->Cell(36.48,7,$misc->balance,1,0,'C');
+            }
                 $this->fpdf->Cell(36.48,7,$misc->misc_fee,1,0,'C');
                 $this->fpdf->Cell(35.9,7,$misc->penalty,1,0,'C');
                 $this->fpdf->Cell(33.8,7,$misc->payment,1,0,'C');
@@ -215,9 +219,14 @@ class CollectionController extends Controller
        
              foreach ($equities as $key => $misc) {
             $this->fpdf->Cell(0,7,'',0,1);
-            $this->fpdf->Cell(11.16,7,$key,1,0,'C');
+            $this->fpdf->Cell(11.16,7,$key+1,1,0,'C');
             $this->fpdf->Cell(17,7,$misc->date,1,0,'C');
-            $this->fpdf->Cell(36.48,7,$misc->balance,1,0,'C');
+            if($misc->balance<=0){
+                  $this->fpdf->Cell(36.48,7,"0.00",1,0,'C');
+            }else{
+                  $this->fpdf->Cell(36.48,7,$misc->balance,1,0,'C');
+            }
+          
             $this->fpdf->Cell(36.48,7,$misc->equity_fee,1,0,'C');
             $this->fpdf->Cell(35.9,7,$misc->penalty,1,0,'C');
             $this->fpdf->Cell(33.8,7,$misc->payment,1,0,'C');
