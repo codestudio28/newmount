@@ -36,6 +36,12 @@
           </select>
                   </div>
                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+         {{Form::label('middlename_title', "Transaction Date")}}
+        {{Form::date('transact',$voucher->dates,['class'=>'form-control','placeholder'=>'Enter date','required'=>true])}}
+                  </div>
+               </div>
                  <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('middlename_title', "Amount")}}
@@ -118,11 +124,9 @@
                  {{Form::label('firstname_title', "Noted By")}}
                   <select class="form-control" name="notedby">
                       @foreach($admins as $key=>$admin)
-                        @if($admin->id==$voucher->noted_admin_id)
-                           <option selected="selected" value="{{$admin->id}}">{{$admin->firstname}} {{$admin->lastname}}</option>
-                        @else
-                           <option value="{{$admin->id}}">{{$admin->firstname}} {{$admin->lastname}}</option>
-                        @endif
+                          @if($admin->id==2)
+                          <option value="{{$admin->id}}">{{$admin->firstname}} {{$admin->lastname}}</option>
+                          @endif
                          
                       @endforeach
                   </select>

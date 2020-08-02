@@ -52,6 +52,7 @@ class VoucherController extends Controller
             'cheque'=>'required',
             'terms'=>'required',
             'summary'=>'required',
+            'transact'=>'required',
             'notedby'=>'required'
         ]);
          $voucher = Voucher::where('cv',$request->input('cv'))->get();
@@ -89,7 +90,7 @@ class VoucherController extends Controller
              $voucher->cheque=$request->input('cheque');
              $voucher->terms=$request->input('terms');
              $voucher->summary=$request->input('summary');
-             $voucher->dates=$today;
+             $voucher->dates=$request->input('transact');
              $voucher->prepared_admin_id= $user_id;
              $voucher->noted_admin_id=$request->input('notedby');
              $voucher->approved_admin_id=$approve_id;
@@ -170,6 +171,7 @@ class VoucherController extends Controller
             'bankname'=>'required',
             'cheque'=>'required',
             'terms'=>'required',
+            'transact'=>'required',
             'notedby'=>'required'
         ]);
          $voucher = Voucher::where('cv',$request->input('cv'))->get();
@@ -211,7 +213,7 @@ class VoucherController extends Controller
              $voucher->bank=$request->input('bankname');
              $voucher->cheque=$request->input('cheque');
              $voucher->terms=$request->input('terms');
-             $voucher->dates=$today;
+             $voucher->dates=$request->input('transact');
              $voucher->prepared_admin_id= $user_id;
              $voucher->noted_admin_id=$request->input('notedby');
              $voucher->approved_admin_id=$approve_id;
