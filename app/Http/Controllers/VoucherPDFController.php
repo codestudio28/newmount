@@ -147,7 +147,7 @@ class VoucherPDFController extends Controller
         $conjunction = ' and ';
         $separator   = ', ';
         $negative    = 'negative ';
-        $decimal     = ' point ';
+        $decimal     = ' and ';
 
          $dictionary  = array(
         0                   => 'zero',
@@ -241,11 +241,11 @@ class VoucherPDFController extends Controller
     }
      if (null !== $fraction && is_numeric($fraction)) {
         $string .= $decimal;
-        $words = array();
-        foreach (str_split((string) $fraction) as $number) {
-            $words[] = $dictionary[$number];
-        }
-        $string .= implode(' ', $words);
+        $words = $fraction;
+        // foreach (str_split((string) $fraction) as $number) {
+        //     $words[] = $dictionary[$number];
+        // }
+        $string .= $words.'/100';
     }
 
     return $string;
