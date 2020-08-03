@@ -99,7 +99,7 @@
                                
                                  <td><input type="text" class="form-control" placeholder="Enter gl account" value="{{$expl->explain}}" name="explanation[]" required="true">
                                 </td>
-                                 <td><input type="number" class="form-control" placeholder="enter amount" value="{{$expl->amount}}" name="amount_each[]" required="true">
+                                 <td><input type="number" class="form-control" placeholder="enter amount" value="{{$expl->amount}}" name="amount_each[]" required="true" step="0.001">
                                 </td>
                                 
                                  <td style="text-align:center;">

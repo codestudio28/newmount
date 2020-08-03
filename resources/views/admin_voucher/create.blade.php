@@ -94,7 +94,7 @@
                                
                                  <td><input type="text" class="form-control" placeholder="Enter gl account" name="explanation[]" required="true">
                                 </td>
-                                 <td><input type="number" class="form-control" placeholder="enter amount" name="amount_each[]" required="true">
+                                 <td><input type="number" class="form-control" placeholder="enter amount" name="amount_each[]" step="0.001" required="true">
                                 </td>
                                 
                                  <td style="text-align:center;">
