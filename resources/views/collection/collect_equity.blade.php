@@ -33,11 +33,9 @@
                     @foreach($miscs as $key=>$misc)
                     <tr>
                       <td>{{$misc->date}}</td>
-                        @if($misc->balance<=0)
-                         <td>Php. 0.00</td>
-                      @else
+                      
                          <td>Php. {{$misc->balance}}</td>
-                      @endif
+               
                       <td>Php. {{$misc->equity_fee}}</td>
                       <td>{{round($misc->penalty,2)}}</td>
                       <td>{{$misc->payment}}</td>
