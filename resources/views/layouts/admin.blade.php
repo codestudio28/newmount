@@ -159,7 +159,7 @@
         <div id="collapseSchoolYear" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="/report-property">Property</a>
-            <a class="collapse-item" href="/report-client">Client</a>
+            <a class="collapse-item" href="/report-pdic">PDIC</a>
             <!-- <a class="collapse-item" href="/report-scheme">Payment Type</a> -->
             <a class="collapse-item" href="/report-collection">Collections</a>
             <a class="collapse-item" href="/report-payable">Account's Payable</a>

@@ -69,6 +69,7 @@ Route::resource('report-client','ReportClientController');
 Route::resource('report-scheme','ReportSchemeController');
 Route::resource('report-collection','ReportCollectionController');
 Route::resource('report-inhouse','ReportInhouseController');
+Route::resource('report-pdic','PDIC_Controller');
 Route::resource('report-ccollection','ReportCollectionCustomController');
 Route::resource('admin-inhouse','InHouseCollectionController');
 Route::resource('report-payable','ReportPayableController');
