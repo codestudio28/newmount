@@ -149,7 +149,7 @@ class MiscController extends Controller
         $buy = Buy::find($id);
         $client_id= $buy->client_id;
         $property_id = $buy->property_id;
-        $miscs = Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
+        $miscs = Misc::where('client_id',$client_id)->where('property_id',$property_id)->orderBy('date','ASC')->get();
         return view('collection.collect')->with('miscs',$miscs);
 
     }

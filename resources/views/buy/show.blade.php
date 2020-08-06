@@ -65,16 +65,16 @@
                     <div class="col-md-12">
                       <div class="form-group">
                     {{Form::label('course_title', "Total Miscellaneous")}}
-                    {{Form::text('totalmisc',$total_misc,['class'=>'form-control','placeholder'=>'Enter loanable amount','step'=>'0.0001','disabled'])}}
+                    {{Form::text('totalmisc',$total_misc,['class'=>'form-control','placeholder'=>'Enter loanable amount','step'=>'0.0001','id'=>'totalms','onchange'=>'changeProperty()'])}}
                               </div>
-                               <input type="hidden" name="totalm" value="{{$total_misc}}">
+                               <input type="hidden" id="totalm" name="totalm" value="{{$total_misc}}">
                     </div>
                     <div class="col-md-12">
                       <div class="form-group">
                     {{Form::label('course_title', "Monthly Miscellaneous")}}
-                    {{Form::text('monthlymisc',$monthly_misc,['class'=>'form-control','placeholder'=>'Enter loanable amount','step'=>'0.0001','disabled'])}}
+                    {{Form::text('monthlymisc',$monthly_misc,['class'=>'form-control','placeholder'=>'Enter loanable amount','step'=>'0.0001','id'=>'monthlyms','onchange'=>'changePropertyMs()'])}}
                               </div>
-                               <input type="hidden" name="monthlym" value="{{$monthly_misc}}">
+                               <input type="hidden" name="monthlym" id="monthlym" value="{{$monthly_misc}}">
                     </div>
                     <div class="col-md-12">
                       <div class="form-group">
@@ -130,7 +130,14 @@
   <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
   <script type="text/javascript">
     function changeProperty(){
-      alert("TEST");
+      var totalm = document.getElementById('totalms').value;
+      document.getElementById('totalm').value=totalm;
+
+    }
+     function changePropertyMs(){
+      var monthlym = document.getElementById('monthlyms').value;
+      document.getElementById('monthlym').value=monthlym;
+
     }
   </script>
 

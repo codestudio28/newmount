@@ -6,6 +6,11 @@
           <!-- Page Heading -->
            <div class="d-sm-flex align-items-center justify-content-between mb-4">
           <h5 class="h5 mb-2 text-gray-800">Collections / List of Misc Payment</h5>
+           <a class="btn btn-info" data-toggle="modal" data-target="#addPayment" href="#"
+                          >
+              <i class="fa fa-plus"></i>
+              Add Payment
+          </a>
         </div>
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
@@ -34,12 +39,16 @@
                     <tr>
                       <td>{{$misc->date}}</td>
                    
-                         <td>Php. {{$misc->balance}}</td>
+                      <td>Php. {{number_format($misc->balance,2)}}</td>
                      
-                     
-                      <td>Php. {{$misc->misc_fee}}</td>
-                      <td>{{round($misc->penalty,2)}}</td>
-                      <td>{{$misc->payment}}</td>
+                      <td>Php. {{number_format($misc->misc_fee,2)}}</td>
+                   
+                      <td>Php. {{round($misc->penalty,2)}}</td>
+                      @if($misc->status=="PAID")
+                          <td>Php. {{number_format($misc->payment,2)}}</td>
+                      @else
+                         <td>{{$misc->payment}}</td>
+                      @endif
                       <td>{{$misc->payment_type}}</td>
                       <td>{{$misc->status}}</td>
                       <td><center>
@@ -217,6 +226,94 @@
   </div>
  @endforeach 
  
+
+<div class="modal fade" id="addPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Payment</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+       {{ Form::open(['action' => 'PaymentController@store','method'=>'POST','enctype'=>'multipart/form-data'])}}
+        <div class="modal-body">
+           <div class="row">
+              <div class="col-md-12">
+                <input type="hidden" value="{{$miscs[0]->id}}" name="miscid">
+                  <div class="form-group">
+               {{Form::label('typename', 'Choose Payment Type')}}
+                <select class="form-control" name="paymenttype" id="paymenttype" onChange="choosePaymentType()">
+                    <option value="Cash">Cash</option>
+                    <option value="Bank">Bank</option>
+                    <option value="Paymaya">Paymaya</option>
+                    <option value="Paypal">Paypal</option>
+                    <option value="GCash">GCash</option>
+                </select>
+    
+            </div>
+              </div>
+                <div class="col-md-12">
+                <div class="form-group">
+         {{Form::label('firstname_title', "Payment Due Date")}}
+        {{Form::date('paymentduedate','',['class'=>'form-control','placeholder'=>'Enter payment due date','required'=>true])}}
+                  </div>
+               </div>
+               <div class="col-md-12">
+                <div class="form-group">
+         {{Form::label('firstname_title', "Payment Date")}}
+        {{Form::date('paymentdate','',['class'=>'form-control','placeholder'=>'Enter payment date','required'=>true])}}
+                  </div>
+               </div>
+               <div class="col-md-12">
+                <div class="form-group">
+         {{Form::label('firstname_title', "Payment")}}
+        {{Form::number('payment','',['class'=>'form-control','placeholder'=>'Enter payment','required'=>true,'step'=>'0.00001'])}}
+                  </div>
+               </div>
+                <div class="col-md-12">
+                <div class="form-group">
+         {{Form::label('firstname_title', "O.R. / A.R")}}
+        {{Form::text('orar','',['class'=>'form-control','placeholder'=>'Enter O.R. / A.R. /','required'=>true])}}
+                  </div>
+               </div>
+               <div class="col-md-12" >
+                    <div class="row" id="banks">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                   {{Form::label('firstname_title', "Bank")}}
+                  {{Form::text('bank','',['class'=>'form-control','placeholder'=>'Enter bank name','id'=>'bank_id'])}}
+                            </div>
+                         </div>
+                         <div class="col-md-12">
+                          <div class="form-group">
+                   {{Form::label('firstname_title', "Branch")}}
+                  {{Form::text('branch','',['class'=>'form-control','placeholder'=>'Enter branch','id'=>'branch_id'])}}
+                            </div>
+                         </div>
+                         <div class="col-md-12">
+                          <div class="form-group">
+                   {{Form::label('firstname_title', "Cheque Number")}}
+                  {{Form::text('cheque','',['class'=>'form-control','placeholder'=>'Enter cheque number','id'=>'cheque_id'])}}
+                            </div>
+                         </div>
+                    </div>
+               </div>
+           </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+           
+          
+          {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
  <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
 <script type="text/javascript">
   function choosePaymentType(){

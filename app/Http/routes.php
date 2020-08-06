@@ -52,6 +52,8 @@ Route::resource('admin-cms','CMSController');
 Route::resource('property-single','SingleController');
 Route::resource('admin-inquiry','InquiryController');
 Route::resource('admin-buy','BuyController');
+Route::resource('admin-payment','PaymentController');
+Route::resource('admin-paymentequity','PaymentEquityController');
 Route::resource('admin-collection','CollectionController');
 Route::resource('admin-equity','EquityController');
 Route::resource('admin-misc','MiscController');
