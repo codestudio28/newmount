@@ -247,7 +247,7 @@
               <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('firstname_title', "If rent, indicate your monthly rental")}}
-        {{Form::number('monthlyrental','',['class'=>'form-control','placeholder'=>'Enter address 1'])}}
+        {{Form::number('monthlyrental','',['class'=>'form-control','placeholder'=>'Enter your rent monthly'])}}
                   </div>
                </div>
                <div class="col-md-12">

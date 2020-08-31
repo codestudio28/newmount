@@ -34,7 +34,7 @@
                       <tr>
                       <td>{{$index+1}}</td>
                       <td>{{$client->firstname}} {{$client->middlename}} {{$client->lastname}}</td>
-                      <td>{{$client->address1}} {{$client->barangay}} {{$client->city}} {{$client->province}}</td>
+                      <td>{{$client->address1}} {{$client->address2}} {{$client->city}} {{$client->province}}</td>
                       <td><center>
                         <a class="btn btn-success" href="/admin-client/{{$client->id}}/edit" 
                         >
