@@ -58,6 +58,10 @@
                    <a href="/report-pdic/list_of_collection" class="btn btn-success button-class">
                      <i class="fa fa-print"></i>
                    </a>
+                     <a href="/report-pdic/list_of_collection/edit" class="btn btn-success button-class">
+                     <i class="fa fa-excel"></i>
+                     Excel
+                   </a>
                     </div>
                   </div>
 
@@ -103,19 +107,24 @@
                         <td style="width:8%;">Php. {{number_format($buy->tcp,2)}}</td>
                         <td style="width:8%;">Php. {{number_format($buy->totalmisc,2)}}</td>
                         <td style="width:8%;">Php. {{number_format($buy->totalequity,2)}}</td>
-                        @foreach($buy->client->misc as $key=>$mic)
-                          @if($mic->payment!="")
-                            @php
-                              $mftotal=$mftotal+$mic->payment;
-                            @endphp
-                          @endif
-                        @endforeach
+                         @foreach($buy->client->misc as $key=>$mic)
+                             @if(($buy->client_id==$mic->client_id)&&($buy->property_id==$mic->property_id))
+                                   @if($mic->payment!="")
+                                      @php
+                                        $mftotal=$mftotal+$mic->payment;
+                                      @endphp
+                                    @endif
+                             @endif
+                          @endforeach
                         @foreach($buy->client->equity as $key=>$eq)
-                          @if($eq->payment!="")
-                            @php
-                              $equitytotal=$equitytotal+$eq->payment;
-                            @endphp
+                          @if(($buy->client_id==$eq->client_id)&&($buy->property_id==$eq->property_id))
+                                @if($eq->payment!="")
+                                @php
+                                  $equitytotal=$equitytotal+$eq->payment;
+                                @endphp
+                              @endif
                           @endif
+                        
                         @endforeach
                         <td style="width:8%;">Php. {{number_format($mftotal,2)}}</td>
                         <td style="width:8%;">Php. {{number_format($equitytotal,2)}}</td>
@@ -143,19 +152,24 @@
                           <td style="width:8%;">Php. {{number_format($buy->totalmisc,2)}}</td>
                           <td style="width:8%;">Php. {{number_format($buy->totalequity,2)}}</td>
                           @foreach($buy->client->misc as $key=>$mic)
-                            @if($mic->payment!="")
-                              @php
-                                $mftotal=$mftotal+$mic->payment;
-                              @endphp
-                            @endif
+                             @if(($buy->client_id==$mic->client_id)&&($buy->property_id==$mic->property_id))
+                                   @if($mic->payment!="")
+                                      @php
+                                        $mftotal=$mftotal+$mic->payment;
+                                      @endphp
+                                    @endif
+                             @endif
                           @endforeach
-                          @foreach($buy->client->equity as $key=>$eq)
-                            @if($eq->payment!="")
-                              @php
-                                $equitytotal=$equitytotal+$eq->payment;
-                              @endphp
-                            @endif
-                          @endforeach
+                           @foreach($buy->client->equity as $key=>$eq)
+                          @if(($buy->client_id==$eq->client_id)&&($buy->property_id==$eq->property_id))
+                                @if($eq->payment!="")
+                                @php
+                                  $equitytotal=$equitytotal+$eq->payment;
+                                @endphp
+                              @endif
+                          @endif
+                        
+                        @endforeach
                           <td style="width:8%;">Php. {{number_format($mftotal,2)}}</td>
                           <td style="width:8%;">Php. {{number_format($equitytotal,2)}}</td>
                          

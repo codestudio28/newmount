@@ -11,6 +11,7 @@ use App\Buy;
 use App\Misc;
 use App\Equity;
 use Codedge\Fpdf\Fpdf\Fpdf;
+use Excel;
 class PDIC_Controller extends Controller
 {
       private $fpdf;
@@ -353,15 +354,21 @@ class PDIC_Controller extends Controller
             $this->fpdf->Cell(30,7,'Php. '.number_format($buy->totalequity,2),1,0,'R');
 
             foreach ($buy->client->misc as $key => $mic) {
-                if($mic->payment!=""){
+                 if(($buy->client_id==$mic->client_id)&&($buy->property_id==$mic->property_id)){
+                      if($mic->payment!=""){
                     $totalmisc=$totalmisc+$mic->payment;
-                }
+                    }    
+                 }
+              
             }
 
             foreach ($buy->client->equity as $key => $eq) {
-                if($eq->payment!=""){
-                    $totalequity=$totalequity+$eq->payment;
-                }
+                 if(($buy->client_id==$eq->client_id)&&($buy->property_id==$eq->property_id)){
+                     if($eq->payment!=""){
+                        $totalequity=$totalequity+$eq->payment;
+                    }
+                 }
+               
             }
             $mfbalance = $buy->totalmisc - $totalmisc;
             $eqbalance = $buy->totalequity - $totalequity;
@@ -400,7 +407,157 @@ class PDIC_Controller extends Controller
      */
     public function edit($id)
     {
-        //
+        date_default_timezone_set("Asia/Manila");
+            $year =date('Y');
+            $month=date('m');
+            $day=date('d');
+        $today=$year."-".$month."-".$day;
+
+        $totalrecords = session('totalrecords');
+        if(strlen($totalrecords)<=0){
+            session()->put('totalrecords',0);
+          
+        }
+        $startrecords = session('startrecords');
+        if(strlen($startrecords)<=0){
+            session()->put('startrecords',1);
+          
+        }
+        $sfiltered = session('filtered');
+        if(strlen($sfiltered)<=0){
+            session()->put('filtered','ALL');
+          
+        }
+        $srecords = session('records');
+        if(strlen($srecords)<=0){
+            session()->put('records','10');
+          
+        }
+
+         $ssearch = session('search');
+        if(strlen($ssearch)<=0){
+            session()->put('search','');
+          
+        }
+         $sdatefrom = session('datefrom');
+        if(strlen($sdatefrom)<=0){
+            session()->put('datefrom',$today);
+          
+        }
+        $sdateto = session('dateto');
+        if(strlen($sdateto)<=0){
+            session()->put('dateto',$today);
+          
+        }
+
+        $datefrom =session('datefrom');
+        $dateto =session('dateto');
+        $filtered = session('filtered');
+        $records = session('records');
+        $search = session('search');
+           date_default_timezone_set("Asia/Manila");
+        $year =date('Y');
+        $month=date('m');
+        $day=date('d');
+        $hour=date('G');
+        $min=date('i');
+        $sec=date('s');
+
+        $dates=$year."-".$month."-".$day;
+        $times=$hour.":".$min.":".$sec;
+         $buys = Buy::where("status",'ACTIVE')->orderBy('id','desc')->take($records)->get();
+         
+         // $pdic_array[]=array('#','Client Name','Block and Lot','CTS','Type','TCP','MF','Equity','MF Payment','Equity Payment','Unpaid MF','Unpaid Equity','Balance MF','Balance Equity');
+
+          $pdic_array[]=array('No','Client Name','Block','Lot','CTS','Type','TCP','MF','Equity','MF Payment','Equity Payment','MF Unpaid','Equity Unpaid','MF Penalty','Equity Penalty','MF Balance','Equity Balance');
+
+        $count=1;
+         foreach ($buys as $key => $buy) {
+            $totalmisc=0;
+            $unpaidmisc=0;
+            
+            $misc_penalty=0;
+            $equity_penalty=0;
+
+            $client_id = $buy->client_id;
+            $property_id=$buy->property_id;
+
+            $miscpen = Misc::where('property_id',$property_id)->where('client_id',$client_id)->orderBy('date','ASC')->get();
+            $misccount = count($miscpen);
+
+            if($misccount>1){
+                $misc_penalty=$miscpen[$misccount-2]->penalty;
+            }else{
+                $misc_penalty=0;
+            }
+          
+            $eqpen = Equity::where('property_id',$property_id)->where('client_id',$client_id)->orderBy('date','ASC')->get();
+            $eqcount = count($eqpen);
+
+             if($eqcount>1){
+                $equity_penalty=$eqpen[$eqcount-2]->penalty;
+            }else{
+               $equity_penalty=0;
+            }
+
+            foreach ($buy->client->misc as $key => $mic) {
+                if(($buy->client_id==$mic->client_id)&&($buy->property_id==$mic->property_id)){
+                       if($mic->payment!=""){
+                            $totalmisc=$totalmisc+$mic->payment;
+                        }
+
+                        if($mic->status=='UNPAID'){
+                            $unpaidmisc=$unpaidmisc+$mic->misc_fee;
+                        }
+                }
+             
+            }
+             $totalequity=0;
+              $unpaidequity=0;
+            foreach ($buy->client->equity as $key => $eq) {
+                if(($buy->client_id==$eq->client_id)&&($buy->property_id==$eq->property_id)){
+                     if($eq->payment!=""){
+                        $totalequity=$totalequity+$eq->payment;
+                    }
+                    if($eq->status=='UNPAID'){
+                            $unpaidequity=$unpaidequity+$eq->equity_fee;
+                    }
+                }
+               
+            }
+
+            $mfbalance = $buy->totalmisc - $totalmisc;
+            $eqbalance = $buy->totalequity - $totalequity;
+
+             $pdic_array[]=array(
+                'No' => $count,
+                'Client Name' => $buy->client->firstname.''.$buy->client->lastname,
+                'Block'=> $buy->property->block,
+                'Lot'=>$buy->property->lot,
+                'CTS' => $buy->cts,
+                'Type' => $buy->property->proptype->typename,
+                'TCP' => $buy->tcp,
+                'MF' => $buy->totalmisc,
+                'Equity' => $buy->totalequity,
+                'MF Payment' => $totalmisc,
+                'Equity Payment' => $totalequity,
+                'MF Unpaid' => $unpaidmisc,
+                'Equity Unpaid' => $unpaidequity,
+                'MF Penalty' => $misc_penalty,
+                'Equity Penalty' => $equity_penalty,
+                'MF Balance' => $mfbalance,
+                'Equity Balance' => $eqbalance,
+              
+             );
+               $count++;    
+         }
+
+         Excel::create('PDIC Reports', function($excel) use ($pdic_array){
+            $excel->setTitle('PDIC Report');
+            $excel->sheet('PDIC Report', function($sheet) use ($pdic_array){
+                $sheet->fromArray($pdic_array,null,'A1',false,false);
+            });
+         })->download('xlsx');
     }
 
     /**

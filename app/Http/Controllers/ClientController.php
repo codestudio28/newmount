@@ -51,10 +51,13 @@ class ClientController extends Controller
          $this->validate($request,[
             'firstname'=>'required',
             'lastname'=>'required',
+            'birthdate'=>'required',
             'address1'=>'required',
-            'barangay'=>'required',
             'city'=>'required',
-            'province'=>'required',
+            'zipcode'=>'required',
+            'mobilenumber'=>'required',
+            'employmentstatus'=>'required',
+            'employer'=>'required',
             'sales_rep'=>'required'
         ]);
 
@@ -67,23 +70,60 @@ class ClientController extends Controller
 
              }
          
-
-
+            $status="ACTIVE";
+            $client = new Client;
+            $client->firstname = $request->input('firstname');
+            $client->middlename= $request->input('middlename');
+            $client->lastname= $request->input('lastname');
+            $client->contactnumber= $request->input('mobilenumber');
+            $client->address1= $request->input('address1');
+            $client->city= $request->input('city');
+            $client->status= $status;
+            $client->sales_rep= $request->input('sales_rep');
+            $client->birthdate= $request->input('birthdate');
+            $client->civilstatus= $request->input('civilstatus');
+            $client->spouse= $request->input('spouse');
+            $client->work= $request->input('spouse_work');
+            $client->dependent= $request->input('dependent_study');
+            $client->address2= $request->input('address2');
+            $client->zipcode= $request->input('zipcode');
+            $client->emailadd= $request->input('emailadd');
+            $client->employementstatus= $request->input('employmentstatus');
+            $client->employername= $request->input('employer');
+            $client->naturebusiness= $request->input('nature');
+            $client->officeaddress= $request->input('officeaddress');
+            $client->officenumber= $request->input('officenumber');
+            $client->position= $request->input('position');
+            $client->basicsalary= $request->input('salary');
+            $client->allowance= $request->input('allowance');
+            $client->yearsemployed= $request->input('years');
+            $client->othersource= $request->input('othersource');
+            $client->living= $request->input('livingwith');
+            $client->finance= $request->input('finance');
+            $client->tin= $request->input('tin');
+            $client->sss= $request->input('sss');
+            $client->passport= $request->input('passport');
+            $client->passportvalid= $request->input('passportvalid');
+            $client->driver= $request->input('driver');
+            $client->drivervalid= $request->input('drivervalid');
+            $client->prc= $request->input('prc');
+            $client->prcvalid= $request->input('prcvalid');
+            $client->rental= $request->input('monthlyrental');
+             $client->save();
 
       
-        $status="ACTIVE";
-        $client = new Client;
-        $client->firstname = $request->input('firstname');
-        $client->middlename = $request->input('middlename');
-        $client->lastname = $request->input('lastname');
-        $client->contactnumber = $request->input('contactnumber');
-        $client->address1 = $request->input('address1');
-        $client->barangay = $request->input('barangay');
-        $client->city = $request->input('city');
-        $client->province = $request->input('province');
-        $client->sales_rep = $request->input('sales_rep');
-        $client->status = $status;
-        $client->save();
+        // $status="ACTIVE";
+        // $client = new Client;
+        // $client->firstname = $request->input('firstname');
+        // $client->middlename = $request->input('middlename');
+        // $client->lastname = $request->input('lastname');
+        // $client->contactnumber = $request->input('contactnumber');
+        // $client->address1 = $request->input('address1');
+        // $client->barangay = $request->input('barangay');
+        // $client->city = $request->input('city');
+        // $client->province = $request->input('province');
+        // $client->sales_rep = $request->input('sales_rep');
+        // $client->status = $status;
 
 
           $admin_id=session('Data')[0]->id;
@@ -138,10 +178,13 @@ class ClientController extends Controller
          $this->validate($request,[
             'firstname'=>'required',
             'lastname'=>'required',
+            'birthdate'=>'required',
             'address1'=>'required',
-            'barangay'=>'required',
             'city'=>'required',
-            'province'=>'required',
+            'zipcode'=>'required',
+            'mobilenumber'=>'required',
+            'employmentstatus'=>'required',
+            'employer'=>'required',
             'sales_rep'=>'required'
         ]);
 
@@ -164,15 +207,42 @@ class ClientController extends Controller
      
         $client = Client::find($id);
         $client->firstname = $request->input('firstname');
-        $client->middlename = $request->input('middlename');
-        $client->lastname = $request->input('lastname');
-        $client->contactnumber = $request->input('contactnumber');
-        $client->address1 = $request->input('address1');
-        $client->barangay = $request->input('barangay');
-        $client->city = $request->input('city');
-        $client->province = $request->input('province');
-        $client->sales_rep = $request->input('sales_rep');
-        $client->save();
+            $client->middlename= $request->input('middlename');
+            $client->lastname= $request->input('lastname');
+            $client->contactnumber= $request->input('mobilenumber');
+            $client->address1= $request->input('address1');
+            $client->city= $request->input('city');
+            $client->sales_rep= $request->input('sales_rep');
+            $client->birthdate= $request->input('birthdate');
+            $client->civilstatus= $request->input('civilstatus');
+            $client->spouse= $request->input('spouse');
+            $client->work= $request->input('spouse_work');
+            $client->dependent= $request->input('dependent_study');
+            $client->address2= $request->input('address2');
+            $client->zipcode= $request->input('zipcode');
+            $client->emailadd= $request->input('emailadd');
+            $client->employementstatus= $request->input('employmentstatus');
+            $client->employername= $request->input('employer');
+            $client->naturebusiness= $request->input('nature');
+            $client->officeaddress= $request->input('officeaddress');
+            $client->officenumber= $request->input('officenumber');
+            $client->position= $request->input('position');
+            $client->basicsalary= $request->input('salary');
+            $client->allowance= $request->input('allowance');
+            $client->yearsemployed= $request->input('years');
+            $client->othersource= $request->input('othersource');
+            $client->living= $request->input('livingwith');
+            $client->finance= $request->input('finance');
+            $client->tin= $request->input('tin');
+            $client->sss= $request->input('sss');
+            $client->passport= $request->input('passport');
+            $client->passportvalid= $request->input('passportvalid');
+            $client->driver= $request->input('driver');
+            $client->drivervalid= $request->input('drivervalid');
+            $client->prc= $request->input('prc');
+            $client->prcvalid= $request->input('prcvalid');
+            $client->rental= $request->input('monthlyrental');
+             $client->save();
 
 
             $admin_id=session('Data')[0]->id;

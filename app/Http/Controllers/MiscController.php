@@ -164,726 +164,264 @@ class MiscController extends Controller
     public function update(Request $request, $id)
     {
         $process = $request->input('process');
-         if($process=="VOID"){
-            $this->validate($request,[
-            'pin'=>'required'
-            ]);
-            $pins = Pin::all();
-            $pin_id = $pins[0]->id;
-            $pin = Pin::find($pin_id);
-
-            $pin_password = $pin->pin;
-            if($pin_password==$request->input('pin')){
-                $miscs = Misc::all();
-                $misc = Misc::find($id);
-            
-                $client_id = $misc->client_id;
-                $property_id = $misc->property_id;
-                $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                $buy_id=$buy[0]->id;
-                 $nummisc=Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                $len_misc= count($nummisc);
-
-                $misc_penalty = (($buy[0]->misc_penalty)/100);
-                $lastpenalty =$nummisc[$len_misc-2]->penalty;
-               
-                $last_payment = $misc->payment;
-                $payment_penalty = $last_payment * $misc_penalty;
-                $total_penalty = $payment_penalty +  $lastpenalty;
-
-                $balance = $nummisc[$len_misc-1]->balance;
-
-                $newbalance = $balance+$last_payment;
-
-
-        
-                $misc_id = $nummisc[$len_misc-2]->id;
-                $miscpenalty = Misc::find($misc_id);
-                $miscpenalty->penalty= $total_penalty;
-                $miscpenalty->balance = $newbalance;
-                $miscpenalty->save();
-
-                $misc_void =  Misc::find($id);
-                $misc_void->status="VOID";
-                $misc_void->save();
-                
-                $newbal_id = $nummisc[$len_misc-1]->id;
-                $newbal = Misc::find($newbal_id);
-                $newbal->balance = $newbalance;
-                $newbal->save();
-
-$admin_id=session('Data')[0]->id;
-
-        $log = new Log;
-        $log->admin_id=$admin_id;
-        $log->module="Miscellaneous";
-        $log->description="Set miscellaneous void";
-        $log->save();
-
-                $path = "admin-misc/".$buy_id."/edit";
-                return redirect($path)->with('success','Successfully set payment to void.');
-
-
-
-
-            }else{
-            $misc = Misc::find($id);
-            $miscs = Misc::all();
-            $client_id = $misc->client_id;
-            $property_id = $misc->property_id;
-            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-            $buy_id=$buy[0]->id;
-
-                $path = "admin-misc/".$buy_id."/edit";
-            return redirect($path)->with('error','Wrong pin password.');
-            }
-
-           
-        }else if($process=="UNPAID"){
-            $miscs = Misc::all();
-            $misc = Misc::find($id);
-                
-            $client_id = $misc->client_id;
-            $property_id = $misc->property_id;
-                
-            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-            $buy_id=$buy[0]->id;
-            $misc_penalty = (($buy[0]->misc_penalty)/100);
-            $nummisc=Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
-            $len_misc= count($nummisc);
-            $balance = $nummisc[$len_misc-1]->balance;
-            $misc_fee = $misc->misc_fee;
-            $payment = $request->input('payment');
-
-            $olddate = $misc->date;
-            if($len_misc<=1){
-                $penalty = $misc_fee*$misc_penalty;
-            }else{
-                $bal = $nummisc[$len_misc-2]->penalty;
-                $bal_penalty =$bal + ($bal*$misc_penalty);
-                $m_penalty = $misc_fee*$misc_penalty;
-                $penalty = $m_penalty + $bal_penalty;
-            }
-
-            date_default_timezone_set("Asia/Manila");
-            $year =date('Y');
-            $month=date('m');
-            $day=date('d');
-            $today = $year."-".$month."-".$day;
-            $dt = strtotime($olddate);
-                $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                $misc->balance = $balance;
-                $misc->penalty = $penalty;
-                $misc->payment = "0";
-                $misc->datepaid = $today;
-                $misc->status = "UNPAID";
-                $misc->save();
-
-
-                 $dt = strtotime($olddate);
-            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-            
-            $newmisc = new Misc;
-            $newmisc->client_id = $client_id;
-            $newmisc->property_id = $property_id;
-            $newmisc->date = $nextdate;
-            $newmisc->balance=$balance;
-            $newmisc->misc_fee=$misc_fee;
-            $newmisc->status="PENDING";
-            $newmisc->save();
-
-
-          $admin_id=session('Data')[0]->id;
-
-        $log = new Log;
-        $log->admin_id=$admin_id;
-        $log->module="Miscellaneous";
-        $log->description="Set miscellaneous unpaid";
-        $log->save();
-               $path = "admin-misc/".$buy_id."/edit";
-            return redirect($path)->with('success','Successfully set payment to unpaid.');  
-
-
-
-        }elseif($process=="PAID"){
+        if($process=="PAID"){
              $paymenttype=$request->input('paymenttype');
-            if($paymenttype=="Bank"){
-            $this->validate($request,[
-            'payment'=>'required',
-            'orar'=>'required',
-            'bank'=>'required',
-            'branch'=>'required',
-            'cheque'=>'required',
-            ]);
-            }else{
+              if($paymenttype=="Bank"){
                 $this->validate($request,[
                 'payment'=>'required',
                 'orar'=>'required',
+                'bank'=>'required',
+                'branch'=>'required',
+                'cheque'=>'required',
                 ]);
-            }
-            date_default_timezone_set("Asia/Manila");
-            $year =date('Y');
-            $month=date('m');
-            $day=date('d');
-            $today = $year."-".$month."-".$day;
-
-            $or = Misc::where('aror',$request->input('orar'))->get();
-            if(count($or)>0){
-                 $miscs = Misc::all();
-                $misc = Misc::find($id);
-                
-                $client_id = $misc->client_id;
-                $property_id = $misc->property_id;
-                  $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                     $buy_id=$buy[0]->id;
-                $path = "admin-misc/".$buy_id."/edit";
-                return redirect($path)->with('error','AR number is already in the system.'); 
-            }else{
-                $miscs = Misc::all();
-                $misc = Misc::find($id);
-                
-                $client_id = $misc->client_id;
-                $property_id = $misc->property_id;
-                
-                $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                 $buy_id=$buy[0]->id;
-                $misc_penalty = (($buy[0]->misc_penalty)/100);
-                $nummisc=Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                $len_misc= count($nummisc);
-                $balance = $nummisc[$len_misc-1]->balance;
-                $misc_fee = $misc->misc_fee;
-                $payment = $request->input('payment');
-
-                if($paymenttype=="Bank"){
-                     $checks = Misc::where('checknumber',$request->input('cheque'))->get();
-
-                    if(count($checks)>0){
-                    $path = "admin-misc/".$buy_id."/edit";
-                    return redirect($path)->with('error','Cheque already in used.'); 
-                    }
-                }
-
-                $olddate = $misc->date;
-                 if($payment>=$balance){
-                         if($len_misc<=1){
-                        $bal = $misc_fee - $payment;
-                        $penalty = $bal *  $misc_penalty;
-                    }else{
-                        $changes =$payment-$balance;
-                        if($changes<=0){
-                            $penalty=0;
-                        }else{
-                          $oldbal= $nummisc[$len_misc-2]->penalty;
-                          if($oldbal<=0){
-                            $penalty=0;
-                          }else{
-                            $penalty = $oldbal + ($oldbal*$misc_penalty);
-                          }                    
-                        }
-                       
-                    }
-
-                     if($paymenttype=="Bank"){
-                        $newbalance = $balance - $payment;
-                        $misc->balance = $newbalance;
-                        $misc->penalty = $penalty;
-                        $misc->payment = $payment;
-                        $misc->payment_type = $paymenttype;
-                        $misc->checknumber = $request->input('cheque');
-                        $misc->bankname = $request->input('bank');
-                        $misc->branch = $request->input('branch');
-                        $misc->datepaid = $request->input('paymentdate');
-                        $misc->aror =$request->input('orar');
-                        $misc->status = "PAID";
-                        $misc->save();
-                     }else{
-                        $newbalance = $balance - $payment;
-                        $misc->balance = $newbalance;
-                        $misc->penalty = $penalty;
-                        $misc->payment = $payment;
-                        $misc->payment_type = $paymenttype;
-                        $misc->datepaid = $request->input('paymentdate');
-                        $misc->aror =$request->input('orar');
-                        $misc->status = "PAID";
-                        $misc->save();
-                     }
-                   
-                    if($newbalance<=0){
-                         $path = "admin-misc/".$buy_id."/edit";
-                                return redirect($path)->with('success','Payment completed.'); 
-                    }else{
-                        $dt = strtotime($olddate);
-                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                        
-                        $newmisc = new Misc;
-                        $newmisc->client_id = $client_id;
-                        $newmisc->property_id = $property_id;
-                        $newmisc->date = $nextdate;
-                        $newmisc->balance=$newbalance;
-                        $newmisc->misc_fee=$misc_fee;
-                        $newmisc->status="PENDING";
-                        $newmisc->save();
-
-                    }
                 }else{
-                     if($misc_fee>$payment){
-                         if($len_misc<=1){
-                        $bal = $misc_fee - $payment;
-                        $penalty = $bal *  $misc_penalty;
-                        }else{
-                            $oldbal = $nummisc[$len_misc-2]->penalty;
-                            $oldbal = $oldbal + ($oldbal*$misc_penalty);
-                            $bal = $misc_fee - $payment;
-                            $bal = $bal*$misc_penalty;
-                            $totalbal = $bal+$oldbal;
-                            $penalty = $totalbal;
-                        }
-                         if($paymenttype=="Bank"){
-                             $newbalance = $balance - $payment;
-                            $misc->balance = $newbalance;
-                            $misc->penalty = $penalty;
-                            $misc->payment = $payment;
-                            $misc->payment_type = $paymenttype;
-                            $misc->checknumber = $request->input('cheque');
-                            $misc->bankname = $request->input('bank');
-                            $misc->branch = $request->input('branch');
-                            $misc->datepaid = $request->input('paymentdate');
-                            $misc->aror =$request->input('orar');
-                            $misc->status = "PAID";
-                            $misc->save();
-                        }else{
-                            $newbalance = $balance - $payment;
-                            $misc->balance = $newbalance;
-                            $misc->penalty = $penalty;
-                            $misc->payment = $payment;
-                            $misc->payment_type = $paymenttype;
-                            $misc->datepaid = $request->input('paymentdate');
-                            $misc->aror =$request->input('orar');
-                            $misc->status = "PAID";
-                            $misc->save();
-                        }
-                        if($newbalance<=0){
-                             $path = "admin-misc/".$buy_id."/edit";
-                                    return redirect($path)->with('success','Payment completed.'); 
-                        }else{
-                            $dt = strtotime($olddate);
-                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                            
-                            $newmisc = new Misc;
-                            $newmisc->client_id = $client_id;
-                            $newmisc->property_id = $property_id;
-                            $newmisc->date = $nextdate;
-                            $newmisc->balance=$newbalance;
-                            $newmisc->misc_fee=$misc_fee;
-                            $newmisc->status="PENDING";
-                            $newmisc->save();
+                    $this->validate($request,[
+                    'payment'=>'required',
+                    'orar'=>'required',
+                    ]);
+                }
+                date_default_timezone_set("Asia/Manila");
+                $year =date('Y');
+                $month=date('m');
+                $day=date('d');
+                $today = $year."-".$month."-".$day;
 
-                        }
-                     }else if($misc_fee==$payment){
-                        if($len_misc<=1){
-                            $penalty = 0;
-                        }else{
-                            $bal = $nummisc[$len_misc-2]->penalty;
-                            $penalty = $bal + ($bal  *  $misc_penalty);
-                        }
+                $or = Misc::where('aror',$request->input('orar'))->get();
+                 if(count($or)>0){
+                    $miscs = Misc::all();
+                    $misc = Misc::find($id);
+                
+                    $client_id = $misc->client_id;
+                    $property_id = $misc->property_id;
+                    $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                    $buy_id=$buy[0]->id;
+                    $path = "admin-misc/".$buy_id."/edit";
+                    return redirect($path)->with('error','AR number is already in the system.'); 
+                }else{
+                     if($paymenttype=="Bank"){
+                        $checks = Misc::where('checknumber',$request->input('cheque'))->get();
 
-                          // Saving
-                          if($paymenttype=="Bank"){
-                             $newbalance = $balance - $payment;
-                            $misc->balance = $newbalance;
-                            $misc->penalty = $penalty;
-                            $misc->payment = $payment;
-                            $misc->payment_type = $paymenttype;
-                            $misc->checknumber = $request->input('cheque');
-                            $misc->bankname = $request->input('bank');
-                            $misc->branch = $request->input('branch');
-                            $misc->datepaid = $request->input('paymentdate');
-                            $misc->aror =$request->input('orar');
-                            $misc->status = "PAID";
-                            $misc->save();
-                            }else{
+                        if(count($checks)>0){
+                            $path = "admin-misc/".$buy_id."/edit";
+                        return redirect($path)->with('error','Cheque already in used.'); 
+                        }
+                    }
+
+                    $misc = Misc::find($id);
+                    $client_id = $misc->client_id;
+                    $property_id = $misc->property_id;
+
+                     $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                    $buy_id=$buy[0]->id;
+                    $misc_penalty = (($buy[0]->misc_penalty)/100);
+                    $balance = $misc->balance;
+                    $amountdue = $misc->amountdue;
+                    $totaldues = $misc->totaldues;
+                    $payment = $request->input('payment');
+                    $olddate =$misc->date;
+                    if($payment<$balance){
+                        if($payment==round($totaldues,2)){
+                            $penalty="0";
+                            $unpaiddues="0";
+                             if($paymenttype=="Bank"){
                                 $newbalance = $balance - $payment;
                                 $misc->balance = $newbalance;
-                                $misc->penalty = $penalty;
+                               
                                 $misc->payment = $payment;
+
+                                $misc->payment_type = $paymenttype;
+                                $misc->checknumber = $request->input('cheque');
+                                $misc->bankname = $request->input('bank');
+                                $misc->branch = $request->input('branch');
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }else{
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                               
+                                $misc->payment = $payment;
+
                                 $misc->payment_type = $paymenttype;
                                 $misc->datepaid = $request->input('paymentdate');
                                 $misc->aror =$request->input('orar');
                                 $misc->status = "PAID";
                                 $misc->save();
-                            }
-
-                        if($newbalance<=0){
-                             $path = "admin-misc/".$buy_id."/edit";
-                                    return redirect($path)->with('success','Payment completed.'); 
-                        }else{
-                            $dt = strtotime($olddate);
-                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                            
-                            $newmisc = new Misc;
-                            $newmisc->client_id = $client_id;
-                            $newmisc->property_id = $property_id;
-                            $newmisc->date = $nextdate;
-                            $newmisc->balance=$newbalance;
-                            $newmisc->misc_fee=$misc_fee;
-                            $newmisc->status="PENDING";
-                            $newmisc->save();
-
-                        }
-
-                    }else if($misc_fee<$payment){
-                         if($len_misc<=1){
-                            $penalty = 0;
-                            $counts=0;
-                             while(true){
-                                 $balpay = $payment-$misc_fee;
-                                  $bal = $penalty;
-                                   if($bal<=0){
-                                        $penalty=0;
-                                    }else{
-                                        if($balpay>$bal){
-                                            $penalty=0;
-                                        }else if($balpay<$bal){
-                                            $bal1 = $bal-$balpay;
-                                            $penalty = $bal1 +($bal1*$misc_penalty);
-                                        }else{
-                                            $penalty=0;
-                                        }
-                                    }
-                                     if($counts<=0){
-
-
-                                        if($penalty<=0){
-                                            if($balpay<$misc_fee){
-                                               
-                                                if($paymenttype=="Bank"){
-                                                    $newbalance = $balance - $payment;
-                                                    $misc->balance = $newbalance;
-                                                    $misc->penalty = $penalty;
-                                                    $misc->payment = $payment;
-                                                    $misc->payment_type = $paymenttype;
-                                                    $misc->checknumber = $request->input('cheque');
-                                                    $misc->bankname = $request->input('bank');
-                                                    $misc->branch = $request->input('branch');
-                                                    $misc->datepaid = $request->input('paymentdate');
-                                                    $misc->aror =$request->input('orar');
-                                                    $misc->status = "PAID";
-                                                    $misc->save();
-                                                }else{
-                                                     $newbalance = $balance - $payment;
-                                                    $misc->balance = $newbalance;
-                                                    $misc->penalty = $penalty;
-                                                    $misc->payment = $payment;
-                                                    $misc->payment_type = $paymenttype;
-                                                    $misc->datepaid = $request->input('paymentdate');
-                                                    $misc->aror =$request->input('orar');
-                                                    $misc->status = "PAID";
-                                                    $misc->save();
-                                                }
-                                                $dt = strtotime($olddate);
-                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                                            
-                                            $newmisc = new Misc;
-                                            $newmisc->client_id = $client_id;
-                                            $newmisc->property_id = $property_id;
-                                            $newmisc->date = $nextdate;
-                                            $newmisc->balance=$newbalance;
-                                            $newmisc->misc_fee=$misc_fee;
-                                            $newmisc->status="PENDING";
-                                            $newmisc->save();
-                                            break;
-                                            } 
-                                        }
-
-
-
-                                        if($paymenttype=="Bank"){
-                                            $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee+$bal;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->checknumber = $request->input('cheque');
-                                            $misc->bankname = $request->input('bank');
-                                            $misc->branch = $request->input('branch');
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                        }else{
-                                             $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee+$bal;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                        }
-                                   
-                                    }else{
-                                         if($paymenttype=="Bank"){
-                                            $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->checknumber = $request->input('cheque');
-                                            $misc->bankname = $request->input('bank');
-                                            $misc->branch = $request->input('branch');
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                         }else{
-                                            $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                         }
-                              
-                                    }
-                                      $counts++;
-                                        
-
-                                        if($newbalance<=0){
-                                             $path = "admin-misc/".$buy_id."/edit";
-                                            return redirect($path)->with('success','Payment completed.'); 
-                                        }else{
-                                            $dt = strtotime($olddate);
-                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                                            
-                                            $newmisc = new Misc;
-                                            $newmisc->client_id = $client_id;
-                                            $newmisc->property_id = $property_id;
-                                            $newmisc->date = $nextdate;
-                                            $newmisc->balance=$newbalance;
-                                            $newmisc->misc_fee=$misc_fee;
-                                            $newmisc->status="PENDING";
-                                            $newmisc->save();
-
-                                        }
-
-                                        $payment=$balpay;
-                                        if($payment<$misc_fee){
-                                            break;
-                                        }else{
-                                            $misc = Misc::where('client_id',$client_id)->where('property_id',$property_id)->orderBy('id', 'desc')->first();
-                                             $nummisc=Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                                            $len_misc= count($nummisc);
-                                            $balance = $nummisc[$len_misc-1]->balance;
-                                            $misc_fee = $misc->misc_fee;
-                                             $olddate = $misc->date;
-
-                                        }
-
                              }
+                                $dt = strtotime($olddate);
+                                $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                $misc = new Misc;
+                                $misc->client_id = $client_id;
+                                $misc->property_id = $property_id;
+                                $misc->date =$nextdate;
+                                $misc->balance =  $newbalance;
+                                $misc->misc_fee = $amountdue;
+                                $misc->amountdue = $amountdue;
+                                $misc->unpaiddues = "0";
+                                $misc->totaldues =  $amountdue;
+                                $misc->penalty = "";
+                                $misc->payment = "";
+                                $misc->payment_type = "";
+                                $misc->aror = "";
+                                $misc->checknumber = "";
+                                $misc->bankname = "";
+                                $misc->branch = "";
+                                $misc->datepaid = "";
+                                $misc->status = "PENDING";
+                                $misc->save();
+                        }else if($payment<round($totaldues,2)){
+
+                            if($request->input('advance')=="YES"){
+                                $unpaiddues=0;
+                                $penalty=0;
+                                $totaldues = $amountdue-$payment;
+                            }else{
+                                $unpaiddues=$totaldues-$payment;
+                                $penalty=$unpaiddues*$misc_penalty;
+                                $totaldues = $amountdue+$penalty+$unpaiddues;     
+                            }
+                          
+                             if($paymenttype=="Bank"){
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                                $misc->payment = $payment;
+                               
+                                $misc->payment_type = $paymenttype;
+                                $misc->checknumber = $request->input('cheque');
+                                $misc->bankname = $request->input('bank');
+                                $misc->branch = $request->input('branch');
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }else{
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                               
+                                $misc->payment = $payment;
+
+                                $misc->payment_type = $paymenttype;
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }
+                                $dt = strtotime($olddate);
+                                $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                $misc = new Misc;
+                                $misc->client_id = $client_id;
+                                $misc->property_id = $property_id;
+                                $misc->date =$nextdate;
+                                $misc->balance =  $newbalance;
+                                $misc->misc_fee = $amountdue;
+                                $misc->amountdue = $amountdue;
+                                $misc->unpaiddues = $unpaiddues;
+                                $misc->totaldues =  $totaldues;
+                                $misc->penalty = $penalty;
+                                $misc->payment = "";
+                                $misc->payment_type = "";
+                                $misc->aror = "";
+                                $misc->checknumber = "";
+                                $misc->bankname = "";
+                                $misc->branch = "";
+                                $misc->datepaid = "";
+                                $misc->status = "PENDING";
+                                $misc->save();
                         }else{
-                             $counts=0;
-                             while(true){
-                                      $balpay = $payment-$misc_fee;
-                                    $bal = $nummisc[$len_misc-2]->penalty;
-                                    if($bal<=0){
-                                        $penalty=0;
-                                    }else{
-                                        if($balpay>$bal){
-                                            $penalty=0;
-                                        }else if($balpay<$bal){
-                                            $bal1 = $bal-$balpay;
-                                            $penalty = $bal1 +($bal1*$misc_penalty);
-                                        }else{
-                                            $penalty=0;
-                                        }
-                                    }
-                                    if($counts<=0){
-
-                                        if($penalty<=0){
-                                            if($balpay<$misc_fee){
-                                               
-                                                if($paymenttype=="Bank"){
-                                                    $newbalance = $balance - $payment;
-                                                    $misc->balance = $newbalance;
-                                                    $misc->penalty = $penalty;
-                                                    $misc->payment = $payment;
-                                                    $misc->payment_type = $paymenttype;
-                                                    $misc->checknumber = $request->input('cheque');
-                                                    $misc->bankname = $request->input('bank');
-                                                    $misc->branch = $request->input('branch');
-                                                    $misc->datepaid = $request->input('paymentdate');
-                                                    $misc->aror =$request->input('orar');
-                                                    $misc->status = "PAID";
-                                                    $misc->save();
-                                                    
-                                                }else{
-                                                     $newbalance = $balance - $payment;
-                                                    $misc->balance = $newbalance;
-                                                    $misc->penalty = $penalty;
-                                                    $misc->payment = $payment;
-                                                    $misc->payment_type = $paymenttype;
-                                                    $misc->datepaid = $request->input('paymentdate');
-                                                    $misc->aror =$request->input('orar');
-                                                    $misc->status = "PAID";
-                                                    $misc->save();
-                                                   
-                                                }
-                                                 $dt = strtotime($olddate);
-                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                                            
-                                            $newmisc = new Misc;
-                                            $newmisc->client_id = $client_id;
-                                            $newmisc->property_id = $property_id;
-                                            $newmisc->date = $nextdate;
-                                            $newmisc->balance=$newbalance;
-                                            $newmisc->misc_fee=$misc_fee;
-                                            $newmisc->status="PENDING";
-                                            $newmisc->save();
-                                            break;
-                                            } 
-                                        }
+                                $change = $payment-$totaldues;
+                                $unpaiddues=0;
+                                $penalty=0;
+                                $totaldues = $amountdue+$penalty+$unpaiddues; 
 
 
-                                        if($paymenttype=="Bank"){
-                                            $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee+$bal;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->checknumber = $request->input('cheque');
-                                            $misc->bankname = $request->input('bank');
-                                            $misc->branch = $request->input('branch');
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                        }else{
-                                             $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee+$bal;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                        }
-                                   
-                                    }else{
-                                          if($penalty<=0){
-                                            if($balpay<$misc_fee){
-                                               
-                                                if($paymenttype=="Bank"){
-                                                    $newbalance = $balance - $payment;
-                                                    $misc->balance = $newbalance;
-                                                    $misc->penalty = $penalty;
-                                                    $misc->payment = $payment;
-                                                    $misc->payment_type = $paymenttype;
-                                                    $misc->checknumber = $request->input('cheque');
-                                                    $misc->bankname = $request->input('bank');
-                                                    $misc->branch = $request->input('branch');
-                                                    $misc->datepaid = $request->input('paymentdate');
-                                                    $misc->aror =$request->input('orar');
-                                                    $misc->status = "PAID";
-                                                    $misc->save();
-                                                   
-                                                }else{
-                                                     $newbalance = $balance - $payment;
-                                                    $misc->balance = $newbalance;
-                                                    $misc->penalty = $penalty;
-                                                    $misc->payment = $payment;
-                                                    $misc->payment_type = $paymenttype;
-                                                    $misc->datepaid = $request->input('paymentdate');
-                                                    $misc->aror =$request->input('orar');
-                                                    $misc->status = "PAID";
-                                                    $misc->save();
-                                                   
-                                                }
-                                                    $dt = strtotime($olddate);
-                                                    $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                                                    
-                                                    $newmisc = new Misc;
-                                                    $newmisc->client_id = $client_id;
-                                                    $newmisc->property_id = $property_id;
-                                                    $newmisc->date = $nextdate;
-                                                    $newmisc->balance=$newbalance;
-                                                    $newmisc->misc_fee=$misc_fee;
-                                                    $newmisc->status="PENDING";
-                                                    $newmisc->save();
-                                                    break;
-                                            } 
-                                        }
-                                         if($paymenttype=="Bank"){
-                                            $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->checknumber = $request->input('cheque');
-                                            $misc->bankname = $request->input('bank');
-                                            $misc->branch = $request->input('branch');
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                         }else{
-                                            $newbalance = $balance - $misc_fee;
-                                            $misc->balance = $newbalance;
-                                            $misc->penalty = $penalty;
-                                            $misc->payment = $misc_fee;
-                                            $misc->payment_type = $paymenttype;
-                                            $misc->datepaid = $request->input('paymentdate');
-                                            $misc->aror =$request->input('orar');
-                                            $misc->status = "PAID";
-                                            $misc->save();
-                                         }
-                              
-                                    }
-                                    $counts++;
-                                        
+                                $mon = round($change/$amountdue)+1;
 
-                                        if($newbalance<=0){
-                                             $path = "admin-misc/".$buy_id."/edit";
-                                            return redirect($path)->with('success','Payment completed.'); 
-                                        }else{
-                                            $dt = strtotime($olddate);
-                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
-                                            
-                                            $newmisc = new Misc;
-                                            $newmisc->client_id = $client_id;
-                                            $newmisc->property_id = $property_id;
-                                            $newmisc->date = $nextdate;
-                                            $newmisc->balance=$newbalance;
-                                            $newmisc->misc_fee=$misc_fee;
-                                            $newmisc->status="PENDING";
-                                            $newmisc->save();
+                             if($paymenttype=="Bank"){
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                                $misc->payment = $payment;
+                               
+                                $misc->payment_type = $paymenttype;
+                                $misc->checknumber = $request->input('cheque');
+                                $misc->bankname = $request->input('bank');
+                                $misc->branch = $request->input('branch');
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }else{
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                               
+                                $misc->payment = $payment;
 
-                                        }
-
-                                        $payment=$balpay;
-                                        if($payment<$misc_fee){
-                                            break;
-                                        }else{
-                                            $misc = Misc::where('client_id',$client_id)->where('property_id',$property_id)->orderBy('id', 'desc')->first();
-                                             $nummisc=Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
-                                            $len_misc= count($nummisc);
-                                            $balance = $nummisc[$len_misc-1]->balance;
-                                            $misc_fee = $misc->misc_fee;
-                                             $olddate = $misc->date;
-
-                                        }
-
-                                    }
+                                $misc->payment_type = $paymenttype;
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }
+                                $dt = strtotime($olddate);
+                                $nextdate = date("Y-m-d", strtotime("+".$mon." month", $dt));
+                                $misc = new Misc;
+                                $misc->client_id = $client_id;
+                                $misc->property_id = $property_id;
+                                $misc->date =$nextdate;
+                                $misc->balance =  $newbalance;
+                                $misc->misc_fee = $amountdue;
+                                $misc->amountdue = $amountdue;
+                                $misc->unpaiddues = $unpaiddues;
+                                $misc->totaldues =  $totaldues;
+                                $misc->penalty = $penalty;
+                                $misc->payment = "";
+                                $misc->payment_type = "";
+                                $misc->aror = "";
+                                $misc->checknumber = "";
+                                $misc->bankname = "";
+                                $misc->branch = "";
+                                $misc->datepaid = "";
+                                $misc->status = "PENDING";
+                                $misc->save();
                         }
+                            
+                    }else{
+                        
 
+                             if($paymenttype=="Bank"){
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                                $misc->payment = $payment;
+                               
+                                $misc->payment_type = $paymenttype;
+                                $misc->checknumber = $request->input('cheque');
+                                $misc->bankname = $request->input('bank');
+                                $misc->branch = $request->input('branch');
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }else{
+                                $newbalance = $balance - $payment;
+                                $misc->balance = $newbalance;
+                               
+                                $misc->payment = $payment;
+
+                                $misc->payment_type = $paymenttype;
+                                $misc->datepaid = $request->input('paymentdate');
+                                $misc->aror =$request->input('orar');
+                                $misc->status = "PAID";
+                                $misc->save();
+                             }
+                               
                     }
-                }
+                        
+                  
+                        
+                  
 
-   $admin_id=session('Data')[0]->id;
+                }
+  $admin_id=session('Data')[0]->id;
 
         $log = new Log;
         $log->admin_id=$admin_id;
@@ -895,9 +433,143 @@ $admin_id=session('Data')[0]->id;
 
          $path = "admin-misc/".$buy_id."/edit";
             return redirect($path)->with('success','Successfully add payment.'); 
-                
+
+        }else if($process=="UNPAID"){
+
+                    $misc = Misc::find($id);
+                    $client_id = $misc->client_id;
+                    $property_id = $misc->property_id;
+
+                     $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                    $buy_id=$buy[0]->id;
+                    $misc_penalty = (($buy[0]->misc_penalty)/100);
+                    $balance = $misc->balance;
+                    $amountdue = $misc->amountdue;
+                    $totaldues = $misc->totaldues;
+                    $payment = $request->input('payment');
+                    $olddate =$misc->date;
+
+                    $unpaiddues=$totaldues;
+                    $penalty=$unpaiddues*$misc_penalty;
+                    $totaldues = $amountdue+$penalty+$unpaiddues; 
+                    
+                    $misc->status = "UNPAID";
+                    $misc->save();
+
+
+                    $dt = strtotime($olddate);
+                    $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                    $misc = new Misc;
+                    $misc->client_id = $client_id;
+                    $misc->property_id = $property_id;
+                    $misc->date =$nextdate;
+                    $misc->balance =  $balance;
+                    $misc->misc_fee = $amountdue;
+                    $misc->amountdue = $amountdue;
+                    $misc->unpaiddues = $unpaiddues;
+                    $misc->totaldues =  $totaldues;
+                    $misc->penalty = $penalty;
+                    $misc->payment = "";
+                    $misc->payment_type = "";
+                    $misc->aror = "";
+                    $misc->checknumber = "";
+                    $misc->bankname = "";
+                    $misc->branch = "";
+                    $misc->datepaid = "";
+                    $misc->status = "PENDING";
+                    $misc->save();
+                      $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Miscellaneous";
+        $log->description="Set miscellaneous unpaid";
+        $log->save();
+
+
+
+         $path = "admin-misc/".$buy_id."/edit";
+            return redirect($path)->with('success','Successfully set unpaid payment.'); 
+        }else{
+            $this->validate($request,[
+            'pin'=>'required'
+            ]);
+            $pins = Pin::all();
+            $pin_id = $pins[0]->id;
+            $pin = Pin::find($pin_id);
+
+            $pin_password = $pin->pin;
+            if($pin_password==$request->input('pin')){
+                    $misc = Misc::find($id);
+
+                    $client_id = $misc->client_id;
+                    $property_id = $misc->property_id;
+
+                    $miscall = Misc::where('client_id',$client_id)->where('property_id',$property_id)->get();
+
+                    $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                    $buy_id=$buy[0]->id;
+                    $misc_penalty = (($buy[0]->misc_penalty)/100);
+                    $balance = $misc->balance;
+                    $amountdue = $misc->amountdue;
+                    $totaldues = $misc->totaldues;
+                    $payment = $request->input('payment');
+                    $olddate =$misc->date;
+
+                    
+                    $misc->status = "VOID";
+                    $misc->save();
+
+
+                    $misc_number =count($miscall);
+                    $misc_id = $miscall[$misc_number-1]->id;
+
+                    $miscs = Misc::find($misc_id);
+                    $oldbalance = $miscs->balance;
+                    $oldunpaid = $miscs->unpaiddues;
+
+                    $unpaiddues = $oldunpaid+$totaldues;
+                    $penalty =  $penalty=$unpaiddues*$misc_penalty;
+                    $newtotaldues = $amountdue+$penalty+$unpaiddues;
+
+                    $newbalance = $oldbalance + $totaldues;
+                    $miscs->balance = $newbalance;
+                    $miscs->unpaiddues = $unpaiddues;
+                    $miscs->penalty = $penalty;
+                    $miscs->totaldues = $newtotaldues;
+                    $miscs->save();
+
+                  
+                  
+            }else{
+                $misc = Misc::find($id);
+                $miscs = Misc::all();
+                $client_id = $misc->client_id;
+                $property_id = $misc->property_id;
+                $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+                $buy_id=$buy[0]->id;
+
+                    $path = "admin-misc/".$buy_id."/edit";
+                return redirect($path)->with('error','Wrong pin password.');
             }
-        }    
+              $admin_id=session('Data')[0]->id;
+
+        $log = new Log;
+        $log->admin_id=$admin_id;
+        $log->module="Miscellaneous";
+        $log->description="Set miscellaneous void";
+        $log->save();
+
+
+
+         $path = "admin-misc/".$buy_id."/edit";
+            return redirect($path)->with('success','Successfully void payment.'); 
+        }
+
+      
+                
+   //          }
+   //      }    
        
     }
 

@@ -5,12 +5,12 @@
 
           <!-- Page Heading -->
            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-          <h5 class="h5 mb-2 text-gray-800">Collections / List of Misc Payment</h5>
-           <a class="btn btn-info" data-toggle="modal" data-target="#addPayment" href="#"
+          <h5 class="h5 mb-2 text-gray-800"><a href="/admin-collection">Collections</a> / List of Misc Payment</h5>
+         <!--   <a class="btn btn-info" data-toggle="modal" data-target="#addPayment" href="#"
                           >
               <i class="fa fa-plus"></i>
               Add Payment
-          </a>
+          </a> -->
         </div>
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
@@ -24,34 +24,42 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th style="width:10%;">Date</th>
-                      <th style="width:15%;">Balance</th>
-                      <th style="width:10%;">Misc Fee</th>
-                      <th style="width:15%;">Misc Penalty</th>
-                      <th style="width:10%;">Payment</th>
-                      <th style="width:15%;">Payment Type</th>
-                      <th style="width:10%;">Status</th>
-                      <th style="width:15%;"><center>Action</center></th>
+                      <th style="width:10%;font-size:13px;">Date</th>
+                      <th style="width:10%;font-size:13px;">Amount Due</th>
+                      <th style="width:10%;font-size:13px;">Unpaid Dues</th>
+                      <th style="width:10%;font-size:13px;">Penalty</th>
+                      <th style="width:10%;font-size:13px;">Total Dues</th>
+                      <th style="width:10%;font-size:13px;">Payment</th>
+                      <th style="width:10%;font-size:13px;">Payment Type</th>
+                      <th style="width:10%;font-size:13px;">Balance</th>
+                      <th style="width:10%;font-size:13px;">Status</th>
+                      <th style="width:10%;font-size:13px;"><center>Action</center></th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody> 
                     @foreach($miscs as $key=>$misc)
                     <tr>
-                      <td>{{$misc->date}}</td>
+                      <td style="font-size:13px;">{{$misc->date}}</td>
                    
-                      <td>Php. {{number_format($misc->balance,2)}}</td>
-                     
-                      <td>Php. {{number_format($misc->misc_fee,2)}}</td>
+                      <td style="font-size:13px;">Php. {{number_format($misc->amountdue,2)}}</td>
+                     @if(strlen($misc->unpaiddues)<=0)
+                       <td style="font-size:13px;">Php. {{number_format(0,2)}}</td>
+                     @else
+                       <td style="font-size:13px;">Php. {{number_format($misc->unpaiddues,2)}}</td>
+                     @endif
                    
-                      <td>Php. {{round($misc->penalty,2)}}</td>
+                      <td style="font-size:13px;">Php. {{round($misc->penalty,2)}}</td>
+                      <td style="font-size:13px;">Php. {{number_format($misc->totaldues,2)}}</td>
                       @if($misc->status=="PAID")
-                          <td>Php. {{number_format($misc->payment,2)}}</td>
+                          <td style="font-size:13px;">Php. {{number_format($misc->payment,2)}}</td>
                       @else
-                         <td>{{$misc->payment}}</td>
+                         <td style="font-size:13px;">{{$misc->payment}}</td>
                       @endif
-                      <td>{{$misc->payment_type}}</td>
-                      <td>{{$misc->status}}</td>
-                      <td><center>
+
+                      <td style="font-size:13px;">{{$misc->payment_type}}</td>
+                      <td style="font-size:13px;">Php. {{number_format($misc->balance,2)}}</td>
+                      <td style="font-size:13px;">{{$misc->status}}</td>
+                      <td style="font-size:13px;"><center>
                         @if($misc->status=="PENDING")
                           <a class="btn btn-primary" data-toggle="modal" data-target="#payModal{{$misc->id}}" href="#"
                           >
@@ -158,6 +166,16 @@
          {{ Form::open(['action' => ['MiscController@update',$misc->id],'method'=>'POST'])}}
         <div class="modal-body">
            <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+               {{Form::label('typename', 'Advance Payment?')}}
+                <select class="form-control" name="advance" id="advance" >
+                    <option value="NO">NO</option>
+                    <option value="YES">YES</option>
+                </select>
+    
+            </div>
+              </div>
               <div class="col-md-12">
                   <div class="form-group">
                {{Form::label('typename', 'Choose Payment Type')}}

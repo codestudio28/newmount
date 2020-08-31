@@ -110,6 +110,22 @@
         {{Form::label('course_title', "Reservation Fee")}}
         {{Form::number('reservationfee',$reservationfee,['class'=>'form-control','placeholder'=>'Enter reservation fee','step'=>'0.0001','disabled'])}}
                   </div>
+                   <div class="col-md-12">
+                           <div class="form-group">
+                             {{Form::label('typename', 'Deduct Reservation')}}
+                           <select class="form-control" name="deduct" >
+                                
+                                  <option value="YES">
+                                  YES
+                                  </option>
+                                 <option value="NO">
+                                  NO
+                                  </option>
+                              </select>
+
+        
+                          </div>
+                    </div>
                   <input type="hidden" name="reservation" value="{{$reservationfee}}">
                 </div>
                    <div style="margin-top:1em;margin-bottom:2em;margin-right:3em;text-align:right;" class="col-md-12">

@@ -24,7 +24,7 @@ class BuyController extends Controller
         if(strlen(session('Data'))<=0){
             return redirect('/');
         }else{
-            $clients = Client::where('status','ACTIVE')->get();
+            $clients = Client::where('status','ACTIVE')->orderBy('firstname','ASC')->get();
             $properties = Property::where('status','ACTIVE')->get();
             $payments = PaymentScheme::where('status','ACTIVE')->get();
           return view('buy.index')->with('clients',$clients)->with('properties',$properties)->with('payments',$payments);
@@ -53,7 +53,6 @@ class BuyController extends Controller
             'clientid'=>'required',
             'property'=>'required',
             'months'=>'required',
-            'loanable'=>'required',
             'paymentscheme'=>'required',
             'cts'=>'required',
         ]);
@@ -65,15 +64,36 @@ class BuyController extends Controller
          }
 
 
+
+
+
+
+
          $paymentscheme =PaymentScheme::find($request->input('paymentscheme'));
 
          $property = Property::find($request->input('property'));
+        $equity_percent = ($property->proptype->equity)/100;
+       
          $totalcontract =$property->price;
+
+         if($totalcontract>=1800000){
+            $total_equity = $totalcontract - 1530000;
+            $loanable=1530000;
+         }else if(($totalcontract<1800000)&&($totalcontract>=1275000)){
+               $total_equity = $totalcontract*$equity_percent;
+                $loanable= $totalcontract-$total_equity;
+         }else{
+             $total_equity = $totalcontract - 450000;
+            $loanable=450000;
+         }
+
+
+
          $months =$request->input('months');
          $misc_percent = ($property->proptype->misc)/100;
          $total_misc = $totalcontract * $misc_percent;
-         $loanable = $request->input('loanable');
-         $total_equity = $totalcontract-$loanable;
+         // $loanable = $request->input('loanable');
+         // $total_equity = $totalcontract-$loanable;
          $monthly_misc = round($total_misc/$request->input('months'),2);
          $monthly_equity = round($total_equity/$request->input('months'),2);
          $reservationfee=$request->input('reservationfee');
@@ -112,12 +132,29 @@ class BuyController extends Controller
             'reservation'=>'required',
             'ctsid'=>'required',
             'dates'=>'required',
+             'deduct'=>'required',
         ]);
             $penalties = Penalty::all();
             $penalty = $penalties[0]->penalty;
 
           
 
+            if($request->input('deduct')=="YES"){
+                if($request->input('totale')<=0){
+                    $totalmisc = $request->input('totalm')-$request->input('reservation');
+                    $monthlymisc = $totalmisc / $request->input('monthsnumber');
+                }else{
+                    $totalequity = $request->input('totale')-$request->input('reservation');
+                    $monthlyequity = $totalequity / $request->input('monthsnumber');
+                     $totalmisc = $request->input('totalm');
+                    $monthlymisc = $request->input('monthlym');
+                }
+            }else{
+                    $totalequity = $request->input('totale');
+                    $monthlyequity =  $request->input('monthlye');
+                    $totalmisc = $request->input('totalm');
+                    $monthlymisc = $request->input('monthlym');
+            }
 
 
             $buy = new Buy;
@@ -126,24 +163,28 @@ class BuyController extends Controller
             $buy->paymentscheme_id = $request->input('paymentschemeid');
             $buy->tcp = $request->input('contractprice');
             $buy->loanable = $request->input('loan');
-            $buy->totalequity = $request->input('totale');
-            $buy->totalmisc = $request->input('totalm');
-            $buy->misc = $request->input('monthlym');
+            $buy->totalequity =  $totalequity;
+            $buy->totalmisc = $totalmisc;
+            $buy->misc = $monthlymisc;
             $buy->misc_penalty = $penalty;
             $buy->equity_penalty =  $penalty;
-            $buy->equity = $request->input('monthlye');
+            $buy->equity = $monthlyequity;
             $buy->months = $request->input('monthsnumber');
             $buy->reservationfee = $request->input('reservation');
             $buy->cts = $request->input('ctsid');
             $buy->status = "ACTIVE";
             $buy->save();
 
+
             $misc = new Misc;
             $misc->client_id = $request->input('clientid');
             $misc->property_id = $request->input('propertyid');
             $misc->date = $request->input('dates');
-            $misc->balance = $request->input('totalm');
-            $misc->misc_fee = $request->input('monthlym');
+            $misc->balance = $totalmisc;
+            $misc->misc_fee = $monthlymisc;
+            $misc->amountdue = $monthlymisc;
+            $misc->unpaiddues = "";
+            $misc->totaldues = $monthlymisc;
             $misc->penalty = "";
             $misc->payment = "";
             $misc->payment_type = "";
@@ -159,8 +200,11 @@ class BuyController extends Controller
             $equity->client_id = $request->input('clientid');
             $equity->property_id = $request->input('propertyid');
             $equity->date = $request->input('dates');
-            $equity->balance = $request->input('totale');
-            $equity->equity_fee = $request->input('monthlye');
+            $equity->balance = $totalequity;
+            $equity->equity_fee = $monthlyequity;
+             $equity->amountdue = $monthlyequity;
+            $equity->unpaiddues = "";
+            $equity->totaldues = $monthlyequity;
             $equity->penalty = "";
             $equity->payment = "";
             $equity->payment_type = "";

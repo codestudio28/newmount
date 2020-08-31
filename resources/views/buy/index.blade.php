@@ -52,12 +52,12 @@
         
                           </div>
                     </div>
-                     <div class="col-md-12">
+                 <!--     <div class="col-md-12">
                    <div class="form-group">
                     {{Form::label('course_title', "Loanable Amount")}}
                     {{Form::number('loanable','',['class'=>'form-control','placeholder'=>'Enter loanable amount','step'=>'0.0001'])}}
                               </div>
-                            </div>
+                            </div> -->
                      <div class="col-md-12">
                            <div class="form-group">
                              {{Form::label('typename', 'Months')}}

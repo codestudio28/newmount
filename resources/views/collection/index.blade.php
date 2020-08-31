@@ -37,23 +37,23 @@
                       <td>{{$buy->paymentscheme->paymentname}} / {{$buy->paymentscheme->years}} years</td>
                       <td><center>
                         <a class="btn btn-success" href="/admin-misc/{{$buy->id}}/edit" >
-                          <i class="fa fa-tag"></i>
+                          <i class="fa fa-tag"  data-toggle="tooltip" data-placement="top" title="Miscellaneous"></i>
                         </a>
                         <a class="btn btn-primary" href="/admin-equity/{{$buy->id}}/edit" >
-                          <i class="fa fa-filter"></i>
+                          <i class="fa fa-filter" data-toggle="tooltip" data-placement="top" title="Equity"></i>
                         </a>
-                          <a class="btn btn-info" data-toggle="modal" data-target="#completeModal{{$buy->id}}" href="#"
+                         <!--  <a class="btn btn-info" data-toggle="modal" data-target="#completeModal{{$buy->id}}" href="#"
                         >
                          <i class="fa fa-retweet"></i>
-                        </a>
+                        </a> -->
 
                          <a class="btn btn-warning" data-toggle="modal" data-target="#okModal{{$buy->id}}" href="#"
                         >
-                         <i class="fa fa-check"></i>
+                         <i class="fa fa-check" data-toggle="tooltip" data-placement="top" title="Complete Amortization"></i>
                         </a>
 
                          <a class="btn btn-secondary" href="/admin-collection/{{$buy->id}}" >
-                          <i class="fa fa-print"></i>
+                          <i class="fa fa-print" data-toggle="tooltip" data-placement="top" title="Print Report"></i>
                         </a>
                       </center></td>
                     </tr>
@@ -148,7 +148,11 @@
     </div>
   </div>
  @endforeach 
-
-
+  <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
         <!-- /.container-fluid -->
 @endsection

@@ -7,7 +7,10 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "codedge/laravel-fpdf": "^1.5"
+        "codedge/laravel-fpdf": "^1.5",
+        "maatwebsite/excel": "~2.1.0",
+        "unisharp/laravel-ckeditor": "^4.7"
+        
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

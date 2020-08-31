@@ -6,7 +6,7 @@
           <!-- Page Heading -->
            <div class="d-sm-flex align-items-center justify-content-between mb-4">
           <h5 class="h5 mb-2 text-gray-800">Client / List of Client</h5>
-          <a href="#" data-toggle="modal" data-target="#importModal"class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Import Client</a>
+         <!--  <a href="#" data-toggle="modal" data-target="#importModal"class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Import Client</a> -->
           <a href="/admin-client/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Add New Client</a>
         </div>
           <!-- DataTales Example -->
