@@ -286,7 +286,7 @@ class MiscController extends Controller
                             }
                           
                              if($paymenttype=="Bank"){
-                                $pays=$payment-$penalty;
+                                $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                 $misc->payment = $payment;
@@ -300,7 +300,7 @@ class MiscController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                 $pays=$payment-$penalty;
+                                 $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
@@ -343,7 +343,7 @@ class MiscController extends Controller
                                 $mon = round($change/$amountdue)+1;
 
                              if($paymenttype=="Bank"){
-                                $pays=$payment-$penalty;
+                                $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                 $misc->payment = $payment;
@@ -357,7 +357,7 @@ class MiscController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                 $pays=$payment-$penalty;
+                                 $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
@@ -396,7 +396,7 @@ class MiscController extends Controller
                         
 
                              if($paymenttype=="Bank"){
-                                 $pays=$payment-$penalty;
+                                $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                 $misc->payment = $payment;
@@ -410,7 +410,7 @@ class MiscController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                 $pays=$payment-$penalty;
+                                 $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
