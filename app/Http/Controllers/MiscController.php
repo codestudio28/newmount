@@ -216,6 +216,7 @@ class MiscController extends Controller
                     $misc_penalty = (($buy[0]->misc_penalty)/100);
                     $balance = $misc->balance;
                     $amountdue = $misc->amountdue;
+                    $oldpenalty = $misc->penalty;
                     $totaldues = $misc->totaldues;
                     $payment = $request->input('payment');
                     $olddate =$misc->date;
@@ -224,7 +225,7 @@ class MiscController extends Controller
                             $penalty="0";
                             $unpaiddues="0";
                              if($paymenttype=="Bank"){
-                                $pays=$payment-$penalty;
+                                $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
@@ -239,7 +240,7 @@ class MiscController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                $pays=$payment-$penalty;
+                                $pays=$payment-$oldpenalty;
                                 $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
