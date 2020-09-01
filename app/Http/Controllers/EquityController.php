@@ -142,7 +142,8 @@ class EquityController extends Controller
                             $penalty="0";
                             $unpaiddues="0";
                              if($paymenttype=="Bank"){
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
                                 $misc->payment = $payment;
@@ -156,7 +157,8 @@ class EquityController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
                                 $misc->payment = $payment;
@@ -201,7 +203,8 @@ class EquityController extends Controller
                             }
                           
                              if($paymenttype=="Bank"){
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                 $misc->payment = $payment;
                                
@@ -214,7 +217,8 @@ class EquityController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
                                 $misc->payment = $payment;
@@ -256,7 +260,8 @@ class EquityController extends Controller
                                 $mon = round($change/$amountdue)+1;
 
                              if($paymenttype=="Bank"){
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                 $misc->payment = $payment;
                                
@@ -269,7 +274,8 @@ class EquityController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
                                 $misc->payment = $payment;
@@ -307,7 +313,8 @@ class EquityController extends Controller
                         
 
                              if($paymenttype=="Bank"){
-                                $newbalance = $balance - $payment;
+                                 $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                 $misc->payment = $payment;
                                
@@ -320,7 +327,8 @@ class EquityController extends Controller
                                 $misc->status = "PAID";
                                 $misc->save();
                              }else{
-                                $newbalance = $balance - $payment;
+                                $pays=$payment-$penalty;
+                                $newbalance = $balance - $pays;
                                 $misc->balance = $newbalance;
                                
                                 $misc->payment = $payment;
