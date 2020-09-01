@@ -217,6 +217,9 @@ class MiscController extends Controller
                     $balance = $misc->balance;
                     $amountdue = $misc->amountdue;
                     $oldpenalty = $misc->penalty;
+                    if(strlen($oldpenalty)<=0){
+                        $oldpenalty="0";
+                    }
                     $totaldues = $misc->totaldues;
                     $payment = $request->input('payment');
                     $olddate =$misc->date;
