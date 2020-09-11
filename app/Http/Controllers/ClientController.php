@@ -53,12 +53,11 @@ class ClientController extends Controller
             'lastname'=>'required',
             'birthdate'=>'required',
             'address1'=>'required',
+            'address2'=>'required',
             'city'=>'required',
             'zipcode'=>'required',
             'mobilenumber'=>'required',
-            'employmentstatus'=>'required',
-            'employer'=>'required',
-            'sales_rep'=>'required'
+            'emailadd'=>'required',
         ]);
 
        
@@ -176,16 +175,15 @@ class ClientController extends Controller
     {
         
          $this->validate($request,[
-            'firstname'=>'required',
+             'firstname'=>'required',
             'lastname'=>'required',
             'birthdate'=>'required',
             'address1'=>'required',
+            'address2'=>'required',
             'city'=>'required',
             'zipcode'=>'required',
             'mobilenumber'=>'required',
-            'employmentstatus'=>'required',
-            'employer'=>'required',
-            'sales_rep'=>'required'
+            'emailadd'=>'required',
         ]);
 
        

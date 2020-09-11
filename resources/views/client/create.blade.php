@@ -23,25 +23,25 @@
                       <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('firstname_title', "First Name")}}
+         {{Form::label('firstname_title', "First Name (Required)")}}
         {{Form::text('firstname','',['class'=>'form-control','placeholder'=>'Enter first name','required'=>true])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('middlename_title', "Middle Name (Optional)")}}
+         {{Form::label('middlename_title', "Middle Name")}}
         {{Form::text('middlename','',['class'=>'form-control','placeholder'=>'Enter middle name'])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('lastname_title', "Last Name")}}
+         {{Form::label('lastname_title', "Last Name  (Required)")}}
         {{Form::text('lastname','',['class'=>'form-control','placeholder'=>'Enter last name','required'=>true])}}
                   </div>
                </div>
                <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('lastname_title', "Birthdate")}}
+         {{Form::label('lastname_title', "Birthdate  (Required)")}}
         {{Form::date('birthdate','',['class'=>'form-control','placeholder'=>'Enter birthdate','required'=>true])}}
                   </div>
                </div>
@@ -92,38 +92,38 @@
                       <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('firstname_title', "Address 1")}}
+         {{Form::label('firstname_title', "Address 1"  (Required))}}
         {{Form::text('address1','',['class'=>'form-control','placeholder'=>'Enter address 1','required'=>true])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('middlename_title', "Address 2")}}
+         {{Form::label('middlename_title', "Address 2"  (Required))}}
         {{Form::text('address2','',['class'=>'form-control','placeholder'=>'Enter address 2','required'=>true])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('lastname_title', "City/Town")}}
+         {{Form::label('lastname_title', "City/Town"  (Required))}}
         {{Form::text('city','',['class'=>'form-control','placeholder'=>'Enter city/town','required'=>true])}}
                   </div>
                </div>
                <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('lastname_title', "Zip Code")}}
+         {{Form::label('lastname_title', "Zip Code"  (Required))}}
         {{Form::number('zipcode','',['class'=>'form-control','placeholder'=>'Enter zip code','required'=>true])}}
                   </div>
                </div>
                
                   <div class="col-md-12">
                       <div class="form-group">
-             {{Form::label('lastname_title', "Telephone/Mobile Number")}}
+             {{Form::label('lastname_title', "Telephone/Mobile Number  (Required)")}}
             {{Form::text('mobilenumber','',['class'=>'form-control','placeholder'=>'Enter telephone/mobile number'])}}
                       </div>
                    </div>
                      <div class="col-md-12">
                       <div class="form-group">
-             {{Form::label('lastname_title', "Email Address")}}
+             {{Form::label('lastname_title', "Email Address  (Required)")}}
             {{Form::text('emailadd','',['class'=>'form-control','placeholder'=>'Enter email address'])}}
                       </div>
                    </div>
@@ -159,19 +159,19 @@
                  <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('middlename_title', "Employer/Business Name")}}
-        {{Form::text('employer','',['class'=>'form-control','placeholder'=>'Enter employer/business name','required'=>true])}}
+        {{Form::text('employer','',['class'=>'form-control','placeholder'=>'Enter employer/business name'])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('lastname_title', "Nature of Business")}}
-        {{Form::text('nature','',['class'=>'form-control','placeholder'=>'Enter nature of business','required'=>true])}}
+        {{Form::text('nature','',['class'=>'form-control','placeholder'=>'Enter nature of business'])}}
                   </div>
                </div>
                <div class="col-md-12">
                   <div class="form-group">
          {{Form::label('lastname_title', "Office/Business Address")}}
-        {{Form::text('officeaddress','',['class'=>'form-control','placeholder'=>'Enter office/business address','required'=>true])}}
+        {{Form::text('officeaddress','',['class'=>'form-control','placeholder'=>'Enter office/business address'])}}
                   </div>
                </div>
                
