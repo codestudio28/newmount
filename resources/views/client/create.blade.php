@@ -92,25 +92,25 @@
                       <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('firstname_title', "Address 1"  (Required))}}
+         {{Form::label('firstname_title', "Address 1 (Required)"  )}}
         {{Form::text('address1','',['class'=>'form-control','placeholder'=>'Enter address 1','required'=>true])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('middlename_title', "Address 2"  (Required))}}
+         {{Form::label('middlename_title', "Address 2 (Required)")}}
         {{Form::text('address2','',['class'=>'form-control','placeholder'=>'Enter address 2','required'=>true])}}
                   </div>
                </div>
                  <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('lastname_title', "City/Town"  (Required))}}
+         {{Form::label('lastname_title', "City/Town (Required)")}}
         {{Form::text('city','',['class'=>'form-control','placeholder'=>'Enter city/town','required'=>true])}}
                   </div>
                </div>
                <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('lastname_title', "Zip Code"  (Required))}}
+         {{Form::label('lastname_title', "Zip Code (Required)")}}
         {{Form::number('zipcode','',['class'=>'form-control','placeholder'=>'Enter zip code','required'=>true])}}
                   </div>
                </div>
