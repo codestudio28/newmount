@@ -401,7 +401,25 @@ class CollectionController extends Controller
      */
     public function edit($id)
     {
-        //
+        
+        $buy = Buy::find($id);
+
+        $clientid= $buy->client_id;
+        $propertyid=$buy->property_id;
+        
+        $buyid = $buy->id;
+        Buy::where('id',$buyid)->delete();
+
+        Misc::where('client_id',$clientid)->where('property_id',$propertyid)->delete();
+        Equity::where('client_id',$clientid)->where('property_id',$propertyid)->delete();        
+
+        $property = Property::find($propertyid);
+
+        $property->status="ACTIVE";
+        $property->save();
+
+         return redirect('/admin-collection')->with('success','Successfully reset a client collections');
+
     }
 
     /**

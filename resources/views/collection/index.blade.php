@@ -55,6 +55,9 @@
                          <a class="btn btn-secondary" href="/admin-collection/{{$buy->id}}" >
                           <i class="fa fa-print" data-toggle="tooltip" data-placement="top" title="Print Report"></i>
                         </a>
+                         <a class="btn btn-primary" href="/admin-collection/{{$buy->id}}/edit" >
+                          <i class="fa fa-minus" data-toggle="tooltip" data-placement="top" title="Click this to reset collections"></i>
+                        </a>
                       </center></td>
                     </tr>
                
