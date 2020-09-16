@@ -142,6 +142,7 @@ class BuyController extends Controller
             if($request->input('deduct')=="YES"){
                 if($request->input('totale')<=0){
                     $totalequity=$request->input('totale');
+                    $monthlyequity =  $request->input('monthlye');
                     $totalmisc = $request->input('totalm')-$request->input('reservation');
                     $monthlymisc = $totalmisc / $request->input('monthsnumber');
                 }else{
