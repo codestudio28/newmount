@@ -96,7 +96,7 @@
                 
                   <tbody style="font-size:11px;">
 
-                      @if($swi==1)
+                   
                         @foreach($client_misc as $key => $cl_misc)
                           @php
                           $trig=0;
@@ -131,39 +131,7 @@
                           </tr>
                         @endforeach
 
-                      @else
-                            @foreach($client_equity as $key => $cl_equity)
-                          @php
-                          $trig=0;
-                          @endphp
-                            <tr>
-                            <td>{{$key+1}}</td>
-                            <td>{{$equity_due[$key]}}</td>
-                            <td>{{$cl_equity}}</td>
-                            <td>{{$equity_block[$key]}}</td>
-                            <td>{{$equity_lot[$key]}}</td>
-                             <td>{{$equity_payment[$key]}}</td>
-                             @foreach($client_misc as $keys => $cl_misc)
-                                @if(($equity_due[$key]==$misc_due[$keys])&&($prop_equity[$key]==$prop_misc[$keys]))
-                                   <td>{{$misc_payment[$keys]}}</td>
-                                    @php
-                                    $trig=1;
-                                    @endphp
-                                @else
-
-                                @endif
-                             @endforeach
-
-                             @if($trig==0)
-                               <td>Php. 0.00</td>
-                             @endif
-                           
-                           
-                            <td>Total</td>
-                            
-                          </tr>
-                        @endforeach
-                      @endif
+                    
                    
                     
                    

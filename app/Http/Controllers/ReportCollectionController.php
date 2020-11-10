@@ -403,6 +403,7 @@ class ReportCollectionController extends Controller
                     }
                 }
                 }
+              
          }else if($filtered=="BLOCK"){
 
              $miscs = Misc::where("status",'PAID')->orderBy('id','desc')->get();

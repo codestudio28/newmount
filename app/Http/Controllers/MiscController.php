@@ -11,6 +11,7 @@ use App\Buy;
 use App\Misc;
 use App\Pin;
 use App\Log;
+use App\WaiveMisc;
 use Codedge\Fpdf\Fpdf\Fpdf;
 class MiscController extends Controller
 {

@@ -69,6 +69,28 @@
                           >
                            <i class="fa fa-times"></i>
                         </a>
+                         @if(session('Data')[0]->usertype=="superadmin")
+                          @if(count($misc->waivemisc)>0)
+                            @if($misc->waivemisc[0]->status=="OPEN")
+                               <a class="btn btn-info" data-toggle="modal" data-target="#penaltyApproveModal2{{$misc->id}}" href="#">
+                                <i class="fa fa-minus"></i>
+                                </a>
+                            @else
+                            @endif
+                          @else
+                          
+                          @endif
+                        
+                        @else
+                          @if($misc->penalty>0)
+                           <a class="btn btn-info" data-toggle="modal" data-target="#penaltyRequestModal{{$misc->id}}" href="#">
+                           <i class="fa fa-minus"></i>
+                          </a>
+                          @endif
+                         
+
+                         @endif
+                       
                         @elseif($misc->status=="PAID")
                            <a class="btn btn-info" data-toggle="modal" data-target="#voidModal{{$misc->id}}" href="#"
                           >
@@ -78,6 +100,28 @@
                           >
                            <i class="fa fa-print"></i>
                         </a>
+                         @if(session('Data')[0]->usertype=="superadmin")
+                          @if(count($misc->waivemisc)>0)
+                            @if($misc->waivemisc[0]->status=="OPEN")
+                               <a class="btn btn-info" data-toggle="modal" data-target="#penaltyApproveModal{{$misc->id}}" href="#">
+                                <i class="fa fa-minus"></i>
+                                </a>
+                            @else
+                            @endif
+                          @else
+                          
+                          @endif
+                        
+                        @else
+                          @if($misc->penalty>0)
+                           <a class="btn btn-info" data-toggle="modal" data-target="#penaltyRequestModal{{$misc->id}}" href="#">
+                           <i class="fa fa-minus"></i>
+                          </a>
+                          @endif
+                         
+
+                         @endif
+                      
                         @else
                            <button class="btn btn-primary" disabled
                           >
@@ -87,6 +131,11 @@
                           >
                            <i class="fa fa-times"></i>
                         </button>
+
+                         
+                         
+
+
                         @endif
                       </center></td>
                     </tr>
@@ -100,6 +149,102 @@
           </div>
 
         </div>
+@foreach($miscs as $index =>$misc)
+<div class="modal fade" id="penaltyApproveModal2{{$misc->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Approve Waive Penalty?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Approve" below if you want to approve waive client's penalty .</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            {{ Form::open(['action' => ['WaiveController@update',$misc->id],'method'=>'POST'])}}
+         {{ Form::hidden('process', 'MISCAPPROVED2')}}
+             {{Form::hidden('_method','PUT')}} 
+            
+          {{Form::submit('Approve', ['class'=>'btn btn-success'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+ @endforeach
+@foreach($miscs as $index =>$misc)
+<div class="modal fade" id="penaltyApproveModal{{$misc->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Approve Waive Penalty?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Approve" below if you want to approve waive client's penalty .</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            {{ Form::open(['action' => ['WaiveController@update',$misc->id],'method'=>'POST'])}}
+         {{ Form::hidden('process', 'MISCAPPROVED')}}
+             {{Form::hidden('_method','PUT')}} 
+            
+          {{Form::submit('Approve', ['class'=>'btn btn-success'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+ @endforeach 
+ @foreach($miscs as $index =>$misc)
+<div class="modal fade" id="penaltyRequestModal{{$misc->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Request Waive Penalty?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Request" below if you want to request to waive client's penalty .</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            {{ Form::open(['action' => ['WaiveController@update',$misc->id],'method'=>'POST'])}}
+         {{ Form::hidden('process', 'MISCREQUEST')}}
+             {{Form::hidden('_method','PUT')}} 
+            
+          {{Form::submit('Request', ['class'=>'btn btn-info'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+ @endforeach 
+ @foreach($miscs as $index =>$misc)
+<div class="modal fade" id="penaltyModal{{$misc->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Waive Penalty?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Waive" below if you want to waive client's penalty .</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            {{ Form::open(['action' => ['WaiveController@update',$misc->id],'method'=>'POST'])}}
+         {{ Form::hidden('process', 'MISC')}}
+             {{Form::hidden('_method','PUT')}} 
+            
+          {{Form::submit('Waive', ['class'=>'btn btn-danger'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
+ @endforeach 
 @foreach($miscs as $index =>$misc)
 <div class="modal fade" id="voidModal{{$misc->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

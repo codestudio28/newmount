@@ -12,4 +12,7 @@ class Misc extends Model
     public function property(){
     	return $this->belongsTo('App\Property');
     }
+    public function waivemisc(){
+    	return $this->hasMany('App\WaiveMisc','collect_id');
+    }
 }
