@@ -255,62 +255,420 @@ class EquityController extends Controller
                                 $misc->status = "PENDING";
                                 $misc->save();
                         }else{
-                                $change = $payment-$totaldues;
-                                $unpaiddues=0;
-                                $penalty=0;
-                                $totaldues = $amountdue+$penalty+$unpaiddues; 
+                                 $counter=0;
+                            $newbalance=0;
+                            $newpayment = 0;
+                            while(true){
+                                $counter++;
+                             
+                                if($counter<=1){
+                                    $newbalance = $balance-$totaldues;
+                                    // echo "COUNT: ".$counter."<br>";
+                                    // echo "DATE: ".$olddate."<br>";
+                                    // echo "PAYMENT: ".$totaldues."<br>";
+                                    // echo "TOTAL DUES: ".$totaldues."<br>";
+                                    // echo "BALANCE: ".$newbalance."<br>";
+                                    // echo "STATUS: PAID<br><br>";
+                                      $temppayment=round($payment,2)-round($totaldues);
+                                    $temptotal =$amountdue;
+                                    if($temppayment<$temptotal){
+                                         if($paymenttype=="Bank"){
+                                            $totals=$totaldues+$temppayment;
+                                            $misc->balance = $newbalance;
+                                            $misc->payment = $totals;
+         
+                                            $misc->payment_type = $paymenttype;
+                                            $misc->checknumber = $request->input('cheque');
+                                            $misc->bankname = $request->input('bank');
+                                            $misc->branch = $request->input('branch');
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->aror =$request->input('orar');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+                                         }else{
+                                             $totals=$totaldues+$temppayment;
+                                          
+                                            $misc->balance = $newbalance;
+                                            $misc->payment = $totals;
+
+                                            $misc->payment_type = $paymenttype;
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->aror =$request->input('orar');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+                                        }
+                                    }else{
+                                         if($paymenttype=="Bank"){
+                                            $misc->balance = $newbalance;
+                                            $misc->payment = $totaldues;
+         
+                                            $misc->payment_type = $paymenttype;
+                                            $misc->checknumber = $request->input('cheque');
+                                            $misc->bankname = $request->input('bank');
+                                            $misc->branch = $request->input('branch');
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->aror =$request->input('orar');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+                                         }else{
+                                            
+                                            $newbalance = $balance - $totaldues;
+                                            $misc->balance = $newbalance;
+                                            $misc->payment = $totaldues;
+
+                                            $misc->payment_type = $paymenttype;
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->aror =$request->input('orar');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+                                        }
+                                    }
+                                   
 
 
-                                $mon = round($change/$amountdue)+1;
+                                    $unpaiddues=0;
+                                    $penalty=0;
+                                    $newpayment = $payment-$totaldues;
+                                    $totaldues=$amountdue+$unpaiddues+$penalty;
+                                    
+                            
+                                    if($newpayment<=0){
+                                       
+                                        $dt = strtotime($olddate);
+                                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                        $olddate=$nextdate;
+                                        // echo "COUNT: ".$counter."<br>";
+                                        // echo "DATE: ".$olddate."<br>";
+                                        // echo "TOTAL DUES: ".$amountdue."<br>";
+                                        // echo "BALANCE: ".$newbalance."<br>";
+                                        // echo "STATUS: PENDING<br><br>";
 
-                             if($paymenttype=="Bank"){
-                                 $pays=$payment-$oldpenalty;
-                                $newbalance = $balance - $pays;
-                                $misc->balance = $newbalance;
-                                $misc->payment = $payment;
-                               
-                                $misc->payment_type = $paymenttype;
-                                $misc->checknumber = $request->input('cheque');
-                                $misc->bankname = $request->input('bank');
-                                $misc->branch = $request->input('branch');
-                                $misc->datepaid = $request->input('paymentdate');
-                                $misc->aror =$request->input('orar');
-                                $misc->status = "PAID";
-                                $misc->save();
-                             }else{
-                                $pays=$payment-$oldpenalty;
-                                $newbalance = $balance - $pays;
-                                $misc->balance = $newbalance;
-                               
-                                $misc->payment = $payment;
+                                       
+                                            $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = "";
+                                            $misc->payment_type = "";
+                                            $misc->aror = "";
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = "";
+                                            $misc->status = "PENDING";
+                                            $misc->save();
 
-                                $misc->payment_type = $paymenttype;
-                                $misc->datepaid = $request->input('paymentdate');
-                                $misc->aror =$request->input('orar');
-                                $misc->status = "PAID";
-                                $misc->save();
-                             }
-                                $dt = strtotime($olddate);
-                                $nextdate = date("Y-m-d", strtotime("+".$mon." month", $dt));
-                                $misc = new Equity;
-                                $misc->client_id = $client_id;
-                                $misc->property_id = $property_id;
-                                $misc->date =$nextdate;
-                                $misc->balance =  $newbalance;
-                                $misc->equity_fee = $amountdue;
-                                $misc->amountdue = $amountdue;
-                                $misc->unpaiddues = $unpaiddues;
-                                $misc->totaldues =  $totaldues;
-                                $misc->penalty = $penalty;
-                                $misc->payment = "";
-                                $misc->payment_type = "";
-                                $misc->aror = "";
-                                $misc->checknumber = "";
-                                $misc->bankname = "";
-                                $misc->branch = "";
-                                $misc->datepaid = "";
-                                $misc->status = "PENDING";
-                                $misc->save();
+
+                                        break;
+                                    }else if(round($newpayment,2)<round($totaldues,2)){
+                                     
+                                        $newbalance=$newbalance-$newpayment;
+                                        $totaldues=round($totaldues,2)-round($newpayment,2);
+                                        $dt = strtotime($olddate);
+                                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                        $olddate=$nextdate;
+                                        // echo "COUNT: ".$counter."<br>";
+                                        // echo "DATE: ".$olddate."<br>";
+                                        //  echo "TOTAL DUES: ".$totaldues."<br>";
+                                        // echo "PAYMENT: ".$newpayment."<br>";
+                                        // echo "BALANCE: ".$newbalance."<br>";
+                                        // echo "STATUS: PENDING<br><br>";
+
+
+                                            $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = "";
+                                            $misc->payment_type = "";
+                                            $misc->aror = "";
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = "";
+                                            $misc->status = "PENDING";
+                                            $misc->save();
+                                        break;
+                                    }else{
+
+                                        
+                                    }
+
+                                     
+                                }else{
+                                   
+
+                                    if($newpayment<=0){
+                                        $dt = strtotime($olddate);
+                                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                        $olddate=$nextdate;
+                                        // echo "COUNT: ".$counter."<br>";
+                                        // echo "DATE: ".$olddate."<br>";
+                                        // echo "TOTAL DUES: ".$amountdue."<br>";
+                                        // echo "BALANCE: ".$newbalance."<br>";
+                                        // echo "STATUS: PENDING<br><br>";
+
+                                            $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = "";
+                                            $misc->payment_type = "";
+                                            $misc->aror = "";
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = "";
+                                            $misc->status = "PENDING";
+                                            $misc->save();
+                                        break;
+                                    }else if(round($newpayment,2)<round($totaldues,2)){
+                                        $newbalance=$newbalance-$newpayment;
+                                        $totaldues=round($totaldues,2)-round($newpayment,2);
+                                        $dt = strtotime($olddate);
+                                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                        $olddate=$nextdate;
+                                        // echo "COUNT: ".$counter."<br>";
+                                        // echo "DATE: ".$olddate."<br>";
+                                        //  echo "TOTAL DUES: ".$totaldues."<br>";
+                                        // echo "PAYMENT: ".$totaldues."<br>";
+                                        // echo "BALANCE: ".$newbalance."<br>";
+                                        // echo "STATUS: PENDING<br><br>";
+
+
+                                            $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = "";
+                                            $misc->payment_type = "";
+                                            $misc->aror = "";
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = "";
+                                            $misc->status = "PENDING";
+                                            $misc->save();
+                                        break;
+                                    }else{
+                                         $dt = strtotime($olddate);
+                                        $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                        $olddate=$nextdate;   
+
+                                        $newbalance = $newbalance-$totaldues;
+
+                                        // echo "COUNT: ".$counter."<br>";
+                                        // echo "DATE: ".$olddate."<br>";
+                                        // echo "PAYMENT: ".$totaldues."<br>";
+                                        // echo "TOTAL DUES: ".$totaldues."<br>";
+                                        // echo "BALANCE: ".$newbalance."<br>";
+                                        // echo "STATUS: PAID<br><br>";
+                                         $temppayment=round($newpayment,2)-round($totaldues);
+                                        $temptotal =$amountdue;
+                                        if(round($temppayment)<round($temptotal)){
+                                            $totals=$temptotal+$temppayment;
+                                             if($paymenttype=="Bank"){
+                                             $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                             $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = $totals;
+                                           $misc->payment_type = $paymenttype;
+                                           $misc->aror =$request->input('orar');
+                                            $misc->checknumber = $request->input('cheque');
+                                            $misc->bankname = $request->input('bank');
+                                            $misc->branch = $request->input('branch');
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+
+                                           
+                                         }else{
+                                            
+                                            $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = $totals;
+                                           $misc->payment_type = $paymenttype;
+                                           $misc->aror =$request->input('orar');
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+                                        }
+                                        }else{
+                                             if($paymenttype=="Bank"){
+                                             $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                             $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = $totaldues;
+                                           $misc->payment_type = $paymenttype;
+                                           $misc->aror =$request->input('orar');
+                                            $misc->checknumber = $request->input('cheque');
+                                            $misc->bankname = $request->input('bank');
+                                            $misc->branch = $request->input('branch');
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+
+                                           
+                                         }else{
+                                            
+                                            $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = $totaldues;
+                                           $misc->payment_type = $paymenttype;
+                                           $misc->aror =$request->input('orar');
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = $request->input('paymentdate');
+                                            $misc->status = "PAID";
+                                            $misc->save();
+                                        }
+                                        }
+                                       
+
+
+
+                                        $unpaiddues=0;
+                                        $penalty=0;
+                                        $newpayment = $newpayment-$totaldues;
+                                        $totaldues=$amountdue+$unpaiddues+$penalty;
+
+                                      
+                                      
+                                        if($newpayment<=0){
+                                            $dt = strtotime($olddate);
+                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                            $olddate=$nextdate;
+                                            // echo "COUNT: ".$counter."<br>";
+                                            // echo "DATE: ".$olddate."<br>";
+                                            // echo "TOTAL DUES: ".$amountdue."<br>";
+                                            // echo "BALANCE: ".$newbalance."<br>";
+                                            // echo "STATUS: PENDING<br><br>";
+                                             $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                             $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = "";
+                                            $misc->payment_type = "";
+                                            $misc->aror = "";
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = "";
+                                            $misc->status = "PENDING";
+                                            $misc->save();
+
+
+                                            break;
+                                        }else if(round($newpayment,2)<round($totaldues,2)){
+                                            $newbalance=$newbalance-$newpayment;
+                                            $totaldues=round($totaldues,2)-round($newpayment,2);
+                                            $dt = strtotime($olddate);
+                                            $nextdate = date("Y-m-d", strtotime("+1 month", $dt));
+                                            $olddate=$nextdate;
+                                            // echo "COUNT: ".$counter."<br>";
+                                            // echo "DATE: ".$olddate."<br>";
+                                            //  echo "TOTAL DUES: ".$totaldues."<br>";
+                                            // echo "PAYMENT: ".$newpayment."<br>";
+                                            // echo "BALANCE: ".$newbalance."<br>";
+                                            // echo "STATUS: PENDING<br><br>";
+                                              $misc = new Equity;
+                                            $misc->client_id = $client_id;
+                                            $misc->property_id = $property_id;
+                                            $misc->date =$nextdate;
+                                            $misc->balance =  $newbalance;
+                                            $misc->equity_fee = $amountdue;
+                                            $misc->amountdue = $amountdue;
+                                            $misc->unpaiddues = $unpaiddues;
+                                            $misc->totaldues =  $totaldues;
+                                            $misc->penalty = $penalty;
+                                            $misc->payment = "";
+                                            $misc->payment_type = "";
+                                            $misc->aror = "";
+                                            $misc->checknumber = "";
+                                            $misc->bankname = "";
+                                            $misc->branch = "";
+                                            $misc->datepaid = "";
+                                            $misc->status = "PENDING";
+                                            $misc->save();
+                                            break;
+                                        }else{
+
+                                        }
+                                     
+                                      
+                                    }
+                                }
+                            }
+                            
+
+
+
+
+                        
                         }
                             
                     }else{
