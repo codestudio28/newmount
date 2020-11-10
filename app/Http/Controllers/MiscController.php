@@ -802,7 +802,7 @@ class MiscController extends Controller
 
 
          $path = "admin-misc/".$buy_id."/edit";
-            // return redirect($path)->with('success','Successfully add payment.'); 
+            return redirect($path)->with('success','Successfully add payment.'); 
 
         }else if($process=="UNPAID"){
 
