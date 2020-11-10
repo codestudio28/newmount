@@ -132,7 +132,7 @@
                         @endforeach
 
                       @else
-                            @foreach($equity_misc as $key => $cl_equity)
+                            @foreach($client_equity as $key => $cl_equity)
                           @php
                           $trig=0;
                           @endphp

@@ -92,8 +92,8 @@
                       <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
-         {{Form::label('firstname_title', "Address 1 (Required)"  )}}
-        {{Form::text('address1','',['class'=>'form-control','placeholder'=>'Enter address 1','required'=>true])}}
+         {{Form::label('firstname_title', "Address 1 "  )}}
+        {{Form::text('address1','',['class'=>'form-control','placeholder'=>'Enter address 1'])}}
                   </div>
                </div>
                  <div class="col-md-12">
