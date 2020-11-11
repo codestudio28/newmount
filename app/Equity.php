@@ -12,4 +12,7 @@ class Equity extends Model
     public function property(){
     	return $this->belongsTo('App\Property');
     }
+    public function waivemisc(){
+    	return $this->hasMany('App\WaiveEquity','collect_id');
+    }
 }

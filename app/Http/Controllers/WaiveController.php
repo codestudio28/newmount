@@ -9,9 +9,11 @@ use App\Client;
 use App\Property;
 use App\Buy;
 use App\Misc;
+use App\Equity;
 use App\Pin;
 use App\Log;
 use App\WaiveMisc;
+use App\WaiveEquity;
 class WaiveController extends Controller
 {
     /**
@@ -154,6 +156,78 @@ class WaiveController extends Controller
             $buy_id=$buy[0]->id;
 
             $path = "admin-misc/".$buy_id."/edit";
+            return redirect($path)->with('success','Successfully approved waive penalty request.');  
+        }
+        else if($request->input('process')=="EQUITYREQUEST"){
+            $misc = Equity::find($id);
+            
+              $client_id = $misc->client_id;
+            $property_id = $misc->property_id;
+            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+            $buy_id=$buy[0]->id;
+
+            $newwaive = WaiveEquity::where('collect_id',$id)->get();
+            if(count($newwaive)>1){
+                  $path = "admin-misc/".$buy_id."/edit";
+                return redirect($path)->with('error','You already request a waive for this transaction.'); 
+            }
+
+            $waive = new WaiveEquity;
+            $waive->collect_id=$id;
+            $waive->status="OPEN";
+            $waive->save();
+           
+           
+
+            $path = "admin-equity/".$buy_id."/edit";
+            return redirect($path)->with('success','Successfully sent waive penalty request.');  
+        } else if($request->input('process')=="EQUITYAPPROVED"){
+            
+           
+            $misc = Equity::find($id);
+            $totaldues = $misc->totaldues;
+            $penalty =$misc->penalty;
+            $newtotaldues=round($totaldues,2)-round($penalty,2);
+
+            
+            $waive = WaiveEquity::where('collect_id',$id)->first();;
+            $waive->status="CLOSED";
+            $waive->save();
+
+             $misc = Equity::find($id);
+             $misc->penalty = 0.00;
+             $misc->totaldues=$newtotaldues;
+             $misc->save();
+           
+            $client_id = $misc->client_id;
+            $property_id = $misc->property_id;
+            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+            $buy_id=$buy[0]->id;
+
+            $path = "admin-equity/".$buy_id."/edit";
+            return redirect($path)->with('success','Successfully approved waive penalty request.');  
+        } else if($request->input('process')=="EQUITYAPPROVED2"){
+            $misc = Equity::find($id);
+            $totaldues = $misc->totaldues;
+            $penalty =$misc->penalty;
+            $newtotaldues=round($totaldues,2)-round($penalty,2);
+
+
+            $waive = WaiveEquity::where('collect_id',$id)->first();;
+            $waive->status="CLOSED";
+            $waive->save();
+
+             $misc = Equity::find($id);
+             $misc->penalty = 0.00;
+             $misc->totaldues=$newtotaldues;
+             $misc->save();
+           
+            $client_id = $misc->client_id;
+            $property_id = $misc->property_id;
+            $buy = Buy::where('client_id',$client_id)->where('property_id',$property_id)->get();
+            $buy_id=$buy[0]->id;
+
+            $path = "admin-equity/".$buy_id."/edit";
             return redirect($path)->with('success','Successfully approved waive penalty request.');  
         }
          
