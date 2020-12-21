@@ -8,6 +8,7 @@
           <h5 class="h5 mb-2 text-gray-800">Client / List of Client</h5>
          <!--  <a href="#" data-toggle="modal" data-target="#importModal"class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Import Client</a> -->
           <a href="/admin-client/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Add New Client</a>
+            <a href="#" data-toggle="modal" data-target="#uploadClientModal" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-file fa-sm text-white-50"></i> Import Client</a>
         </div>
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
@@ -58,6 +59,35 @@
           </div>
 
         </div>
+<!-- Upload Buyer -->
+<div class="modal fade" id="uploadClientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Upload Client List</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+         {{ Form::open(['action' => ['UploadClientController@update','1'],'method'=>'POST','enctype'=>'multipart/form-data'])}}
+       <!--   {{ Form::hidden('status', 'IMPORT')}} -->
+             {{Form::hidden('_method','PUT')}} 
+        <div class="modal-body">
+          <div style="margin-top:1em;" class="col-md-12  ">
+              {{Form::label('coverphoto_title', "Choose CSV File")}}
+                        {{Form::file('import_file',['class'=>'form-control btn btn-primary'])}}
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+         
+            
+          {{Form::submit('Import', ['class'=>'btn btn-primary'])}}
+            {{ Form::close() }}
+        </div>
+      </div>
+    </div>
+  </div>
 
  
  @foreach($clients as $index =>$client)

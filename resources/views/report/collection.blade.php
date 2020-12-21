@@ -95,7 +95,6 @@
                   </thead>
                 
                   <tbody style="font-size:11px;">
-
                    
                         @foreach($client_misc as $key => $cl_misc)
                           @php
@@ -130,7 +129,7 @@
                             
                           </tr>
                         @endforeach
-
+                 
                     
                    
                     

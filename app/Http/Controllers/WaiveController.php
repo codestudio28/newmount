@@ -14,6 +14,7 @@ use App\Pin;
 use App\Log;
 use App\WaiveMisc;
 use App\WaiveEquity;
+use App\Voucher;
 class WaiveController extends Controller
 {
     /**
@@ -229,6 +230,49 @@ class WaiveController extends Controller
 
             $path = "admin-equity/".$buy_id."/edit";
             return redirect($path)->with('success','Successfully approved waive penalty request.');  
+        }else if($request->input('process')=="REFUND"){
+           $this->validate($request,[
+                'transact'=>'required',
+                'amount'=>'required',
+                'bankname'=>'required',
+                'cheque'=>'required'
+            ]);
+           $buy = Buy::find($id);
+           $cheque=$request->input('cheque');
+           
+           $voucher = Voucher::where('cheque',$cheque)->get();
+
+         
+           if(count($voucher)<=0){
+
+                $property_id= $buy->property_id;
+                $property = Property::find($property_id);
+                $property->status="ACTIVE";
+                $property->save();
+
+                $newvouch = new Voucher;
+                $newvouch->amount=$request->input('amount');
+                $newvouch->bank=$request->input('bankname');
+                $newvouch->dates=$request->input('transact');
+                $newvouch->cheque=$request->input('cheque');
+                $newvouch->terms="REFUND";
+                $newvouch->cv=$property_id;
+                $newvouch->save();
+
+                $buy->status="REFUND";
+                $buy->save();
+
+                $path = "admin-collection/";
+                return redirect($path)->with('success','Successfully save refund.');                   
+
+           }else{
+
+            $path = "admin-collection/";
+            return redirect($path)->with('error','Cheque number already in the system.');
+           }
+           
+
+
         }
          
     }

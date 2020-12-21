@@ -79,3 +79,7 @@ Route::resource('report-payable','ReportPayableController');
 Route::resource('report-logs','ReportLogController');
 Route::resource('admin-transfer','TransferController');
 Route::resource('admin-info','InfoController');
+Route::resource('upload-buyer','UploadBuyerController');
+Route::resource('upload-equity','UploadEquityController');
+Route::resource('upload-misc','UploadMiscController');
+Route::resource('upload-client','UploadClientController');
