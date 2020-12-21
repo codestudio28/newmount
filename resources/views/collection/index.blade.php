@@ -36,10 +36,11 @@
                   <thead>
                     <tr>
                       <th style="width:10%;">#</th>
+                      <th style="width:10%;">CTS</th>
                       <th style="width:20%;">Name</th>
                       <th style="width:15%;">Property</th>
                       <th style="width:15%;">Payment Scheme</th>
-                      <th style="width:40%;"><center>Action</center></th>
+                      <th style="width:30%;"><center>Action</center></th>
                     </tr>
                   </thead>
                 
@@ -48,6 +49,7 @@
                    
                       <tr>
                       <td>{{$index+1}}</td>
+                      <td>{{$buy->cts}}</td>
                       <td>{{$buy->client->firstname}} {{$buy->client->middlename}} {{$buy->client->lastname}}</td>
                       <td>Block: {{$buy->property->block}} Lot: {{$buy->property->lot}}</td>
                       <td>{{$buy->paymentscheme->paymentname}} / {{$buy->paymentscheme->years}} years</td>
