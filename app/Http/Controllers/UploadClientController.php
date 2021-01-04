@@ -103,6 +103,7 @@ class UploadClientController extends Controller
                     $middlename = $data['middlename'];
                     $contactnumber = $data['contactnumber'];
                     $address = $data['address'];
+                    $salesrep = $data['salesrep'];
                   
 
                  
@@ -118,6 +119,7 @@ class UploadClientController extends Controller
                         $client->middlename =strtoupper($middlename);
                         $client->lastname =strtoupper($lastname);
                         $client->address1 =strtoupper($address);
+                        $client->sales_rep =strtoupper($salesrep);
                         $client->status ="ACTIVE";
                         $client->save();
 

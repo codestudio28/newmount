@@ -41,11 +41,11 @@
                     <tr>
                       <td style="font-size:13px;">{{$misc->date}}</td>
                    
-                      <td style="font-size:13px;">Php. {{number_format($misc->amountdue,2)}}</td>
+                      <td style="font-size:13px;">Php.{{ $misc->amountdue}}</td>
                      @if(strlen($misc->unpaiddues)<=0)
-                       <td style="font-size:13px;">Php. {{number_format(0,2)}}</td>
+                       <td style="font-size:13px;">Php. 0</td>
                      @else
-                       <td style="font-size:13px;">Php. {{number_format($misc->unpaiddues,2)}}</td>
+                       <td style="font-size:13px;">Php.{{$misc->unpaiddues}}</td>
                      @endif
                    
                       <td style="font-size:13px;">Php. {{round($misc->penalty,2)}}</td>
